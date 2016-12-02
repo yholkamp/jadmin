@@ -11,7 +11,7 @@ public class Path {
   }
 
   public static class Route {
-    public static final String ADMIN_INDEX = "/";
+    public static final String ADMIN_INDEX = "";
     public static final String EDIT_ROW = "/:table/*";
     public static final String WILDCARD = "/*";
     public static final String INDEX = "/:table";
