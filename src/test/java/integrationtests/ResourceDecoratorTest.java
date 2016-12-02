@@ -3,6 +3,7 @@ package integrationtests;
 import com.google.common.collect.ImmutableList;
 import net.nextpulse.sparkadmin.Resource;
 import net.nextpulse.sparkadmin.ResourceDecorator;
+import net.nextpulse.sparkadmin.elements.FormButtons;
 import net.nextpulse.sparkadmin.elements.FormInputGroup;
 import net.nextpulse.sparkadmin.elements.PageElement;
 import org.junit.Before;
@@ -50,16 +51,21 @@ public class ResourceDecoratorTest extends DatabaseTest {
     assertEquals(4, compoundResource.getColumnDefinitions().size());
   }
 
+  /**
+   * Check whether the formPage has been populated with the right input fields
+   */
   @Test
-  public void decorate_formFields() {
+  public void decorate_formPage() {
     decorator.decorate(compoundResource);
-    // TODO: assert the content is correct
+
     List<PageElement> formPage = compoundResource.getFormPage();
-    assertEquals(1, formPage.size());
+    assertEquals(2, formPage.size());
     FormInputGroup result = (FormInputGroup) formPage.get(0);
     assertEquals(2, result.getInputs().size());
-    assertTrue(result.getInputs().stream().anyMatch(x -> x.getName().equals("location_id")));
-    assertTrue(result.getInputs().stream().anyMatch(x -> x.getName().equals("name")));
+    assertTrue("Should have added an input field for location id", result.getInputs().stream().anyMatch(x -> x.getName().equals("location_id")));
+    assertTrue("Should have added an input field for name", result.getInputs().stream().anyMatch(x -> x.getName().equals("name")));
+
+    assertTrue("Should have added submit/cancel buttons by default", formPage.get(1) instanceof FormButtons);
   }
 
   protected void assertEqualsCaseInsensitive(List<String> expected, List<String> actual) {

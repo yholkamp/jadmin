@@ -1,5 +1,6 @@
 package net.nextpulse.sparkadmin;
 
+import net.nextpulse.sparkadmin.elements.FormButtons;
 import net.nextpulse.sparkadmin.elements.FormInput;
 import net.nextpulse.sparkadmin.elements.FormInputGroup;
 import org.apache.logging.log4j.LogManager;
@@ -58,6 +59,7 @@ public class ResourceDecorator {
       resource.getIndexColumns().add(x.getName());
     });
     resource.getFormPage().add(inputGroup);
+    resource.getFormPage().add(new FormButtons());
   }
 
   private static void retrieveColumns(Connection conn, Resource resource) throws SQLException {

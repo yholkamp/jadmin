@@ -100,6 +100,7 @@ public class SparkAdmin {
 
   /**
    * Adds a new resource to the admin application and returns a configuration object to allow for further customization.
+   * Note that the resourceName will be case sensitive for certain database systems.
    *
    * @param resourceName  table name of the resource
    * @return  ResourceBuilder instance for further configuration
@@ -110,7 +111,6 @@ public class SparkAdmin {
     }
 
     // create a new resource and look up the table properties
-    // note that the resourceName may be case sensitive for certain database systems
     Resource resource = new Resource(resourceName);
     resourceDecorator.decorate(resource);
     this.resources.put(resource.getTableName(), resource);
