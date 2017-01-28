@@ -3,15 +3,14 @@
 Spark-Admin is a Spark Java powered framework to create simple backends for administration tasks. 
 Inspired by the Ruby [Active Admin](https://github.com/activeadmin/activeadmin) library.
 
+# Roadmap / to do list
 
-
-# Roadmap
-
-* Include configurable authentication
+* Include configurable authentication (currently only available by interacting with the internal Spark instance)
 * Support multi-column primary keys
-* Include smart support for foreign keys, i.e. display drop downs
+* Include smart support for foreign keys, i.e. display a `<select>` for foreign key columns
 * Include CSRF tokens in each form
-
+* Support database constraints, i.e. validate form input in the browser
+* Improve the test coverage
 
 # License
 

@@ -1,13 +1,17 @@
 package net.nextpulse.sparkadmin.views;
 
-import lombok.Data;
-
 /**
  * @author yholkamp
  */
-@Data
 public class AbstractViewObject {
 
   protected TemplateObject templateObject;
 
+  public TemplateObject getTemplateObject() {
+    return templateObject;
+  }
+
+  public void setTemplateObject(TemplateObject templateObject) {
+    this.templateObject = templateObject;
+  }
 }

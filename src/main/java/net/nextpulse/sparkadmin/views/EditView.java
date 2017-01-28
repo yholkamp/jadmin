@@ -1,23 +1,27 @@
 package net.nextpulse.sparkadmin.views;
 
-import lombok.Data;
 import net.nextpulse.sparkadmin.Resource;
-
-import java.util.Map;
+import net.nextpulse.sparkadmin.dao.DatabaseEntry;
 
 /**
  * @author yholkamp
  */
-@Data
 public class EditView extends AbstractViewObject {
 
-  private final Map<String, Object> object;
+  private final DatabaseEntry object;
   private final Resource resource;
 
-  public EditView(Resource resource, Map<String, Object> object, TemplateObject templateObject) {
+  public EditView(Resource resource, DatabaseEntry object, TemplateObject templateObject) {
     this.resource = resource;
     this.object = object;
     this.templateObject = templateObject;
   }
 
+  public DatabaseEntry getObject() {
+    return object;
+  }
+
+  public Resource getResource() {
+    return resource;
+  }
 }

@@ -1,11 +1,8 @@
 package net.nextpulse.sparkadmin.views;
 
-import lombok.Data;
-
 /**
  * @author yholkamp
  */
-@Data
 public class EditPost {
 
   private boolean success;
@@ -16,4 +13,19 @@ public class EditPost {
     this.errorMessage = errorMessage;
   }
 
+  public boolean isSuccess() {
+    return success;
+  }
+
+  public void setSuccess(boolean success) {
+    this.success = success;
+  }
+
+  public String getErrorMessage() {
+    return errorMessage;
+  }
+
+  public void setErrorMessage(String errorMessage) {
+    this.errorMessage = errorMessage;
+  }
 }

@@ -1,14 +1,11 @@
 package net.nextpulse.sparkadmin.elements;
 
-import lombok.Data;
-
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Group of input fields
  */
-@Data
 public class FormInputGroup implements PageElement  {
 
   private List<FormInput> inputs = new ArrayList<>();
@@ -19,4 +16,19 @@ public class FormInputGroup implements PageElement  {
     return "group.ftl";
   }
 
+  public List<FormInput> getInputs() {
+    return inputs;
+  }
+
+  public void setInputs(List<FormInput> inputs) {
+    this.inputs = inputs;
+  }
+
+  public String getHeader() {
+    return header;
+  }
+
+  public void setHeader(String header) {
+    this.header = header;
+  }
 }

@@ -1,13 +1,10 @@
 package net.nextpulse.sparkadmin.views;
 
-import lombok.Data;
-
 import java.util.List;
 
 /**
  * @author yholkamp
  */
-@Data
 public class TemplateObject {
 
   String prefix;
@@ -20,4 +17,27 @@ public class TemplateObject {
     this.currentTable = currentTable;
   }
 
+  public String getPrefix() {
+    return prefix;
+  }
+
+  public void setPrefix(String prefix) {
+    this.prefix = prefix;
+  }
+
+  public List<String> getTables() {
+    return tables;
+  }
+
+  public void setTables(List<String> tables) {
+    this.tables = tables;
+  }
+
+  public String getCurrentTable() {
+    return currentTable;
+  }
+
+  public void setCurrentTable(String currentTable) {
+    this.currentTable = currentTable;
+  }
 }

@@ -1,8 +1,5 @@
 package net.nextpulse.sparkadmin.elements;
 
-import lombok.Data;
-
-@Data
 public class ParagraphElement implements PageElement {
 
   private final String text;
@@ -14,5 +11,9 @@ public class ParagraphElement implements PageElement {
   @Override
   public String getTemplateName() {
     return "paragraph.ftl";
+  }
+
+  public String getText() {
+    return text;
   }
 }
