@@ -35,7 +35,7 @@ public class Filters {
   };
 
   /**
-   * Ensures that the 'table' variable in the URL exists and sets the corresponding resource in the 'resource' attribute. Throws a NotFoundException if the resource was not found.
+   * Ensures that the 'table' variable in the URL exists and sets the corresponding resourceSchemaProvider in the 'resourceSchemaProvider' attribute. Throws a NotFoundException if the resourceSchemaProvider was not found.
    * @param resources   available resources
    * @return  a filter object
    */
@@ -47,7 +47,7 @@ public class Filters {
           logger.error("Did not find table " + table + " in the list of supported tables: " + Joiner.on(", ").join(resources.keySet()));
           throw new NotFoundException();
         } else {
-          request.attribute("resource", resources.get(table));
+          request.attribute("resourceSchemaProvider", resources.get(table));
         }
       }
     };

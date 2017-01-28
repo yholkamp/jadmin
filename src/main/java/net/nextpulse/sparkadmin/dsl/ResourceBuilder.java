@@ -18,7 +18,7 @@ public class ResourceBuilder {
   }
 
   /**
-   * Configures the form/edit page generated for the last created resource.
+   * Configures the form/edit page generated for the last created resourceSchemaProvider.
    * @param builderConsumer
    * @return
    */
@@ -31,7 +31,7 @@ public class ResourceBuilder {
   }
 
   /**
-   * Configures the index page generated for the last created resource.
+   * Configures the index page generated for the last created resourceSchemaProvider.
    * @param builderConsumer
    * @return
    */

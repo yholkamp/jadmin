@@ -32,7 +32,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * Basic 'live' test for the CrudControllerTest, using an actual database to validate things work as expected.
+ * Basic 'live' test for the CrudControllerTest, using actual databases to validate the implemented functionality.
  *
  * @author yholkamp
  */
@@ -56,15 +56,15 @@ public class CrudControllerTest extends DatabaseTest {
     DbSetup dbSetup = new DbSetup(new DataSourceDestination(dataSource), operation);
     dbSetup.launch();
 
-    SparkAdmin sparkAdmin = new SparkAdmin(dataSource);
-    sparkAdmin.resource("locations");
+    SparkAdmin sparkAdmin = new SparkAdmin();
+    sparkAdmin.resource("locations", dataSource);
     resource = sparkAdmin.getResources().get("locations");
-    controller = new CrudController(dataSource, "/adminprefix", sparkAdmin.getResources());
+    controller = new CrudController("/adminprefix", sparkAdmin.getResources());
   }
 
   @Test
   public void listMethod() throws Exception {
-    ModelAndView result = controller.indexRoute.handle(createMockRequest(), null);
+    ModelAndView result = controller.listRoute.handle(createMockRequest(), null);
     ListView model = (ListView) result.getModel();
     assertEquals("locations", model.getResource().getTableName());
     assertEquals(ImmutableList.of("id", "name", "is_active", "favorite_number"), model.getHeaders());
@@ -80,8 +80,8 @@ public class CrudControllerTest extends DatabaseTest {
     EditView model = (EditView) result.getModel();
 
     // ensure the name and id match, both in case insensitive fashion
-    assertEquals("location2", model.getObject().getOrDefault("NAME", model.getObject().get("name")));
-    assertEquals(2, model.getObject().getOrDefault("ID", model.getObject().get("id")));
+    assertEquals("location2", model.getObject().getProperties().getOrDefault("NAME", model.getObject().getProperties().get("name")));
+    assertEquals(2, model.getObject().getProperties().getOrDefault("ID", model.getObject().getProperties().get("id")));
   }
 
   @Test
@@ -111,7 +111,7 @@ public class CrudControllerTest extends DatabaseTest {
 
   private Request createMockRequest() {
     Request mockRequest = mock(Request.class);
-    when(mockRequest.attribute("resource")).thenReturn(resource);
+    when(mockRequest.attribute("resourceSchemaProvider")).thenReturn(resource);
     return mockRequest;
   }
 
