@@ -42,16 +42,16 @@
     <footer class="pull-left col-md-12">
         <hr class="divider">
         <p>
-        Powered by <a href="https://github.com/yholkamp/spark-admin">Spark Admin</a>
+            Powered by <a href="https://github.com/yholkamp/spark-admin">Spark Admin</a>
         </p>
     </footer>
 </div>
 
 <script src="/js/lib/jquery-3.1.0.min.js"></script>
 <script src="/js/lib/bootstrap.js"></script>
-<#list jsIncludes as include>
-<script src="/js/${include}"></script>
-</#list>
+    <#list jsIncludes as include>
+    <script src="/js/${include}"></script>
+    </#list>
 </body>
 </html>
 </#macro>

@@ -1,5 +1,5 @@
 <#list element.inputs as input>
-	<#include input.templateName>
+    <#include input.templateName>
 <#else>
-	<p>No editable fields available.</p>
+<p>No editable fields available.</p>
 </#list>
