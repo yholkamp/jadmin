@@ -3,6 +3,8 @@ package net.nextpulse.sparkadmin.dsl;
 import net.nextpulse.sparkadmin.Resource;
 
 /**
+ * DSL class that offers a way to configure which columns should be shown on the index page of a column.
+ *
  * @author yholkamp
  */
 public class IndexBuilder {

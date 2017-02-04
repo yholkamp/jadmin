@@ -5,7 +5,7 @@ import net.nextpulse.sparkadmin.Resource;
 import java.util.function.Consumer;
 
 /**
- *
+ * DSL class that provides a fluent API to configure a Resource object.
  *
  * @author yholkamp
  */

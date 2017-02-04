@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Group of input fields
+ * Group of input fields.
  */
 public class FormInputGroup implements PageElement  {
 
@@ -20,8 +20,8 @@ public class FormInputGroup implements PageElement  {
     return inputs;
   }
 
-  public void setInputs(List<FormInput> inputs) {
-    this.inputs = inputs;
+  public void addInput(FormInput input) {
+    inputs.add(input);
   }
 
   public String getHeader() {

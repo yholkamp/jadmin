@@ -8,6 +8,9 @@ import net.nextpulse.sparkadmin.elements.ParagraphElement;
 import java.util.function.Consumer;
 
 /**
+ * DSL class that offers top level access to the form configuration of a Resource. Use this class to add input groups
+ * and more to the form shown when creating or editing instances of this resource.
+ *
  * @author yholkamp
  */
 public class FormBuilder {

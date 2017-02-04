@@ -1,5 +1,8 @@
 package net.nextpulse.sparkadmin.elements;
 
+/**
+ * Element containing a block of text.
+ */
 public class ParagraphElement implements PageElement {
 
   private final String text;

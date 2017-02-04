@@ -7,14 +7,23 @@ import java.util.List;
 import java.util.function.Supplier;
 
 /**
+ * Element that will be rendered as a @code{<select>} tag in the template. Contains a supplier that will be called to
+ * retrieve the list of values to show as @code{<option></option>} tags.
+ *
  * @author yholkamp
  */
 public class FormSelect extends FormInput {
-  private final Supplier<List<Tuple2<Object, String>>> optionProducer;
+  private final Supplier<List<Tuple2<String, String>>> optionProducer;
 
-  public FormSelect(String name, ColumnType columnType, Supplier<List<Tuple2<Object, String>>> selectProducer) {
+  /**
+   *
+   * @param name            internal name of this column
+   * @param columnType      type of this column
+   * @param optionSupplier  method that provides a list of tuples of (value, name) that will be used as selectable options.
+   */
+  public FormSelect(String name, ColumnType columnType, Supplier<List<Tuple2<String, String>>> optionSupplier) {
     super(name, columnType);
-    this.optionProducer = selectProducer;
+    this.optionProducer = optionSupplier;
   }
 
   @Override
@@ -22,7 +31,8 @@ public class FormSelect extends FormInput {
     return "select.ftl";
   }
 
-  public List<Tuple2<Object, String>> getOptions() {
+  @SuppressWarnings("unused")
+  public List<Tuple2<String, String>> getOptions() {
     return optionProducer.get();
   }
 }

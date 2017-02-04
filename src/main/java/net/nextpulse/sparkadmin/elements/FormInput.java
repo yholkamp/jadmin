@@ -4,6 +4,10 @@ import net.nextpulse.sparkadmin.ColumnType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * Parent input field class that will be rendered as text field, checkbox, date picker or select field depending on the
+ * configuration.
+ */
 public class FormInput implements PageElement {
   private static final Logger logger = LogManager.getLogger();
 
