@@ -1,20 +1,70 @@
-# Spark-Admin
+# SparkAdmin
 
-Spark-Admin is a Spark Java powered framework to create simple backends for administration tasks. 
+Spark-Admin is a Spark Java powered framework to create simple backends for administration tasks. Use this library to 
+easily expose CRUD access to rows in your users table, `.properties` files and any other data.
+
 Inspired by the Ruby [Active Admin](https://github.com/activeadmin/activeadmin) library.
 
-# Limitations
+# Usage
 
-Spark-admin will currently not actively reload the table definition for a default SQL resource. This means that if you 
-update your table definition, you'll have to restart the application for these to show up.
+Add the library as Maven dependency to your Java 8 (and up) application and call the fluent API to add resources you'd 
+like to expose through the admin panel:
 
-# Roadmap & to do list
+    SparkAdmin sparkAdmin = new SparkAdmin();
+    
+    // connect to a JDBC datasource and add the users table with default settings.
+    DataSource source = retrieveMyDataSource();
+    sparkAdmin.resource("users", source);
+
+Alternatively, you can tailor the exposed columns to your own needs as follows:
+
+    sparkAdmin.resource("users", source)
+        .formConfig((form) -> form
+            // add a header, grouping an username and password input field
+            .inputGroup("Login credentials", (group) -> group.input("username").input("password"))
+            // add a header with an is_admin input field
+            .inputGroup("Permissions", (group) -> group.input("is_admin"))
+            // add some text
+            .paragraph("Press cancel to go back.")
+            // include the submit & cancel buttons
+            .actions()
+        )
+        // custom index
+        .indexConfig((index) -> index
+            // do show the user id, while not exposing this through the edit page
+            .column("id")
+            // show the username
+            .column("username")
+            // do show the created_at column on the index page
+            .column("created_at")
+        );
+
+If you would like to expose a resource that is not backed by a (JDBC compliant) SQL database, it's also possible to 
+provide your own implementation of the `AbstractDAO` and `ResourceSchemaProvider` classes. As an example of a DAO 
+implementation, take a look at the `InMemoryDAO` implementation.
+
+# Configuration and customization
+
+Customizing the templates used by SparkAdmin is possible as well, all templates that may be overwritten are in the 
+`src/main/resources/sparkadmin` folder. To overwrite or customize a template, create an 
+`src/main/resources/sparkadmin` folder in your own application and create a copy of the file you would like to customize. 
+SparkAdmin will now load the copy of the file provided by your application. For details on the available template syntax,
+take a look at [Freemarker](http://freemarker.org/docs/index.html), the template engine used by SparkAdmin.
+
+
+# Roadmap
 
 * Improve the test coverage
 * Include configurable authentication (currently only available by interacting with the internal Spark instance)
 * Include smart support for foreign keys, i.e. display a `<select>` for foreign key columns
 * Include CSRF tokens in each form
 * Support database constraints, i.e. validate form input in the browser
+* Add internationalization support
+
+# Limitations
+
+For performance reasons, SparkAdmin will currently not actively reload the table definition for a default SQL resource. 
+This means that if you update your table definition, you'll have to restart the application for these to show up.
 
 # License
 
