@@ -74,7 +74,7 @@ public class CrudControllerTest extends DatabaseTest {
   @Test
   public void editMethod() throws Exception {
     Request mockRequest = createMockRequest();
-    when(mockRequest.splat()).thenReturn(new String[]{"2", "location2"});
+    when(mockRequest.params(":ids")).thenReturn("2/location2");
 
     ModelAndView result = controller.editRoute.handle(mockRequest, null);
     EditView model = (EditView) result.getModel();
