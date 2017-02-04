@@ -11,7 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.sql.SQLException;
-import java.util.Collection;
+import java.util.List;
 import java.util.function.BiConsumer;
 
 /**
@@ -30,24 +30,9 @@ public class ResourceDecorator implements BiConsumer<Resource, ResourceSchemaPro
    */
   public void accept(Resource resource, ResourceSchemaProvider schemaProvider) {
     logger.trace("Decorating {}", resource.getTableName());
-    updateResourceWithPrimaryKeys(resource, schemaProvider);
+//    updateResourceWithPrimaryKeys(resource, schemaProvider);
     updateResourceWithColumns(resource, schemaProvider);
     createDefaultResourceFormPages(resource);
-  }
-
-  /**
-   * Updates the resourceSchemaProvider with the primary keys of the table being edited.
-   *
-   * @param resource
-   * @param schemaProvider
-   * @throws SQLException
-   */
-  private static void updateResourceWithPrimaryKeys(Resource resource, ResourceSchemaProvider schemaProvider) {
-    try {
-      schemaProvider.getKeyColumns().stream().map(ColumnDefinition::getName).forEach(x -> resource.getPrimaryKeys().add(x));
-    } catch(DataAccessException e) {
-      logger.error("Could not retrieve primary keys from DAO", e);
-    }
   }
 
   /**
@@ -58,8 +43,8 @@ public class ResourceDecorator implements BiConsumer<Resource, ResourceSchemaPro
    */
   private static void updateResourceWithColumns(Resource resource, ResourceSchemaProvider schemaProvider) {
     try {
-      Collection<ColumnDefinition> columnDefinitions = schemaProvider.getColumnDefinitions();
-      resource.getColumnDefinitions().addAll(columnDefinitions);
+      List<ColumnDefinition> columnDefinitions = schemaProvider.getColumnDefinitions();
+      resource.setColumnDefinitions(columnDefinitions);
     } catch(DataAccessException e) {
       logger.error("Could not retrieve primary keys from DAO", e);
     }
@@ -74,9 +59,9 @@ public class ResourceDecorator implements BiConsumer<Resource, ResourceSchemaPro
 
     resource.getColumnDefinitions().forEach(x -> {
       logger.trace("Adding default for {} col {}", resource.getTableName(), x.getName());
-      if(!resource.getPrimaryKeys().contains(x.getName())) {
+      if(!x.isKeyColumn()) {
         inputGroup.getInputs().add(new FormInput(x.getName(), x.getType()));
-        resource.getEditableColumns().add(x.getName());
+        resource.addEditableColumn(x.getName());
       }
       resource.getIndexColumns().add(x.getName());
     });

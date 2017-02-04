@@ -109,7 +109,7 @@ public class SparkAdmin {
       response.body("<h1>Internal error</h1><pre>"+ ExceptionUtils.getStackTrace(e) + "</pre>");
     });
 
-    logger.info("SparkAdmin started on port {}", port);
+    logger.info("SparkAdmin started, listening for traffic on http://localhost:{}{}", port, prefix);
   }
 
   /**

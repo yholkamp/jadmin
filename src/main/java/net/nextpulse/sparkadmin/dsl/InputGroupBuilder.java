@@ -35,7 +35,7 @@ public class InputGroupBuilder {
     // ensure the column exists
     ColumnType columnType = getTypeForColumn(column);
     inputGroup.getInputs().add(new FormInput(column, columnType));
-    resource.getEditableColumns().add(column);
+    resource.addEditableColumn(column);
     return this;
   }
 

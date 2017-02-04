@@ -11,7 +11,10 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Generic implementation of the ResourceSchemaProvider interface, providing schema retrieval logic for SQL backed resources.
@@ -26,6 +29,8 @@ public class GenericSQLSchemaProvider implements ResourceSchemaProvider {
 
   private final DataSource dataSource;
   private final String tableName;
+  private List<ColumnDefinition> keyColumns = null;
+  private List<ColumnDefinition> columnDefinitions = null;
 
   public GenericSQLSchemaProvider(DataSource dataSource, String tableName) {
     this.dataSource = dataSource;
@@ -34,47 +39,53 @@ public class GenericSQLSchemaProvider implements ResourceSchemaProvider {
 
   @Override
   public List<ColumnDefinition> getKeyColumns() throws DataAccessException {
-    List<ColumnDefinition> keys = new ArrayList<>();
-
-    // TODO: add property to ColumnDefinition to indicate whether the field is part of the key or not
-    List<ColumnDefinition> columnDefinitions = getColumnDefinitions();
-    try(Connection conn = dataSource.getConnection()) {
-      ResultSet primaryKeyResultSet = conn.getMetaData().getPrimaryKeys(null, null, tableName.toLowerCase());
-      while(primaryKeyResultSet.next()) {
-        String columnName = primaryKeyResultSet.getString(COLUMN_NAME);
-        columnDefinitions.stream().filter(x -> x.getName().equals(columnName)).findFirst().map(keys::add);
-      }
-    } catch(SQLException e) {
-      throw new DataAccessException(e);
+    if(keyColumns == null) {
+      logger.trace("Retrieving key columns for {}", tableName);
+      keyColumns = getColumnDefinitions().stream().filter(ColumnDefinition::isKeyColumn).collect(Collectors.toList());
     }
-
-    return keys;
+    return keyColumns;
   }
 
   @Override
   public List<ColumnDefinition> getColumnDefinitions() throws DataAccessException {
-    List<ColumnDefinition> columns = new ArrayList<>();
+    logger.trace("Retrieving column definitions for {}", tableName);
 
-    try(Connection conn = dataSource.getConnection()) {
-      ResultSet rs = conn.getMetaData().getColumns(null, null, tableName.toLowerCase(), "%");
-      while(rs.next()) {
-        ColumnDefinition columnDefinition = new ColumnDefinition();
-        String columnName = rs.getString(COLUMN_NAME);
-        String typeName = rs.getString(TYPE_NAME).toLowerCase();
-        columnDefinition.setName(columnName);
-        ColumnType columnType = sqlTypeToColumnType(typeName);
-        columnDefinition.setType(columnType);
-        columns.add(columnDefinition);
+    // only retrieve the definitions if we haven't already done so
+    if(columnDefinitions == null) {
+      columnDefinitions = new ArrayList<>();
+      Set<String> primaryKeys = new HashSet<>();
+
+      try(Connection conn = dataSource.getConnection()) {
+        // find the primary key columns
+        ResultSet primaryKeyResultSet = conn.getMetaData().getPrimaryKeys(null, null, tableName.toLowerCase());
+        while(primaryKeyResultSet.next()) {
+          String columnName = primaryKeyResultSet.getString(COLUMN_NAME);
+          primaryKeys.add(columnName);
+        }
+
+        // iterate over all columns and mark the primary key columns as such
+        ResultSet rs = conn.getMetaData().getColumns(null, null, tableName.toLowerCase(), "%");
+        while(rs.next()) {
+          ColumnDefinition columnDefinition = new ColumnDefinition();
+          String columnName = rs.getString(COLUMN_NAME);
+          String typeName = rs.getString(TYPE_NAME).toLowerCase();
+          columnDefinition.setName(columnName);
+          ColumnType columnType = sqlTypeToColumnType(typeName);
+          columnDefinition.setType(columnType);
+          columnDefinition.setKeyColumn(primaryKeys.contains(columnName));
+          columnDefinitions.add(columnDefinition);
+        }
+      } catch(SQLException e) {
+        throw new DataAccessException(e);
       }
-    } catch(SQLException e) {
-      throw new DataAccessException(e);
     }
 
-    return columns;
+    return columnDefinitions;
   }
 
   /**
    * Converts a SQL type to one of the input types supported by SparkAdmin.
+   *
    * @param typeName
    * @return
    */

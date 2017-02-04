@@ -3,10 +3,8 @@ package net.nextpulse.sparkadmin;
 import net.nextpulse.sparkadmin.dao.AbstractDAO;
 import net.nextpulse.sparkadmin.elements.PageElement;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Top level configuration object for a resourceSchemaProvider that can be managed through SparkAdmin.
@@ -24,14 +22,6 @@ public class Resource {
    */
   private final List<PageElement> formPage = new ArrayList<>();
   /**
-   * Column names to include on the edit page.
-   */
-  private Set<String> editableColumns = new HashSet<>();
-  /**
-   * Column names of the primary keys
-   */
-  private List<String> primaryKeys = new ArrayList<>();
-  /**
    * List of the column definitions for this resourceSchemaProvider, defining the column type and other properties.
    */
   private List<ColumnDefinition> columnDefinitions = new ArrayList<>();
@@ -48,7 +38,7 @@ public class Resource {
   }
 
   public Set<String> getEditableColumns() {
-    return editableColumns;
+    return columnDefinitions.stream().filter(ColumnDefinition::isEditable).map(ColumnDefinition::getName).collect(Collectors.toSet());
   }
 
   public String getTableName() {
@@ -64,11 +54,7 @@ public class Resource {
   }
 
   public List<String> getPrimaryKeys() {
-    return primaryKeys;
-  }
-
-  public void setPrimaryKeys(List<String> primaryKeys) {
-    this.primaryKeys = primaryKeys;
+    return columnDefinitions.stream().filter(ColumnDefinition::isKeyColumn).map(ColumnDefinition::getName).collect(Collectors.toList());
   }
 
   public List<ColumnDefinition> getColumnDefinitions() {
@@ -79,15 +65,32 @@ public class Resource {
     this.columnDefinitions = columnDefinitions;
   }
 
-  public void setEditableColumns(Set<String> editableColumns) {
-    this.editableColumns = editableColumns;
-  }
-
   public AbstractDAO getDao() {
     return dao;
   }
 
   public void setDao(AbstractDAO dao) {
     this.dao = dao;
+  }
+
+  /**
+   * Marks the provided column as editable.
+   *
+   * @param name
+   */
+  public void addEditableColumn(String name) {
+    findColumnDefinitionByName(name)
+        .orElseThrow(() -> new IllegalArgumentException("Column " + name + " could not be found on resource " + tableName))
+        .setEditable(true);
+  }
+
+  /**
+   * Locates the column definition identified by 'name'
+   *
+   * @param name
+   * @return
+   */
+  private Optional<ColumnDefinition> findColumnDefinitionByName(String name) {
+    return columnDefinitions.stream().filter(x -> x.getName().equals(name)).findFirst();
   }
 }

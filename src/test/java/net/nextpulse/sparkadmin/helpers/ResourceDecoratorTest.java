@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import net.nextpulse.sparkadmin.ColumnDefinition;
 import net.nextpulse.sparkadmin.ColumnType;
 import net.nextpulse.sparkadmin.Resource;
-import net.nextpulse.sparkadmin.dao.DataAccessException;
 import net.nextpulse.sparkadmin.elements.FormButtons;
 import net.nextpulse.sparkadmin.elements.FormInputGroup;
 import net.nextpulse.sparkadmin.elements.PageElement;
@@ -12,7 +11,6 @@ import net.nextpulse.sparkadmin.schema.ResourceSchemaProvider;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,30 +26,23 @@ public class ResourceDecoratorTest {
   private ResourceDecorator decorator;
   private ResourceSchemaProvider schemaProvider;
 
-  private ColumnDefinition idColumn = new ColumnDefinition("id", ColumnType.integer);
-  private ColumnDefinition secondIdColumn = new ColumnDefinition("second_id", ColumnType.text);
-  private ColumnDefinition nameColumn = new ColumnDefinition("name", ColumnType.text);
+  private ColumnDefinition idColumn;
+  private ColumnDefinition secondIdColumn;
+  private ColumnDefinition nameColumn;
 
-  private List<ColumnDefinition> keyColumns = new ArrayList<>();
-  private List<ColumnDefinition> columns = ImmutableList.of(idColumn, secondIdColumn, nameColumn);
+  private List<ColumnDefinition> columns;
 
   @Before
   public void setup() throws Exception {
     resource = new Resource("locations");
     decorator = new ResourceDecorator();
-    schemaProvider = new ResourceSchemaProvider() {
-      @Override
-      public List<ColumnDefinition> getKeyColumns() throws DataAccessException {
-        return keyColumns;
-      }
+    schemaProvider = () -> columns;
 
-      @Override
-      public List<ColumnDefinition> getColumnDefinitions() throws DataAccessException {
-        return columns;
-      }
-    };
-    keyColumns.clear();
-    keyColumns.add(idColumn);
+    idColumn = new ColumnDefinition("id", ColumnType.integer, true, false);
+    secondIdColumn = new ColumnDefinition("second_id", ColumnType.text, false, false);
+    nameColumn = new ColumnDefinition("name", ColumnType.text, false, true);
+
+    columns = ImmutableList.of(idColumn, secondIdColumn, nameColumn);
   }
 
   @Test
@@ -63,11 +54,13 @@ public class ResourceDecoratorTest {
 
   @Test
   public void decorate_compoundPrimaryKey() throws Exception {
-    keyColumns.add(secondIdColumn);
+    secondIdColumn.setKeyColumn(true);
 
     decorator.accept(resource, schemaProvider);
     assertEqualsCaseInsensitive(ImmutableList.of("id", "second_id"), resource.getPrimaryKeys());
     assertEquals(3, resource.getColumnDefinitions().size());
+
+    secondIdColumn.setKeyColumn(false);
   }
 
   /**

@@ -4,6 +4,7 @@ import net.nextpulse.sparkadmin.ColumnDefinition;
 import net.nextpulse.sparkadmin.dao.DataAccessException;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author yholkamp
@@ -16,7 +17,9 @@ public interface ResourceSchemaProvider {
    * @return
    * @throws DataAccessException
    */
-  List<ColumnDefinition> getKeyColumns() throws DataAccessException;
+  default List<ColumnDefinition> getKeyColumns() throws DataAccessException {
+    return getColumnDefinitions().stream().filter(ColumnDefinition::isKeyColumn).collect(Collectors.toList());
+  }
 
   /**
    * Returns the full list of columns that make up the resource.

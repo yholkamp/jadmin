@@ -39,6 +39,7 @@ public class GenericSQLDAO extends AbstractDAO {
    */
   @Override
   public Optional<DatabaseEntry> selectOne(Object[] keys) throws DataAccessException {
+    logger.trace("Selecting one {}", tableName);
     Map<String, Object> editedObject = null;
     try(Connection conn = dataSource.getConnection()) {
       String conditions = resourceSchemaProvider.getKeyColumns().stream()
@@ -47,8 +48,8 @@ public class GenericSQLDAO extends AbstractDAO {
           .orElseThrow(() -> new DataAccessException("Could not generate SQL condition"));
 
       PreparedStatement statement = conn.prepareStatement(String.format("SELECT * FROM %s WHERE %s LIMIT 1", tableName, conditions));
-      for(int i = 0; i < resourceSchemaProvider.getKeyColumns().size(); i++) {
-        setValue(statement, i+1, (String)keys[i], resourceSchemaProvider.getKeyColumns().get(i));
+      for(int i = 1; i <= resourceSchemaProvider.getKeyColumns().size(); i++) {
+        setValue(statement, i, (String)keys[i-1], resourceSchemaProvider.getKeyColumns().get(i-1));
       }
       logger.debug("Executing statement {}", statement.toString());
       ResultSet results = statement.executeQuery();
@@ -72,6 +73,7 @@ public class GenericSQLDAO extends AbstractDAO {
    */
   @Override
   public List<DatabaseEntry> selectMultiple(long offset, long count) throws DataAccessException {
+    logger.trace("Selecting multiple {}, {} offset, {} count", tableName, offset, count);
     // TODO: add configurable pagination
     List<DatabaseEntry> rows = new ArrayList<>();
     try(Connection conn = dataSource.getConnection()) {
@@ -94,6 +96,7 @@ public class GenericSQLDAO extends AbstractDAO {
    */
   @Override
   public void insert(FormPostEntry postEntry) throws DataAccessException {
+    logger.trace("Inserting a new {}", tableName);
     try(Connection conn = dataSource.getConnection()) {
       // construct the SQL query
       String query = createInsertStatement(postEntry);
@@ -124,6 +127,7 @@ public class GenericSQLDAO extends AbstractDAO {
    */
   @Override
   public void update(FormPostEntry postEntry) throws DataAccessException {
+    logger.trace("Updating an existing {}", tableName);
     try(Connection conn = dataSource.getConnection()) {
       // construct the SQL query
       String query = createUpdateQuery(postEntry);
