@@ -1,6 +1,8 @@
 package net.nextpulse.sparkadmin;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * @author yholkamp
@@ -15,6 +17,14 @@ public class FormPostEntry {
    * Editable values of a resource, i.e. an editable name field.
    */
   private LinkedHashMap<ColumnDefinition, String> values = new LinkedHashMap<>();
+
+  public FormPostEntry() {
+  }
+
+  public FormPostEntry(LinkedHashMap<ColumnDefinition, String> keyValues, LinkedHashMap<ColumnDefinition, String> values) {
+    this.keyValues = keyValues;
+    this.values = values;
+  }
 
   /**
    * @return map of unescaped post values
@@ -37,5 +47,16 @@ public class FormPostEntry {
 
   public int entryCount() {
     return keyValues.size() + values.size();
+  }
+
+  /**
+   * Returns a Map with column keys linked to the submitted values.
+   * @return
+   */
+  public Map<String, String> toPropertiesMap() {
+    Map<String, String> output = new HashMap<>();
+    keyValues.forEach((def, value) -> output.put(def.getName(), value));
+    values.forEach((def, value) -> output.put(def.getName(), value));
+    return output;
   }
 }

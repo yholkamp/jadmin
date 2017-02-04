@@ -5,14 +5,14 @@ import net.nextpulse.sparkadmin.FormPostEntry;
 import java.util.*;
 
 /**
- * Example DAO that provides access to an in-memory representation of objects. May be used for testing purposes or as
- * an example implementation.
+ * Example DAO that provides access to an in-memory representation of objects, which are kept in insertion order.
+ * May be used for testing purposes or as an example implementation.
  *
  * @author yholkamp
  */
 public class InMemoryDAO extends AbstractDAO {
 
-  private Map<Object[], DatabaseEntry> objects = new HashMap<>();
+  private LinkedHashMap<DatabaseEntryKey, DatabaseEntry> objects = new LinkedHashMap<>();
 
   /**
    * Retrieves a single DatabaseEntry using the primary key(s) of the resourceSchemaProvider.
@@ -23,7 +23,8 @@ public class InMemoryDAO extends AbstractDAO {
    */
   @Override
   public Optional<DatabaseEntry> selectOne(Object... keys) throws DataAccessException {
-    return Optional.ofNullable(objects.get(keys));
+    DatabaseEntryKey key = new DatabaseEntryKey(keys);
+    return Optional.ofNullable(objects.get(key));
   }
 
   /**
@@ -36,7 +37,12 @@ public class InMemoryDAO extends AbstractDAO {
    */
   @Override
   public List<DatabaseEntry> selectMultiple(long offset, long count) throws DataAccessException {
-    return new ArrayList<>(objects.values());
+    if(offset >= objects.size()) {
+      return Collections.emptyList();
+    } else {
+      int endIndex = Math.min((int) (offset + count), objects.size());
+      return new ArrayList<>(objects.values()).subList((int)offset, endIndex);
+    }
   }
 
   /**
@@ -50,7 +56,7 @@ public class InMemoryDAO extends AbstractDAO {
     DatabaseEntry entry = new DatabaseEntry();
     postData.getKeyValues().forEach((def, value) -> entry.getProperties().put(def.getName(), value));
     postData.getValues().forEach((def, value) -> entry.getProperties().put(def.getName(), value));
-    Object[] key = postData.getKeyValues().values().toArray();
+    DatabaseEntryKey key = new DatabaseEntryKey(postData.getKeyValues().values());
     objects.put(key, entry);
   }
 
@@ -62,7 +68,7 @@ public class InMemoryDAO extends AbstractDAO {
    */
   @Override
   public void update(FormPostEntry postData) throws DataAccessException {
-    Object[] key = postData.getKeyValues().values().toArray();
+    DatabaseEntryKey key = new DatabaseEntryKey(postData.getKeyValues().values());
     DatabaseEntry entry = objects.get(key);
     if(entry != null) {
       entry.getProperties().clear();
@@ -70,6 +76,35 @@ public class InMemoryDAO extends AbstractDAO {
       postData.getValues().forEach((def, value) -> entry.getProperties().put(def.getName(), value));
     } else {
       throw new DataAccessException("Could not access object identified by " + key);
+    }
+  }
+
+  /**
+   * Internal representation of the object key.
+   */
+  private class DatabaseEntryKey {
+    List<Object> keyValues;
+
+
+    public DatabaseEntryKey(Collection<String> keys) {
+      keyValues = new ArrayList<>(keys);
+    }
+
+    public DatabaseEntryKey(Object[] keys) {
+      keyValues = Arrays.asList(keys);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if(this == o) return true;
+      if(o == null || getClass() != o.getClass()) return false;
+      DatabaseEntryKey that = (DatabaseEntryKey) o;
+      return Objects.equals(keyValues, that.keyValues);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(keyValues);
     }
   }
 
