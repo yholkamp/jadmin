@@ -60,9 +60,9 @@ public class GenericSQLDAOTest {
     when(mockPreparedStatement.executeUpdate()).thenReturn(1);
     dao.insert(postEntry);
     verify(mockConnection).prepareStatement(Matchers.eq("INSERT INTO tests (key1_column,key2_column,value_column) VALUES (?,?,?)"));
-    verify(mockPreparedStatement).setString(0, "pk_123");
-    verify(mockPreparedStatement).setInt(1, 42);
-    verify(mockPreparedStatement).setBoolean(2, true);
+    verify(mockPreparedStatement).setString(1, "pk_123");
+    verify(mockPreparedStatement).setInt(2, 42);
+    verify(mockPreparedStatement).setBoolean(3, true);
   }
 
   @Test
@@ -70,9 +70,9 @@ public class GenericSQLDAOTest {
     when(mockPreparedStatement.executeUpdate()).thenReturn(1);
     dao.update(postEntry);
     verify(mockConnection).prepareStatement(Matchers.eq("UPDATE tests SET value_column = ? WHERE key1_column = ? AND key2_column = ?"));
-    verify(mockPreparedStatement).setBoolean(0, true);
-    verify(mockPreparedStatement).setString(1, "pk_123");
-    verify(mockPreparedStatement).setInt(2, 42);
+    verify(mockPreparedStatement).setBoolean(1, true);
+    verify(mockPreparedStatement).setString(2, "pk_123");
+    verify(mockPreparedStatement).setInt(3, 42);
   }
 
 }
