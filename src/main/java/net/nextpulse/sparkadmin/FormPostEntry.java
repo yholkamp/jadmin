@@ -1,6 +1,5 @@
 package net.nextpulse.sparkadmin;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -54,7 +53,7 @@ public class FormPostEntry {
    * @return
    */
   public Map<String, String> toPropertiesMap() {
-    Map<String, String> output = new HashMap<>();
+    LinkedHashMap<String, String> output = new LinkedHashMap<>();
     keyValues.forEach((def, value) -> output.put(def.getName(), value));
     values.forEach((def, value) -> output.put(def.getName(), value));
     return output;

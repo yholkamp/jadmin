@@ -27,9 +27,9 @@ public class GenericSQLDAO extends AbstractDAO {
 
   private DataSource dataSource;
 
-  public GenericSQLDAO(DataSource dataSource, String resourceName) {
+  public GenericSQLDAO(DataSource dataSource, String tableName) {
     this.dataSource = dataSource;
-    this.tableName = resourceName;
+    this.tableName = tableName;
   }
 
   /**
@@ -54,6 +54,7 @@ public class GenericSQLDAO extends AbstractDAO {
       ResultSet results = statement.executeQuery();
 
       if(results.next()) {
+        // TODO: replace the BasicRowProcessor with a custom implementation
         editedObject = new BasicRowProcessor().toMap(results);
       }
     } catch(SQLException e) {
