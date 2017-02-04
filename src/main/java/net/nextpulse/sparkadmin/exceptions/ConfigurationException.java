@@ -1,4 +1,4 @@
-package net.nextpulse.sparkadmin;
+package net.nextpulse.sparkadmin.exceptions;
 
 /**
  * @author yholkamp

@@ -1,7 +1,7 @@
 package net.nextpulse.sparkadmin.filters;
 
 import com.google.common.base.Joiner;
-import net.nextpulse.sparkadmin.NotFoundException;
+import net.nextpulse.sparkadmin.exceptions.NotFoundException;
 import net.nextpulse.sparkadmin.Resource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

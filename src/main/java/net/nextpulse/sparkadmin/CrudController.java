@@ -1,6 +1,7 @@
 package net.nextpulse.sparkadmin;
 
 import net.nextpulse.sparkadmin.dao.DatabaseEntry;
+import net.nextpulse.sparkadmin.exceptions.NotFoundException;
 import net.nextpulse.sparkadmin.helpers.Path;
 import net.nextpulse.sparkadmin.views.*;
 import spark.*;

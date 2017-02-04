@@ -2,7 +2,7 @@ package net.nextpulse.sparkadmin.dsl;
 
 import net.nextpulse.sparkadmin.ColumnDefinition;
 import net.nextpulse.sparkadmin.ColumnType;
-import net.nextpulse.sparkadmin.ConfigurationException;
+import net.nextpulse.sparkadmin.exceptions.ConfigurationException;
 import net.nextpulse.sparkadmin.Resource;
 import net.nextpulse.sparkadmin.elements.FormInput;
 import net.nextpulse.sparkadmin.elements.FormInputGroup;

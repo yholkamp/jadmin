@@ -6,6 +6,7 @@ import freemarker.template.Configuration;
 import net.nextpulse.sparkadmin.dao.AbstractDAO;
 import net.nextpulse.sparkadmin.dao.GenericSQLDAO;
 import net.nextpulse.sparkadmin.dsl.ResourceBuilder;
+import net.nextpulse.sparkadmin.exceptions.NotFoundException;
 import net.nextpulse.sparkadmin.filters.Filters;
 import net.nextpulse.sparkadmin.helpers.Path;
 import net.nextpulse.sparkadmin.helpers.ResourceDecorator;
