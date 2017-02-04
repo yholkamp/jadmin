@@ -60,7 +60,7 @@ public class GenericSQLSchemaProvider implements ResourceSchemaProvider {
       while(rs.next()) {
         ColumnDefinition columnDefinition = new ColumnDefinition();
         String columnName = rs.getString(COLUMN_NAME);
-        String typeName = rs.getString(TYPE_NAME);
+        String typeName = rs.getString(TYPE_NAME).toLowerCase();
         columnDefinition.setName(columnName);
         ColumnType columnType = sqlTypeToColumnType(typeName);
         columnDefinition.setType(columnType);
@@ -83,6 +83,7 @@ public class GenericSQLSchemaProvider implements ResourceSchemaProvider {
       case "int4":
       case "int32":
       case "serial":
+      case "integer":
         return ColumnType.integer;
 
       case "tinyint":

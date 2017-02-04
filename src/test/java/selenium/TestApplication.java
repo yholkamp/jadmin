@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 import testhelpers.DatabaseTest;
 
 import javax.sql.DataSource;
+import java.util.Properties;
 
 /**
  * @author yholkamp
@@ -19,7 +20,8 @@ public class TestApplication {
   public void start() {
     logger.error("Test error in testApplication");
     // connect to a JDBC datasource
-    source = DatabaseTest.createH2DataSource("MYSQL");
+    Properties properties = DatabaseTest.loadDatabaseProperties();
+    source = DatabaseTest.createH2DataSource(properties, "MYSQL");
     DatabaseTest.databaseSetup(source);
     sparkAdmin = new SparkAdmin();
 

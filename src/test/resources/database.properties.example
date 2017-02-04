@@ -1,0 +1,8 @@
+# Connection string for H2 in MYSQL mode
+h2-mysql.url=jdbc:h2:mem:test_MYSQL;DATABASE_TO_UPPER=FALSE;MODE=MYSQL;DB_CLOSE_DELAY=-1
+
+# Connection string for H2 in PostgreSQL mode
+h2-postgresql.url=jdbc:h2:mem:test_POSTGRESQL;DATABASE_TO_UPPER=FALSE;MODE=POSTGRESQL;DB_CLOSE_DELAY=-1
+
+# Connection string for PostgreSQL
+postgresql.url=jdbc:postgresql://localhost/sparkadmin_test

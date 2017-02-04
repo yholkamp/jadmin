@@ -9,9 +9,11 @@ import org.junit.runners.Parameterized;
 import org.postgresql.ds.PGPoolingDataSource;
 
 import javax.sql.DataSource;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Properties;
 
 /**
  * Parent class for tests that should be run against a variatey of (SQL) databases to check for compatibility. Classes
@@ -59,28 +61,45 @@ public abstract class DatabaseTest {
 
   @Parameterized.Parameters(name = "Database {index}, {0}")
   public static Collection<Object[]> data() {
-    // TODO: read from config
+    Properties properties = loadDatabaseProperties();
+
     if(dataCache == null) {
       dataCache = ImmutableList.of(
-          new Object[]{"H2-MySQL", createH2DataSource("MYSQL")},
-          new Object[]{"H2-PostgreSQL", createH2DataSource("PostgreSQL")},
-          new Object[]{"PostgreSQL", createPostgresDataSource()
+          new Object[]{"H2-MySQL", createH2DataSource(properties, "MYSQL")},
+          new Object[]{"H2-PostgreSQL", createH2DataSource(properties, "PostgreSQL")},
+          new Object[]{"PostgreSQL", createPostgresDataSource(properties)
         });
     }
     return dataCache;
   }
 
-  public static DataSource createH2DataSource(String mode) {
+  public static Properties loadDatabaseProperties() {
+    Properties properties = new Properties();
+    try {
+      properties.load(DatabaseTest.class.getResourceAsStream("/database.properties"));
+    } catch (IOException e) {
+      // no custom configuration found, use the default
+      try {
+        properties.load(DatabaseTest.class.getResourceAsStream("/database.properties"));
+      } catch(IOException e1) {
+        e1.printStackTrace();
+      }
+    }
+    return properties;
+  }
+
+  public static DataSource createH2DataSource(Properties properties, String mode) {
     JdbcDataSource dataSource = new JdbcDataSource();
-    String h2jdbcConnectionString = "jdbc:h2:mem:test_"+mode+";DATABASE_TO_UPPER=FALSE;MODE="+mode+";DB_CLOSE_DELAY=-1";
-    dataSource.setURL(h2jdbcConnectionString);
+    dataSource.setUrl(properties.getProperty(String.format("h2-%s.url", mode.toLowerCase())));
+//    String h2jdbcConnectionString = "jdbc:h2:mem:test_"+mode+";DATABASE_TO_UPPER=FALSE;MODE="+mode+";DB_CLOSE_DELAY=-1";
+//    dataSource.setURL(h2jdbcConnectionString);
     databaseSetup(dataSource);
     return dataSource;
   }
 
-  public static DataSource createPostgresDataSource() {
+  public static DataSource createPostgresDataSource(Properties properties) {
     PGPoolingDataSource source = new PGPoolingDataSource();
-    source.setUrl("jdbc:postgresql://localhost/sparkadmin_test");
+    source.setUrl(properties.getProperty("postgresql.url"));
     source.setMaxConnections(10);
     databaseSetup(source);
     return source;

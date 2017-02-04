@@ -54,7 +54,6 @@ public class GenericSQLDAO extends AbstractDAO {
       ResultSet results = statement.executeQuery();
 
       if(results.next()) {
-        // TODO: replace the BasicRowProcessor with a custom implementation
         editedObject = new BasicRowProcessor().toMap(results);
       }
     } catch(SQLException e) {
