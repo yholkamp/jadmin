@@ -37,4 +37,8 @@ public class TestApplication {
     sparkAdmin.stop();
   }
 
+  public static void main(String[] args) {
+    new TestApplication().start();
+  }
+
 }
