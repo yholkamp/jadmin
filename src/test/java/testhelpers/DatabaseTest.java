@@ -10,6 +10,7 @@ import org.postgresql.ds.PGPoolingDataSource;
 
 import javax.sql.DataSource;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -75,12 +76,12 @@ public abstract class DatabaseTest {
 
   public static Properties loadDatabaseProperties() {
     Properties properties = new Properties();
-    try {
-      properties.load(DatabaseTest.class.getResourceAsStream("/database.properties"));
+    try(InputStream is = DatabaseTest.class.getResourceAsStream("/database.properties")) {
+      properties.load(is);
     } catch (IOException e) {
       // no custom configuration found, use the default
-      try {
-        properties.load(DatabaseTest.class.getResourceAsStream("/database.properties"));
+      try(InputStream is2 = DatabaseTest.class.getResourceAsStream("/database.properties.example")) {
+        properties.load(is2);
       } catch(IOException e1) {
         e1.printStackTrace();
       }
