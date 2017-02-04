@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.function.Supplier;
 
 /**
+ * DSL class that provides a way to add a group of input fields to the resource.
+ *
  * @author yholkamp
  */
 public class InputGroupBuilder {
@@ -34,7 +36,7 @@ public class InputGroupBuilder {
   public InputGroupBuilder input(String column) {
     // ensure the column exists
     ColumnType columnType = getTypeForColumn(column);
-    inputGroup.getInputs().add(new FormInput(column, columnType));
+    inputGroup.addInput(new FormInput(column, columnType));
     resource.addEditableColumn(column);
     return this;
   }
@@ -59,9 +61,9 @@ public class InputGroupBuilder {
    * @param selectProducer
    * @return
    */
-  public InputGroupBuilder select(String column, Supplier<List<Tuple2<Object, String>>> selectProducer) {
+  public InputGroupBuilder select(String column, Supplier<List<Tuple2<String, String>>> selectProducer) {
     ColumnType columnType = getTypeForColumn(column);
-    inputGroup.getInputs().add(new FormSelect(column, columnType, selectProducer));
+    inputGroup.addInput(new FormSelect(column, columnType, selectProducer));
     // consider validating that the output of the producer appears to be valid for the type of this column
     // consider passing the primary keys of the current object to the producer function
     return this;

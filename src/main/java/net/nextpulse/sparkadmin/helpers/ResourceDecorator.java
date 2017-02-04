@@ -60,7 +60,7 @@ public class ResourceDecorator implements BiConsumer<Resource, ResourceSchemaPro
     resource.getColumnDefinitions().forEach(x -> {
       logger.trace("Adding default for {} col {}", resource.getTableName(), x.getName());
       if(!x.isKeyColumn()) {
-        inputGroup.getInputs().add(new FormInput(x.getName(), x.getType()));
+        inputGroup.addInput(new FormInput(x.getName(), x.getType()));
         resource.addEditableColumn(x.getName());
       }
       resource.getIndexColumns().add(x.getName());
