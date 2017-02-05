@@ -1,6 +1,6 @@
 package selenium;
 
-import net.nextpulse.sparkadmin.SparkAdmin;
+import net.nextpulse.jadmin.JAdmin;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import testhelpers.DatabaseTest;
@@ -15,7 +15,7 @@ public class TestApplication {
 
   private static final Logger logger = LogManager.getLogger();
   private static DataSource source;
-  private SparkAdmin sparkAdmin;
+  private JAdmin jAdmin;
 
   public void start() {
     logger.error("Test error in testApplication");
@@ -23,18 +23,18 @@ public class TestApplication {
     Properties properties = DatabaseTest.loadDatabaseProperties();
     source = DatabaseTest.createH2DataSource(properties, "MYSQL");
     DatabaseTest.databaseSetup(source);
-    sparkAdmin = new SparkAdmin();
+    jAdmin = new JAdmin();
 
     // default everything
-    sparkAdmin.resource("locations", source);
-    sparkAdmin.resource("compound_table", source);
+    jAdmin.resource("locations", source);
+    jAdmin.resource("compound_table", source);
 
     // initialize the application
-    sparkAdmin.init();
+    jAdmin.init();
   }
 
   public void stop() {
-    sparkAdmin.stop();
+    jAdmin.stop();
   }
 
   public static void main(String[] args) {

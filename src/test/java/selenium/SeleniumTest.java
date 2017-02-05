@@ -4,7 +4,9 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+import testhelpers.IntegrationTest;
 
 import java.util.concurrent.TimeUnit;
 
@@ -15,6 +17,7 @@ import static org.junit.Assert.assertTrue;
  * @author yholkamp
  */
 @Ignore("Not yet implemented")
+@Category(IntegrationTest.class)
 public class SeleniumTest {
   private static HtmlUnitDriver driver;
   private static TestApplication testApplication;

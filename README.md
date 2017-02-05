@@ -1,4 +1,4 @@
-# SparkAdmin
+# JAdmin
 
 Spark-Admin is a Spark Java powered framework to create simple backends for administration tasks. Use this library to 
 easily expose CRUD access to rows in your users table, `.properties` files and any other data.
@@ -10,15 +10,15 @@ Inspired by the Ruby [Active Admin](https://github.com/activeadmin/activeadmin) 
 Add the library as Maven dependency to your Java 8 (and up) application and call the fluent API to add resources you'd 
 like to expose through the admin panel:
 
-    SparkAdmin sparkAdmin = new SparkAdmin();
+    JAdmin jAdmin = new JAdmin();
     
     // connect to a JDBC datasource and add the users table with default settings.
     DataSource source = retrieveMyDataSource();
-    sparkAdmin.resource("users", source);
+    jAdmin.resource("users", source);
 
 Alternatively, you can tailor the exposed columns to your own needs as follows:
 
-    sparkAdmin.resource("users", source)
+    jAdmin.resource("users", source)
         .formConfig((form) -> form
             // add a header, grouping an username and password input field
             .inputGroup("Login credentials", (group) -> group.input("username").input("password"))
@@ -45,11 +45,11 @@ implementation, take a look at the `InMemoryDAO` implementation.
 
 # Configuration and customization
 
-Customizing the templates used by SparkAdmin is possible as well, all templates that may be overwritten are in the 
-`src/main/resources/sparkadmin` folder. To overwrite or customize a template, create an 
-`src/main/resources/sparkadmin` folder in your own application and create a copy of the file you would like to customize. 
-SparkAdmin will now load the copy of the file provided by your application. For details on the available template syntax,
-take a look at [Freemarker](http://freemarker.org/docs/index.html), the template engine used by SparkAdmin.
+Customizing the templates used by JAdmin is possible as well, all templates that may be overwritten are in the 
+`src/main/resources/JAdmin` folder. To overwrite or customize a template, create an 
+`src/main/resources/JAdmin` folder in your own application and create a copy of the file you would like to customize. 
+JAdmin will now load the copy of the file provided by your application. For details on the available template syntax,
+take a look at [Freemarker](http://freemarker.org/docs/index.html), the template engine used by JAdmin.
 
 
 # Roadmap
@@ -63,7 +63,7 @@ take a look at [Freemarker](http://freemarker.org/docs/index.html), the template
 
 # Limitations
 
-For performance reasons, SparkAdmin will currently not actively reload the table definition for a default SQL resource. 
+For performance reasons, JAdmin will currently not actively reload the table definition for a default SQL resource. 
 This means that if you update your table definition, you'll have to restart the application for these to show up.
 
 # License

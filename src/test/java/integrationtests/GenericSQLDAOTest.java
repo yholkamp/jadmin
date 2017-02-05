@@ -3,28 +3,29 @@ package integrationtests;
 import com.ninja_squad.dbsetup.DbSetup;
 import com.ninja_squad.dbsetup.destination.DataSourceDestination;
 import com.ninja_squad.dbsetup.operation.Operation;
-import net.nextpulse.sparkadmin.ColumnDefinition;
-import net.nextpulse.sparkadmin.ColumnType;
-import net.nextpulse.sparkadmin.FormPostEntry;
-import net.nextpulse.sparkadmin.dao.DatabaseEntry;
-import net.nextpulse.sparkadmin.dao.GenericSQLDAO;
-import net.nextpulse.sparkadmin.schema.GenericSQLSchemaProvider;
+import net.nextpulse.jadmin.ColumnDefinition;
+import net.nextpulse.jadmin.ColumnType;
+import net.nextpulse.jadmin.FormPostEntry;
+import net.nextpulse.jadmin.dao.DatabaseEntry;
+import net.nextpulse.jadmin.dao.GenericSQLDAO;
+import net.nextpulse.jadmin.schema.GenericSQLSchemaProvider;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import testhelpers.DatabaseTest;
+import testhelpers.IntegrationTest;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import static com.ninja_squad.dbsetup.Operations.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * @author yholkamp
  */
+@Category(IntegrationTest.class)
 public class GenericSQLDAOTest extends DatabaseTest {
 
   private GenericSQLDAO dao;

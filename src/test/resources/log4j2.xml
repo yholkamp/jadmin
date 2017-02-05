@@ -6,7 +6,7 @@
     </Console>
   </Appenders>
   <Loggers>
-    <Logger name="net.nextpulse.sparkadmin" level="debug" additivity="false">
+    <Logger name="net.nextpulse.jadmin" level="debug" additivity="false">
       <AppenderRef ref="Console"/>
     </Logger>
     <Root level="info">

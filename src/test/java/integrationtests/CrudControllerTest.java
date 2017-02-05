@@ -5,12 +5,12 @@ import com.google.common.collect.ImmutableMap;
 import com.ninja_squad.dbsetup.DbSetup;
 import com.ninja_squad.dbsetup.destination.DataSourceDestination;
 import com.ninja_squad.dbsetup.operation.Operation;
-import net.nextpulse.sparkadmin.CrudController;
-import net.nextpulse.sparkadmin.Resource;
-import net.nextpulse.sparkadmin.SparkAdmin;
-import net.nextpulse.sparkadmin.views.EditPost;
-import net.nextpulse.sparkadmin.views.EditView;
-import net.nextpulse.sparkadmin.views.ListView;
+import net.nextpulse.jadmin.CrudController;
+import net.nextpulse.jadmin.JAdmin;
+import net.nextpulse.jadmin.Resource;
+import net.nextpulse.jadmin.views.EditPost;
+import net.nextpulse.jadmin.views.EditView;
+import net.nextpulse.jadmin.views.ListView;
 import org.apache.commons.dbutils.BasicRowProcessor;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,10 +56,10 @@ public class CrudControllerTest extends DatabaseTest {
     DbSetup dbSetup = new DbSetup(new DataSourceDestination(dataSource), operation);
     dbSetup.launch();
 
-    SparkAdmin sparkAdmin = new SparkAdmin();
-    sparkAdmin.resource("locations", dataSource);
-    resource = sparkAdmin.getResources().get("locations");
-    controller = new CrudController("/adminprefix", sparkAdmin.getResources());
+    JAdmin jAdmin = new JAdmin();
+    jAdmin.resource("locations", dataSource);
+    resource = jAdmin.getResources().get("locations");
+    controller = new CrudController("/adminprefix", jAdmin.getResources());
   }
 
   @Test

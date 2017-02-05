@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.h2.jdbcx.JdbcDataSource;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.postgresql.ds.PGPoolingDataSource;
@@ -22,6 +23,7 @@ import java.util.Properties;
  *
  * @author yholkamp
  */
+@Category(IntegrationTest.class)
 @RunWith(Parameterized.class)
 public abstract class DatabaseTest {
 
