@@ -1,6 +1,6 @@
 # JAdmin
 
-JAdmin is a Spark Java powered framework to create simple back-ends for administration tasks. Use this library as part 
+JAdmin is a [Spark Java](http://sparkjava.com/) powered framework to create simple back-ends for administration tasks. Use this library as part 
 of your existing JVM application or stand alone to easily expose CRUD access to rows in your users table, `.properties` 
 files and any other data.
 
@@ -13,7 +13,7 @@ like to expose through the admin panel:
 
     JAdmin jAdmin = new JAdmin();
     
-    // connect to a JDBC datasource and add the users table with default settings.
+    // connect to a JDBC datasource and add the users table with default settings (all but the primary key columns are editable, all columns are included on the table index)
     DataSource source = retrieveMyDataSource();
     jAdmin.resource("users", source);
 

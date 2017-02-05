@@ -7,8 +7,17 @@
   <groupId>net.nextpulse</groupId>
   <artifactId>jadmin</artifactId>
   <packaging>jar</packaging>
-  <version>0.1.0-SNAPSHOT</version>
+  <version>0.1.0</version>
   <url>https://github.com/yholkamp/jadmin</url>
+  <name>JAdmin</name>
+  <description>A flexible admin panel for CRUD operations on various data.</description>
+  <developers>
+    <developer>
+      <id>yholkamp</id>
+      <name>Yorick Holkamp</name>
+      <email>yorick@nextpulse.net</email>
+    </developer>
+  </developers>
 
   <licenses>
     <license>
