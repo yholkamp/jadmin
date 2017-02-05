@@ -42,7 +42,7 @@
     <footer class="pull-left col-md-12">
         <hr class="divider">
         <p>
-            Powered by <a href="https://github.com/yholkamp/spark-admin">Spark Admin</a>
+            Powered by <a href="https://github.com/yholkamp/JAdmin">Spark Admin</a>
         </p>
     </footer>
 </div>

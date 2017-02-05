@@ -119,11 +119,12 @@ public class JAdmin {
   }
 
   /**
-   * Adds a new resourceSchemaProvider to the admin application and returns a configuration object to allow for further customization.
+   * Adds a new resource with a custom DAO and schema provider class to the admin application and returns a
+   * configuration object to allow for further customization.
    * Note that the resourceName will be case sensitive for certain database systems.
    *
-   * @param resourceName           name of the resourceSchemaProvider
-   * @param dataAccessObject       object providing CRUD methods for the resourceSchemaProvider
+   * @param resourceName           name of the resource
+   * @param dataAccessObject       object providing CRUD methods for the resource
    * @param resourceSchemaProvider method that provides schema information for the resource
    * @return ResourceBuilder instance for further configuration
    */
@@ -145,10 +146,11 @@ public class JAdmin {
   }
 
   /**
-   * Adds a new resourceSchemaProvider to the admin application and returns a configuration object to allow for further customization.
+   * Adds a new resource to the admin application using the default JDBC DAO and schema provider via the provided DataSource.
+   * Returns a configuration object to allow for further customization.
    * Note that the resourceName will be case sensitive for certain database systems.
    *
-   * @param resourceName table name of the resourceSchemaProvider
+   * @param resourceName table name of the resource
    * @param dataSource   SQL datasource to use
    * @return ResourceBuilder instance for further configuration
    */

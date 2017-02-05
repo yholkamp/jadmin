@@ -1,7 +1,8 @@
 # JAdmin
 
-Spark-Admin is a Spark Java powered framework to create simple backends for administration tasks. Use this library to 
-easily expose CRUD access to rows in your users table, `.properties` files and any other data.
+JAdmin is a Spark Java powered framework to create simple back-ends for administration tasks. Use this library as part 
+of your existing JVM application or stand alone to easily expose CRUD access to rows in your users table, `.properties` 
+files and any other data.
 
 Inspired by the Ruby [Active Admin](https://github.com/activeadmin/activeadmin) library.
 

@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * The main class of the Spark-Admin library when it comes to handling the different HTTP endpoints that are supported.
+ * The main class of the JAdmin library when it comes to handling the different HTTP endpoints that are supported.
  * Implements all CRUD actions (create, read, update, delete).
  *
  * @author yholkamp
@@ -92,7 +92,7 @@ public class CrudController {
   };
 
   /**
-   * Renders the main dashboard offered by spark-admin.
+   * Renders the main dashboard offered by JAdmin.
    */
   public TemplateViewRoute dashboardRoute = (request, response) -> new ModelAndView(new DashboardViewObject(createTemplateObject(null)), "index.ftl");
 
