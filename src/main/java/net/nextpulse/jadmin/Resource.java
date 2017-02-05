@@ -3,7 +3,10 @@ package net.nextpulse.jadmin;
 import net.nextpulse.jadmin.dao.AbstractDAO;
 import net.nextpulse.jadmin.elements.PageElement;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -12,6 +15,9 @@ import java.util.stream.Collectors;
  * @author yholkamp
  */
 public class Resource {
+  /**
+   * Internal 'table' name of this resource
+   */
   private final String tableName;
   /**
    * Column names to display on the index/list page.
@@ -76,7 +82,7 @@ public class Resource {
   /**
    * Marks the provided column as editable.
    *
-   * @param name
+   * @param name internal name of the column to mark as editable
    */
   public void addEditableColumn(String name) {
     findColumnDefinitionByName(name)
@@ -87,8 +93,8 @@ public class Resource {
   /**
    * Locates the column definition identified by 'name'
    *
-   * @param name
-   * @return
+   * @param name internal name of the column to retrieve the column definition for
+   * @return either the ColumnDefinition or an empty Optional
    */
   private Optional<ColumnDefinition> findColumnDefinitionByName(String name) {
     return columnDefinitions.stream().filter(x -> x.getName().equals(name)).findFirst();

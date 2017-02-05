@@ -34,8 +34,8 @@ public class GenericSQLDAO extends AbstractDAO {
 
   /**
    * @param keys primary key(s)
-   * @return
-   * @throws DataAccessException
+   * @return either an empty optional or one holding a DatabaseEntry matching the keys
+   * @throws DataAccessException if an error occurs while accessing the database.
    */
   @Override
   public Optional<DatabaseEntry> selectOne(Object[] keys) throws DataAccessException {
@@ -49,7 +49,7 @@ public class GenericSQLDAO extends AbstractDAO {
 
       PreparedStatement statement = conn.prepareStatement(String.format("SELECT * FROM %s WHERE %s LIMIT 1", tableName, conditions));
       for(int i = 1; i <= resourceSchemaProvider.getKeyColumns().size(); i++) {
-        setValue(statement, i, (String)keys[i-1], resourceSchemaProvider.getKeyColumns().get(i-1));
+        setValue(statement, i, (String) keys[i - 1], resourceSchemaProvider.getKeyColumns().get(i - 1));
       }
       logger.debug("Executing statement {}", statement.toString());
       ResultSet results = statement.executeQuery();
@@ -65,11 +65,10 @@ public class GenericSQLDAO extends AbstractDAO {
   }
 
   /**
-   *
-   * @param offset  number of objects to skip
-   * @param count   number of objects to retrieve
-   * @return
-   * @throws DataAccessException
+   * @param offset number of objects to skip
+   * @param count  number of objects to retrieve
+   * @return list of entries of up to count long
+   * @throws DataAccessException if an error occurs while accessing the database.
    */
   @Override
   public List<DatabaseEntry> selectMultiple(long offset, long count) throws DataAccessException {
@@ -90,9 +89,8 @@ public class GenericSQLDAO extends AbstractDAO {
   }
 
   /**
-   *
-   * @param postEntry    unfiltered user submitted data, must be used with caution
-   * @throws DataAccessException
+   * @param postEntry unfiltered user submitted data, must be used with caution
+   * @throws DataAccessException if an error occurs while accessing the database.
    */
   @Override
   public void insert(FormPostEntry postEntry) throws DataAccessException {
@@ -121,9 +119,8 @@ public class GenericSQLDAO extends AbstractDAO {
   }
 
   /**
-   *
-   * @param postEntry    unfiltered user submitted data, must be used with caution
-   * @throws DataAccessException
+   * @param postEntry unfiltered user submitted data, must be used with caution
+   * @throws DataAccessException if an error occurs while accessing the database.
    */
   @Override
   public void update(FormPostEntry postEntry) throws DataAccessException {
@@ -154,9 +151,10 @@ public class GenericSQLDAO extends AbstractDAO {
   }
 
   /**
+   * Creates an SQL update query for the provided postEntry.
    *
-   * @param postEntry
-   * @return
+   * @param postEntry object to construct the update query for
+   * @return update query with unbound parameters
    */
   protected String createUpdateQuery(FormPostEntry postEntry) {
     String wherePortion = postEntry.getKeyValues().keySet().stream().map(ColumnDefinition::getName)
@@ -165,14 +163,15 @@ public class GenericSQLDAO extends AbstractDAO {
 
     String setPortion = postEntry.getValues().keySet().stream().map(ColumnDefinition::getName)
         .map(x -> x + " = ?")
-        .reduce((s, s2) -> s+ "," + s2).orElse("");
+        .reduce((s, s2) -> s + "," + s2).orElse("");
     return String.format("UPDATE %s SET %s WHERE %s", tableName, setPortion, wherePortion);
   }
 
   /**
-   * Creates an unbound parameterized SQL insert statement for the provided resourceSchemaProvider type.
-   * @param postEntry
-   * @return
+   * Creates an SQL insert query for the provided postEntry.
+   *
+   * @param postEntry object to construct the insert query for
+   * @return insert query with unbound parameters
    */
   protected String createInsertStatement(FormPostEntry postEntry) {
     // obtain a list of all resource columns present in the post data
@@ -187,11 +186,11 @@ public class GenericSQLDAO extends AbstractDAO {
   /**
    * Query updater that attempts to use the most specific setX method based on the provided input.
    *
-   * @param statement         statement to fill
-   * @param index             index of the parameter to configure
-   * @param value             user-provided value
-   * @param columnDefinition  column definition, used to obtain type information
-   * @throws SQLException     exception that may be thrown by {@link PreparedStatement#setObject(int, Object)} and others
+   * @param statement        statement to fill
+   * @param index            index of the parameter to configure
+   * @param value            user-provided value
+   * @param columnDefinition column definition, used to obtain type information
+   * @throws DataAccessException exception that may be thrown by {@link PreparedStatement#setObject(int, Object)} and others
    */
   protected void setValue(PreparedStatement statement, int index, String value, ColumnDefinition columnDefinition) throws DataAccessException {
     try {

@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Group of input fields.
  */
-public class FormInputGroup implements PageElement  {
+public class FormInputGroup implements PageElement {
 
   private List<FormInput> inputs = new ArrayList<>();
   private String header;

@@ -99,8 +99,8 @@ public class CrudController {
   /**
    * Constructor for this class, used internally.
    *
-   * @param prefix
-   * @param resources
+   * @param prefix    path prefix to use, i.e. '/admin'
+   * @param resources map of resources set up for JAdmin
    */
   public CrudController(String prefix, Map<String, Resource> resources) {
     this.prefix = prefix;
@@ -110,8 +110,8 @@ public class CrudController {
   /**
    * Helper method that creates a base TemplateObject for the provided table.
    *
-   * @param table
-   * @return
+   * @param table internal name of the active resource
+   * @return a new TemplateObject used to render the navigation in our templates
    */
   private TemplateObject createTemplateObject(String table) {
     return new TemplateObject(prefix, new ArrayList<>(resources.keySet()), table);
@@ -120,14 +120,13 @@ public class CrudController {
   /**
    * Construct a new FormPostEntry from the user provided data, filtered down to only include editable fields and the object keys.
    *
-   * @param request
-   * @param resource
-   * @return
+   * @param request  incoming user request
+   * @param resource resource this request was made for
+   * @return a FormPostEntry representing the user input, filtered to only include editable fields
    */
   private FormPostEntry extractFormPostEntry(Request request, Resource resource) {
     FormPostEntry postEntry = new FormPostEntry();
 
-    // TODO: rework the editable property so it's included in the ColumnDefinition
     for(ColumnDefinition columnDefinition : resource.getColumnDefinitions()) {
       // copy the key values that are present
       if(columnDefinition.isKeyColumn()) {

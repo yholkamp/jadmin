@@ -16,8 +16,9 @@ public class IndexBuilder {
 
   /**
    * Adds a column identified by id to the index page
-   * @param id
-   * @return
+   *
+   * @param id internal column name to add
+   * @return this instance
    */
   public IndexBuilder column(String id) {
     resource.getIndexColumns().add(id);

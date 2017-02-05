@@ -12,14 +12,11 @@ public class DatabaseEntry {
 
   private Map<String, Object> properties = new HashMap<>();
 
-  public Map<String, Object> getProperties() {
-    return properties;
-  }
-
   /**
    * Constructs a new entry using the provided map.
-   * @param editedObject  map of column names and values
-   * @return  new DatabaseEntry object
+   *
+   * @param editedObject map of column names and values
+   * @return new DatabaseEntry object
    */
   public static DatabaseEntry buildFrom(Map<String, Object> editedObject) {
     DatabaseEntry entry = new DatabaseEntry();
@@ -29,9 +26,14 @@ public class DatabaseEntry {
 
   /**
    * Constructs an empty object.
-   * @return
+   *
+   * @return an empty DatabaseEntry object
    */
   public static DatabaseEntry buildEmpty() {
     return new DatabaseEntry();
+  }
+
+  public Map<String, Object> getProperties() {
+    return properties;
   }
 }

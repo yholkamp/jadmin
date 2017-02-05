@@ -20,11 +20,6 @@ public class FormPostEntry {
   public FormPostEntry() {
   }
 
-  public FormPostEntry(LinkedHashMap<ColumnDefinition, String> keyValues, LinkedHashMap<ColumnDefinition, String> values) {
-    this.keyValues = keyValues;
-    this.values = values;
-  }
-
   /**
    * @return map of unescaped post values
    */
@@ -50,7 +45,8 @@ public class FormPostEntry {
 
   /**
    * Returns a Map with column keys linked to the submitted values.
-   * @return
+   *
+   * @return this entry as map of column name to value
    */
   public Map<String, String> toPropertiesMap() {
     LinkedHashMap<String, String> output = new LinkedHashMap<>();

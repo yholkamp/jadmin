@@ -31,11 +31,10 @@ import java.util.Map;
 public class JAdmin {
 
   private static final Logger logger = LogManager.getLogger();
-
+  private static final Gson gson = new Gson();
   private Map<String, Resource> resources = new HashMap<>();
   private Configuration freemarkerConfiguration = new Configuration(Configuration.VERSION_2_3_23);
   private FreeMarkerEngine freeMarkerEngine = new FreeMarkerEngine(freemarkerConfiguration);
-  private static final Gson gson = new Gson();
   private Service spark;
   /**
    * Indicates whether the application has been initialized, after initialization certain settings may not be changed.
@@ -58,7 +57,7 @@ public class JAdmin {
   /**
    * Initializes the Spark Admin application with a custom URL prefix.
    *
-   * @param prefix  url prefix to use, i.e. '/admin'
+   * @param prefix url prefix to use, i.e. '/admin'
    */
   public void init(String prefix) {
     if(initialized) {
@@ -68,6 +67,11 @@ public class JAdmin {
     initialized = true;
   }
 
+  /**
+   * Initializes the internal Spark instance.
+   *
+   * @param prefix path prefix to use, i.e. '/admin'
+   */
   private void initializeRoutes(String prefix) {
     int port = 8282;
     spark = Service.ignite().port(port);
@@ -95,7 +99,9 @@ public class JAdmin {
     spark.after(prefix + "/*", Filters.addGzipHeader);
 
     // TODO: only add this route when not using an existing spark instance
-    spark.get("*", ((request, response) -> {throw new NotFoundException();}));
+    spark.get("*", ((request, response) -> {
+      throw new NotFoundException();
+    }));
 
     // either show the debug screen or handle exceptions
     spark.exception(NotFoundException.class, (e, request, response) -> {
@@ -106,7 +112,7 @@ public class JAdmin {
 
     spark.exception(Exception.class, (e, request, response) -> {
       logger.error("Caught an error, whoops", e);
-      response.body("<h1>Internal error</h1><pre>"+ ExceptionUtils.getStackTrace(e) + "</pre>");
+      response.body("<h1>Internal error</h1><pre>" + ExceptionUtils.getStackTrace(e) + "</pre>");
     });
 
     logger.info("JAdmin started, listening for traffic on http://localhost:{}{}", port, prefix);
@@ -116,10 +122,10 @@ public class JAdmin {
    * Adds a new resourceSchemaProvider to the admin application and returns a configuration object to allow for further customization.
    * Note that the resourceName will be case sensitive for certain database systems.
    *
-   * @param resourceName            name of the resourceSchemaProvider
-   * @param dataAccessObject        object providing CRUD methods for the resourceSchemaProvider
-   * @param resourceSchemaProvider  method that provides schema information for the resource
-   * @return  ResourceBuilder instance for further configuration
+   * @param resourceName           name of the resourceSchemaProvider
+   * @param dataAccessObject       object providing CRUD methods for the resourceSchemaProvider
+   * @param resourceSchemaProvider method that provides schema information for the resource
+   * @return ResourceBuilder instance for further configuration
    */
   public ResourceBuilder resource(String resourceName, AbstractDAO dataAccessObject, ResourceSchemaProvider resourceSchemaProvider) {
     if(StringUtils.isBlank(resourceName)) {
@@ -142,9 +148,9 @@ public class JAdmin {
    * Adds a new resourceSchemaProvider to the admin application and returns a configuration object to allow for further customization.
    * Note that the resourceName will be case sensitive for certain database systems.
    *
-   * @param resourceName  table name of the resourceSchemaProvider
-   * @param dataSource    SQL datasource to use
-   * @return  ResourceBuilder instance for further configuration
+   * @param resourceName table name of the resourceSchemaProvider
+   * @param dataSource   SQL datasource to use
+   * @return ResourceBuilder instance for further configuration
    */
   public ResourceBuilder resource(String resourceName, DataSource dataSource) {
     return resource(resourceName, new GenericSQLDAO(dataSource, resourceName), new GenericSQLSchemaProvider(dataSource, resourceName));
@@ -152,7 +158,8 @@ public class JAdmin {
 
   /**
    * Returns the Freemarker Configuration object, allowing the configuration of alternative template loaders.
-   * @return  Freemarker Configuration object
+   *
+   * @return Freemarker Configuration object
    */
   @SuppressWarnings("unused")
   public Configuration getFreemarkerConfiguration() {
@@ -160,8 +167,9 @@ public class JAdmin {
   }
 
   /**
+   * Returns all resources currently known to JAdmin.
    *
-   * @return
+   * @return map of all resources keyed by name
    */
   public Map<String, Resource> getResources() {
     return resources;

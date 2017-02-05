@@ -19,6 +19,10 @@ public class FormInput implements PageElement {
     this.columnType = columnType;
   }
 
+  public static Logger getLogger() {
+    return logger;
+  }
+
   @Override
   public String getTemplateName() {
     String standard = "input.ftl";
@@ -41,10 +45,6 @@ public class FormInput implements PageElement {
         logger.warn("Received unsupported column type {}, defaulting to text input", columnType);
         return standard;
     }
-  }
-
-  public static Logger getLogger() {
-    return logger;
   }
 
   public ColumnType getColumnType() {

@@ -1,8 +1,8 @@
 package net.nextpulse.jadmin.filters;
 
 import com.google.common.base.Joiner;
-import net.nextpulse.jadmin.exceptions.NotFoundException;
 import net.nextpulse.jadmin.Resource;
+import net.nextpulse.jadmin.exceptions.NotFoundException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import spark.Filter;
@@ -36,8 +36,9 @@ public class Filters {
 
   /**
    * Ensures that the 'table' variable in the URL exists and sets the corresponding resourceSchemaProvider in the 'resourceSchemaProvider' attribute. Throws a NotFoundException if the resourceSchemaProvider was not found.
-   * @param resources   available resources
-   * @return  a filter object
+   *
+   * @param resources available resources
+   * @return a filter object
    */
   public static Filter validateTable(Map<String, Resource> resources) {
     return (Request request, Response response) -> {

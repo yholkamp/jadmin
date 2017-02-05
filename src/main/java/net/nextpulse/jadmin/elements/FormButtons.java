@@ -1,7 +1,7 @@
 package net.nextpulse.jadmin.elements;
 
 /**
- * Form submit & cancel links to include in a form.
+ * Form submit and cancel links to include in a form.
  */
 public class FormButtons implements PageElement {
 

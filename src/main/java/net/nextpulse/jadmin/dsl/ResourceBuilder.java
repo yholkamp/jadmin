@@ -19,8 +19,9 @@ public class ResourceBuilder {
 
   /**
    * Configures the form/edit page generated for the last created resourceSchemaProvider.
-   * @param builderConsumer
-   * @return
+   *
+   * @param builderConsumer function that will be called for further configuration
+   * @return this instance
    */
   public ResourceBuilder formConfig(Consumer<FormBuilder> builderConsumer) {
     FormBuilder builder = new FormBuilder(resource);
@@ -32,8 +33,9 @@ public class ResourceBuilder {
 
   /**
    * Configures the index page generated for the last created resourceSchemaProvider.
-   * @param builderConsumer
-   * @return
+   *
+   * @param builderConsumer function that will be called for further configuration
+   * @return this instance
    */
   public ResourceBuilder indexConfig(Consumer<IndexBuilder> builderConsumer) {
     IndexBuilder builder = new IndexBuilder(resource);

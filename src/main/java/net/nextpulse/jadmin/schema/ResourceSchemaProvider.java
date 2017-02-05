@@ -14,8 +14,8 @@ public interface ResourceSchemaProvider {
   /**
    * Returns the names of columns that make up the key identifying any resource instance.
    *
-   * @return
-   * @throws DataAccessException
+   * @return list of columns that make up the primary key, in the order in which they occur
+   * @throws DataAccessException if an error occurs while accessing the underlying data source
    */
   default List<ColumnDefinition> getKeyColumns() throws DataAccessException {
     return getColumnDefinitions().stream().filter(ColumnDefinition::isKeyColumn).collect(Collectors.toList());
@@ -24,8 +24,8 @@ public interface ResourceSchemaProvider {
   /**
    * Returns the full list of columns that make up the resource.
    *
-   * @return
-   * @throws DataAccessException
+   * @return list of column definitions
+   * @throws DataAccessException if an error occurs while accessing the underlying data source
    */
   List<ColumnDefinition> getColumnDefinitions() throws DataAccessException;
 }

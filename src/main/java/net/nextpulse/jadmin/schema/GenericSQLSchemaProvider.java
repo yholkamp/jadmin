@@ -86,8 +86,8 @@ public class GenericSQLSchemaProvider implements ResourceSchemaProvider {
   /**
    * Converts a SQL type to one of the input types supported by JAdmin.
    *
-   * @param typeName
-   * @return
+   * @param typeName typeName returned by the DBMS
+   * @return enum value used internally for data conversion and presentation
    */
   protected ColumnType sqlTypeToColumnType(String typeName) {
     switch(typeName) {

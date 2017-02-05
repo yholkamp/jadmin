@@ -23,20 +23,6 @@ public class ResourceDecorator implements BiConsumer<Resource, ResourceSchemaPro
   private static final Logger logger = LogManager.getLogger();
 
   /**
-   * Decorates the provided resourceSchemaProvider with information provided by the DBMS.
-   *
-   * @param resource        object to decorate
-   * @param schemaProvider  class that provides schema info for this resource.
-   */
-  public void accept(Resource resource, ResourceSchemaProvider schemaProvider) {
-    logger.trace("Decorating {}", resource.getTableName());
-//    updateResourceWithPrimaryKeys(resource, schemaProvider);
-    updateResourceWithColumns(resource, schemaProvider);
-    createDefaultResourceFormPages(resource);
-  }
-
-  /**
-   *
    * @param resource
    * @param schemaProvider
    * @throws SQLException
@@ -52,6 +38,7 @@ public class ResourceDecorator implements BiConsumer<Resource, ResourceSchemaPro
 
   /**
    * Initializes the provided resourceSchemaProvider with input fields for all non-primary key fields and index columns for all columns.
+   *
    * @param resource
    */
   private static void createDefaultResourceFormPages(Resource resource) {
@@ -67,5 +54,18 @@ public class ResourceDecorator implements BiConsumer<Resource, ResourceSchemaPro
     });
     resource.getFormPage().add(inputGroup);
     resource.getFormPage().add(new FormButtons());
+  }
+
+  /**
+   * Decorates the provided resourceSchemaProvider with information provided by the DBMS.
+   *
+   * @param resource       object to decorate
+   * @param schemaProvider class that provides schema info for this resource.
+   */
+  public void accept(Resource resource, ResourceSchemaProvider schemaProvider) {
+    logger.trace("Decorating {}", resource.getTableName());
+//    updateResourceWithPrimaryKeys(resource, schemaProvider);
+    updateResourceWithColumns(resource, schemaProvider);
+    createDefaultResourceFormPages(resource);
   }
 }

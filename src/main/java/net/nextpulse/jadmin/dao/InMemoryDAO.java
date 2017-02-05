@@ -41,7 +41,7 @@ public class InMemoryDAO extends AbstractDAO {
       return Collections.emptyList();
     } else {
       int endIndex = Math.min((int) (offset + count), objects.size());
-      return new ArrayList<>(objects.values()).subList((int)offset, endIndex);
+      return new ArrayList<>(objects.values()).subList((int) offset, endIndex);
     }
   }
 
