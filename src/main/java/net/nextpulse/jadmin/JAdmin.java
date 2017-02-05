@@ -42,7 +42,7 @@ public class JAdmin {
   private boolean initialized = false;
 
   public JAdmin() {
-    freemarkerConfiguration.setTemplateLoader(new ClassTemplateLoader(JAdmin.class, "/JAdmin"));
+    freemarkerConfiguration.setTemplateLoader(new ClassTemplateLoader(JAdmin.class, "/jadmin"));
     freemarkerConfiguration.addAutoImport("root", "template.ftl");
     freemarkerConfiguration.setBooleanFormat("enabled,disabled");
   }
