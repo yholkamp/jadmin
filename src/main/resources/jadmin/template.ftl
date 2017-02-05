@@ -2,18 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>JAdmin</title>
-
-    <meta name="description" content="">
-    <meta name="author" content="NextPulse">
-
-    <link rel="stylesheet" href="/css/bootstrap.css">
-    <link rel="stylesheet" href="/css/bootstrap-theme.css">
-    <link rel="stylesheet" href="/css/style.css">
+    <#include "includes/head.ftl"/>
 </head>
 <body>
 
@@ -21,7 +10,7 @@
     <div class="container-fluid">
         <div class="navbar-header">
             <a class="navbar-brand" href="#">
-                Spark Admin
+                JAdmin
             </a>
         </div>
     </div>
@@ -39,19 +28,10 @@
     <div class="col-md-10 content">
         <#nested>
     </div>
-    <footer class="pull-left col-md-12">
-        <hr class="divider">
-        <p>
-            Powered by <a href="https://github.com/yholkamp/JAdmin">Spark Admin</a>
-        </p>
-    </footer>
+    <#include "includes/footer.ftl"/>
 </div>
 
-<script src="/js/lib/jquery-3.1.0.min.js"></script>
-<script src="/js/lib/bootstrap.js"></script>
-    <#list jsIncludes as include>
-    <script src="/js/${include}"></script>
-    </#list>
+<#include "includes/scripts.ftl"/>
 </body>
 </html>
 </#macro>
