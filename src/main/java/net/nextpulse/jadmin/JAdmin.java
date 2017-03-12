@@ -1,23 +1,16 @@
 package net.nextpulse.jadmin;
 
-import com.google.gson.Gson;
-import freemarker.cache.ClassTemplateLoader;
 import freemarker.template.Configuration;
 import net.nextpulse.jadmin.dao.AbstractDAO;
 import net.nextpulse.jadmin.dao.GenericSQLDAO;
 import net.nextpulse.jadmin.dsl.ResourceBuilder;
-import net.nextpulse.jadmin.exceptions.NotFoundException;
-import net.nextpulse.jadmin.filters.Filters;
-import net.nextpulse.jadmin.helpers.Path;
 import net.nextpulse.jadmin.helpers.ResourceDecorator;
 import net.nextpulse.jadmin.schema.GenericSQLSchemaProvider;
 import net.nextpulse.jadmin.schema.ResourceSchemaProvider;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import spark.Service;
-import spark.template.freemarker.FreeMarkerEngine;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -31,21 +24,22 @@ import java.util.Map;
 public class JAdmin {
 
   private static final Logger logger = LogManager.getLogger();
-  private static final Gson gson = new Gson();
+  /**
+   * Port to listen on for inbound connections.
+   */
+  private static final int JADMIN_PORT = 8282;
+  /**
+   * MAp of resources associated with JAdmin, using the resource name as key, linking to an object with the configuration.
+   */
   private Map<String, Resource> resources = new HashMap<>();
-  private Configuration freemarkerConfiguration = new Configuration(Configuration.VERSION_2_3_23);
-  private FreeMarkerEngine freeMarkerEngine = new FreeMarkerEngine(freemarkerConfiguration);
-  private Service spark;
+  /**
+   * Reference to the interface handling object for this JAdmin instance.
+   */
+  private InterfaceManager interfaceManager = new InterfaceManager(resources);
   /**
    * Indicates whether the application has been initialized, after initialization certain settings may not be changed.
    */
   private boolean initialized = false;
-
-  public JAdmin() {
-    freemarkerConfiguration.setTemplateLoader(new ClassTemplateLoader(JAdmin.class, "/jadmin"));
-    freemarkerConfiguration.addAutoImport("root", "template.ftl");
-    freemarkerConfiguration.setBooleanFormat("enabled,disabled");
-  }
 
   /**
    * Initializes the Spark Admin application with the default /admin URL prefix.
@@ -60,62 +54,13 @@ public class JAdmin {
    * @param prefix url prefix to use, i.e. '/admin'
    */
   public void init(String prefix) {
+    logger.debug("Initializing JAdmin");
     if(initialized) {
+      logger.error("JAdmin was already initialized");
       throw new IllegalStateException("JAdmin was already initialized.");
     }
-    initializeRoutes(prefix);
+    interfaceManager.initialize(prefix, JADMIN_PORT);
     initialized = true;
-  }
-
-  /**
-   * Initializes the internal Spark instance.
-   *
-   * @param prefix path prefix to use, i.e. '/admin'
-   */
-  private void initializeRoutes(String prefix) {
-    int port = 8282;
-    spark = Service.ignite().port(port);
-    spark.staticFiles.location("/public");
-
-    // ensure the urls are consistently without trailing slash
-    spark.before(prefix + "/*", Filters.removeTrailingSlashes);
-
-    // ensure that only valid formPages may be loaded
-    spark.before(prefix + Path.Route.EDIT_ROW, Filters.validateTable(resources));
-    spark.before(prefix + Path.Route.INDEX, Filters.validateTable(resources));
-
-    CrudController controller = new CrudController(prefix, resources);
-    spark.get(prefix + Path.Route.INDEX, controller.listRoute, freeMarkerEngine);
-    spark.get(prefix + Path.Route.CREATE_ROW, controller.createRoute, freeMarkerEngine);
-    spark.post(prefix + Path.Route.CREATE_ROW, controller.createPostRoute, gson::toJson);
-    spark.get(prefix + Path.Route.EDIT_ROW, controller.editRoute, freeMarkerEngine);
-    spark.post(prefix + Path.Route.EDIT_ROW, controller.editPostRoute, gson::toJson);
-    spark.get(prefix + Path.Route.ADMIN_INDEX, controller.dashboardRoute, freeMarkerEngine);
-
-    spark.get(prefix + Path.Route.WILDCARD, (request, response) -> {
-      throw new NotFoundException();
-    });
-
-    spark.after(prefix + "/*", Filters.addGzipHeader);
-
-    // TODO: only add this route when not using an existing spark instance
-    spark.get("*", ((request, response) -> {
-      throw new NotFoundException();
-    }));
-
-    // either show the debug screen or handle exceptions
-    spark.exception(NotFoundException.class, (e, request, response) -> {
-      logger.error(request.uri() + " does not exist");
-      response.status(404);
-      response.body("Not found.");
-    });
-
-    spark.exception(Exception.class, (e, request, response) -> {
-      logger.error("Caught an error, whoops", e);
-      response.body("<h1>Internal error</h1><pre>" + ExceptionUtils.getStackTrace(e) + "</pre>");
-    });
-
-    logger.info("JAdmin started, listening for traffic on http://localhost:{}{}", port, prefix);
   }
 
   /**
@@ -129,6 +74,7 @@ public class JAdmin {
    * @return ResourceBuilder instance for further configuration
    */
   public ResourceBuilder resource(String resourceName, AbstractDAO dataAccessObject, ResourceSchemaProvider resourceSchemaProvider) {
+    logger.trace("Adding resource {} with {} and {}", resourceName, dataAccessObject.getClass().getSimpleName(), resourceSchemaProvider.getClass().getSimpleName());
     if(StringUtils.isBlank(resourceName)) {
       throw new IllegalArgumentException("Provided resourceName was null.");
     }
@@ -165,7 +111,7 @@ public class JAdmin {
    */
   @SuppressWarnings("unused")
   public Configuration getFreemarkerConfiguration() {
-    return freemarkerConfiguration;
+    return interfaceManager.getFreemarkerConfiguration();
   }
 
   /**
@@ -181,7 +127,16 @@ public class JAdmin {
    * Halts the JAdmin interface.
    */
   public void stop() {
-    spark.stop();
+    interfaceManager.stop();
+  }
+
+  /**
+   * Getter for the internal SparkJava instance used by the admin panel, may be used to supply additional configuration.
+   *
+   * @return    the SparkJava instance used by the admin panel
+   */
+  public Service getSpark() {
+    return interfaceManager.getSpark();
   }
 }
 
