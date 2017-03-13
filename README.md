@@ -61,6 +61,7 @@ take a look at [Freemarker](http://freemarker.org/docs/index.html), the template
 * Include CSRF tokens in each form
 * Support database constraints, i.e. validate form input in the browser
 * Add internationalization support
+* Support file-based configuration
 
 # Limitations
 
