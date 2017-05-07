@@ -67,4 +67,20 @@ public class FormInput implements PageElement {
   public void setName(String name) {
     this.name = name;
   }
+  
+  public String getInputType() {
+    switch(columnType) {
+      case integer:
+        return "number";
+      case string:
+        if(name.toLowerCase().startsWith("password")) {
+          return "password";
+        } else {
+          return "text";
+        }
+        default:
+          return "text";
+          
+    }
+  }
 }
