@@ -46,13 +46,17 @@ public abstract class DatabaseTest {
 
   /**
    * Load the test tables into each database
+   *
    * @param dataSource
    */
   public static void databaseSetup(DataSource dataSource) {
     logger.info("Starting databaseSetup for dataSource " + dataSource.getClass().getSimpleName());
     try(Connection conn = dataSource.getConnection()) {
       // simple table without foreign key
-      conn.prepareStatement("CREATE TABLE IF NOT EXISTS locations(id SERIAL PRIMARY KEY, name VARCHAR(255), is_active TINYINT(1), favorite_number INT);").execute();
+      conn.prepareStatement("CREATE TABLE IF NOT EXISTS locations(id SERIAL PRIMARY KEY, name VARCHAR(255), is_active BOOLEAN, favorite_number INT);").execute();
+
+      // create a typical users table
+      conn.prepareStatement("CREATE TABLE IF NOT EXISTS users(id SERIAL PRIMARY KEY, username VARCHAR(255) not null, password VARCHAR(255) not null, is_admin boolean, created_at timestamp default now() not null);").execute();
 
       // table with a compound primary key
       conn.prepareStatement("CREATE TABLE IF NOT EXISTS compound_table(id INT, second_id INT, name VARCHAR(255), location_id INTEGER REFERENCES locations(id), PRIMARY KEY(id, second_id));").execute();
@@ -71,7 +75,7 @@ public abstract class DatabaseTest {
           new Object[]{"H2-MySQL", createH2DataSource(properties, "MYSQL")},
           new Object[]{"H2-PostgreSQL", createH2DataSource(properties, "PostgreSQL")},
           new Object[]{"PostgreSQL", createPostgresDataSource(properties)
-        });
+          });
     }
     return dataCache;
   }
@@ -80,7 +84,7 @@ public abstract class DatabaseTest {
     Properties properties = new Properties();
     try(InputStream is = DatabaseTest.class.getResourceAsStream("/database.properties")) {
       properties.load(is);
-    } catch (IOException e) {
+    } catch(IOException e) {
       // no custom configuration found, use the default
       try(InputStream is2 = DatabaseTest.class.getResourceAsStream("/database.properties.example")) {
         properties.load(is2);
