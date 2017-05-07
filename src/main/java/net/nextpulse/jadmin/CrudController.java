@@ -2,12 +2,15 @@ package net.nextpulse.jadmin;
 
 import net.nextpulse.jadmin.dao.DataAccessException;
 import net.nextpulse.jadmin.dao.DatabaseEntry;
+import net.nextpulse.jadmin.dsl.InputValidator;
+import net.nextpulse.jadmin.dsl.InvalidInputException;
 import net.nextpulse.jadmin.exceptions.NotFoundException;
 import net.nextpulse.jadmin.helpers.Path;
 import net.nextpulse.jadmin.views.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import spark.*;
+import spark.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,15 +52,22 @@ public class CrudController {
 
     DatabaseEntry editedObject = editedObjectOption.orElseThrow(NotFoundException::new);
     EditView editView = new EditView(resource, editedObject, createTemplateObject(resource.getTableName()));
-    return new ModelAndView(editView, "edit.ftl");
+    return new ModelAndView(editView, Path.Template.EDIT);
   };
 
   /**
    * Handles the submission of a specific resource instance's edit form.
    */
   public Route editPostRoute = (request, response) -> {
+    response.type("application/json");
     Resource resource = request.attribute("resourceSchemaProvider");
     FormPostEntry postEntry = extractFormPostEntry(request, resource);
+    try {
+      validatePostData(postEntry, resource);
+    } catch(InvalidInputException e) {
+      return new EditPost(false, e.getMessage());
+    }
+
     try {
       resource.getDao().update(postEntry);
     } catch(DataAccessException e) {
@@ -73,15 +83,22 @@ public class CrudController {
   public TemplateViewRoute createRoute = (request, response) -> {
     Resource resource = request.attribute("resourceSchemaProvider");
     EditView editView = new EditView(resource, DatabaseEntry.buildEmpty(), createTemplateObject(resource.getTableName()));
-    return new ModelAndView(editView, "edit.ftl");
+    return new ModelAndView(editView, Path.Template.EDIT);
   };
 
   /**
    * Handles the submission of a new resource form.
    */
   public Route createPostRoute = (request, response) -> {
+    response.type("application/json");
     Resource resource = request.attribute("resourceSchemaProvider");
     FormPostEntry postEntry = extractFormPostEntry(request, resource);
+    try {
+      validatePostData(postEntry, resource);
+    } catch(InvalidInputException e) {
+      return new EditPost(false, e.getMessage());
+    }
+
     try {
       resource.getDao().insert(postEntry);
     } catch(DataAccessException e) {
@@ -144,5 +161,46 @@ public class CrudController {
       }
     }
     return postEntry;
+  }
+
+  /**
+   * Ensures all entries of the FormPostEntry pass validation.
+   *
+   * @param postEntry entry to validatePostData
+   * @param resource
+   * @throws InvalidInputException if the user input does not pass validation
+   */
+  public static void validatePostData(FormPostEntry postEntry, Resource resource) throws InvalidInputException {
+    for(ColumnDefinition columnDefinition : resource.getColumnDefinitions()) {
+      validateColumn(columnDefinition, postEntry);
+    }
+  }
+  
+  /**
+   * Compares the POST data against the column definition and validation.
+   * 
+   * @param columnDefinition  definition of the column
+   * @param postEntry         user provided data
+   * @throws InvalidInputException
+   */
+  private static void validateColumn(ColumnDefinition columnDefinition, FormPostEntry postEntry) throws InvalidInputException {
+    if(columnDefinition.isKeyColumn()) {
+      String postValue = postEntry.getKeyValues().get(columnDefinition);
+      if(StringUtils.isBlank(postValue)) {
+        throw new InvalidInputException("Key column " + columnDefinition.getName() + " is missing");
+      }
+    } else {
+      String input = postEntry.getValues().get(columnDefinition);
+      if(!columnDefinition.isEditable()) {
+        throw new InvalidInputException("Column " + columnDefinition.getName() + " is not editable");
+      }
+      
+      // validate the actual input
+      InputValidator validator = columnDefinition.getValidator();
+      if(validator != null) {
+        String transformedInput = validator.validate(input);
+        postEntry.getValues().put(columnDefinition, transformedInput);
+      }
+    }
   }
 }

@@ -9,7 +9,7 @@ import java.util.Map;
 public class FormPostEntry {
 
   /**
-   * Key value(s) for this post entry, i.e. the object id.
+   * Key value(s) for this post entry, i.e. the object id, non-editable values.
    */
   private LinkedHashMap<ColumnDefinition, String> keyValues = new LinkedHashMap<>();
   /**
@@ -37,10 +37,6 @@ public class FormPostEntry {
 
   public void addKeyValue(ColumnDefinition def, String value) {
     keyValues.put(def, value);
-  }
-
-  public int entryCount() {
-    return keyValues.size() + values.size();
   }
 
   /**

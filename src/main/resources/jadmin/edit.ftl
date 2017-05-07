@@ -1,4 +1,4 @@
-<@root.template jsIncludes=[]>
+<@root.template jsIncludes=["edit.js"]>
 <div class="row">
     <div class="panel panel-default">
         <div class="panel-heading">

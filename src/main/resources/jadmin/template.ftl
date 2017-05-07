@@ -31,7 +31,7 @@
     <#include "includes/footer.ftl"/>
 </div>
 
-<#include "includes/scripts.ftl"/>
+    <#include "includes/scripts.ftl"/>
 </body>
 </html>
 </#macro>

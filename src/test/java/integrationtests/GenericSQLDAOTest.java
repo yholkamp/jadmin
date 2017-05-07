@@ -91,14 +91,15 @@ public class GenericSQLDAOTest extends DatabaseTest {
 
   /**
    * Compares boolean values, treating a byte value as boolean for compatibility across different databases/JDBC connectors.
-   * @param expected    expected value
-   * @param actual      actual value returned by the JDBC connector
+   *
+   * @param expected expected value
+   * @param actual   actual value returned by the JDBC connector
    */
   private void assertSQLBooleanEqual(boolean expected, Object actual) {
     if(expected) {
-      assertTrue(actual.equals((byte)1) || actual.equals(true));
+      assertTrue(actual.equals((byte) 1) || actual.equals(true));
     } else {
-      assertFalse(actual.equals((byte)1) || actual.equals(true));
+      assertFalse(actual.equals((byte) 1) || actual.equals(true));
     }
   }
 }

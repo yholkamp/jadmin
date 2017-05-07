@@ -18,6 +18,7 @@ import org.junit.experimental.categories.Category;
 import spark.ModelAndView;
 import spark.QueryParamsMap;
 import spark.Request;
+import spark.Response;
 import testhelpers.DatabaseTest;
 import testhelpers.IntegrationTest;
 
@@ -32,16 +33,17 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * Basic 'live' test for the CrudControllerTest, using actual databases to validate the implemented functionality.
+ * Basic 'live' test for the CrudControllerIntegrationTest, using actual databases to validatePostData the implemented functionality.
  *
  * @author yholkamp
  */
 @Category(IntegrationTest.class)
-public class CrudControllerTest extends DatabaseTest {
+public class CrudControllerIntegrationTest extends DatabaseTest {
 
   private Resource resource;
   private CrudController controller;
-
+  private Response response = mock(Response.class);
+  
   @Before
   public void loadData() throws Exception {
     Operation operation =
@@ -64,7 +66,7 @@ public class CrudControllerTest extends DatabaseTest {
 
   @Test
   public void listMethod() throws Exception {
-    ModelAndView result = controller.listRoute.handle(createMockRequest(), null);
+    ModelAndView result = controller.listRoute.handle(createMockRequest(), response);
     ListView model = (ListView) result.getModel();
     assertEquals("locations", model.getResource().getTableName());
     assertEquals(ImmutableList.of("id", "name", "is_active", "favorite_number"), model.getHeaders());
@@ -76,7 +78,7 @@ public class CrudControllerTest extends DatabaseTest {
     Request mockRequest = createMockRequest();
     when(mockRequest.params(":ids")).thenReturn("2/location2");
 
-    ModelAndView result = controller.editRoute.handle(mockRequest, null);
+    ModelAndView result = controller.editRoute.handle(mockRequest, response);
     EditView model = (EditView) result.getModel();
 
     // ensure the name and id match, both in case insensitive fashion
@@ -88,13 +90,13 @@ public class CrudControllerTest extends DatabaseTest {
   public void editPost() throws Exception {
     Request mockRequest = createMockRequest();
     when(mockRequest.queryMap()).thenReturn(new TestQueryParamsMap(ImmutableMap.of(
-      "id", new String[]{"1"},
-      "name", new String[]{"newName"},
-      "is_active", new String[]{"0"},
-      "favorite_number", new String[]{"71"}
+        "id", new String[]{"1"},
+        "name", new String[]{"newName"},
+        "is_active", new String[]{"0"},
+        "favorite_number", new String[]{"71"}
     )));
 
-    EditPost result = (EditPost) controller.editPostRoute.handle(mockRequest, null);
+    EditPost result = (EditPost) controller.editPostRoute.handle(mockRequest, response);
     assertTrue(result.isSuccess());
     try(Connection conn = dataSource.getConnection()) {
       ResultSet queryResult = conn.prepareStatement("SELECT * FROM locations WHERE id = 1").executeQuery();
@@ -105,7 +107,7 @@ public class CrudControllerTest extends DatabaseTest {
       assertEquals("newName", location.get("name"));
       assertEquals(71, location.get("favorite_number"));
       // PG will return this value as boolean, H2 as byte
-      assertTrue(location.get("is_active").equals((byte)0) || location.get("is_active").equals(false));
+      assertTrue(location.get("is_active").equals((byte) 0) || location.get("is_active").equals(false));
     }
   }
 

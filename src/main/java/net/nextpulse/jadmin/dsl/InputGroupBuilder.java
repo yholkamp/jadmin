@@ -10,6 +10,7 @@ import net.nextpulse.jadmin.exceptions.ConfigurationException;
 import net.nextpulse.jadmin.helpers.Tuple2;
 
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -38,6 +39,21 @@ public class InputGroupBuilder {
     ColumnType columnType = getTypeForColumn(column);
     inputGroup.addInput(new FormInput(column, columnType));
     resource.addEditableColumn(column);
+    return this;
+  }
+
+  /**
+   * Adds an input type field for the given column, with an optional inputValidator function. This function will be
+   * called when the user input is submitted, allowing the method to validatePostData or transform (i.e. hash) the user input.
+   *
+   * @param column internal name of the column to add an input for
+   * @return this instance
+   */
+  public InputGroupBuilder input(String column, InputValidator inputValidator) {
+    // ensure the column exists
+    ColumnType columnType = getTypeForColumn(column);
+    inputGroup.addInput(new FormInput(column, columnType));
+    resource.addEditableColumn(column, inputValidator);
     return this;
   }
 

@@ -1,8 +1,9 @@
 # JAdmin
 
 JAdmin is a [Spark Java](http://sparkjava.com/) powered framework to create simple back-ends for administration tasks. Use this library as part 
-of your existing JVM application or stand alone to easily expose CRUD access to rows in your users table, `.properties` 
-files and any other data.
+of your existing JVM application or stand alone to easily expose CRUD access to rows in your SQL tables, `.properties` 
+files and any other data. In the current set-up, JAdmin is focused on providing trusted users with access to data, 
+it is not yet suitable to provide access to untrusted users.
 
 Inspired by the Ruby [Active Admin](https://github.com/activeadmin/activeadmin) library.
 
@@ -62,6 +63,8 @@ take a look at [Freemarker](http://freemarker.org/docs/index.html), the template
 * Support database constraints, i.e. validate form input in the browser
 * Add internationalization support
 * Support file-based configuration
+* Perform an overall security review of the project.
+* Allow input validation rules to be configured, validated both front-end and back-end.
 
 # Limitations
 

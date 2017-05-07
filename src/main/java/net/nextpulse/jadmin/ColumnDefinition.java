@@ -1,5 +1,7 @@
 package net.nextpulse.jadmin;
 
+import net.nextpulse.jadmin.dsl.InputValidator;
+
 /**
  * Object describing a single column of a table.
  *
@@ -21,6 +23,7 @@ public class ColumnDefinition {
    */
   private boolean keyColumn;
   private boolean editable;
+  private InputValidator validator;
 
   public ColumnDefinition() {
   }
@@ -41,8 +44,9 @@ public class ColumnDefinition {
     return name;
   }
 
-  public void setName(String name) {
+  public ColumnDefinition setName(String name) {
     this.name = name;
+    return this;
   }
 
   public ColumnType getType() {
@@ -57,15 +61,26 @@ public class ColumnDefinition {
     return keyColumn;
   }
 
-  public void setKeyColumn(boolean keyColumn) {
+  public ColumnDefinition setKeyColumn(boolean keyColumn) {
     this.keyColumn = keyColumn;
+    return this;
   }
 
   public boolean isEditable() {
     return editable;
   }
 
-  public void setEditable(boolean editable) {
+  public ColumnDefinition setEditable(boolean editable) {
     this.editable = editable;
+    return this;
+  }
+
+  public InputValidator getValidator() {
+    return validator;
+  }
+
+  public ColumnDefinition setValidator(InputValidator validator) {
+    this.validator = validator;
+    return this;
   }
 }
