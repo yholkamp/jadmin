@@ -2,7 +2,6 @@ package net.nextpulse.jadmin;
 
 import net.nextpulse.jadmin.dao.DataAccessException;
 import net.nextpulse.jadmin.dao.DatabaseEntry;
-import net.nextpulse.jadmin.dsl.InputValidator;
 import net.nextpulse.jadmin.dsl.InvalidInputException;
 import net.nextpulse.jadmin.exceptions.NotFoundException;
 import net.nextpulse.jadmin.helpers.Path;
@@ -25,10 +24,10 @@ import java.util.Optional;
  */
 public class CrudController {
   private static final Logger logger = LogManager.getLogger();
-
+  
   private final String prefix;
   private final Map<String, Resource> resources;
-
+  
   /**
    * Lists the instances of a specific resource.
    */
@@ -36,11 +35,11 @@ public class CrudController {
     Resource resource = request.attribute("resourceSchemaProvider");
     // TODO: implement pagination on the list page
     List<DatabaseEntry> rows = resource.getDao().selectMultiple(0, 20);
-
+    
     ListView viewModel = new ListView(resource, rows, resource.getIndexColumns(), createTemplateObject(resource.getTableName()));
     return new ModelAndView(viewModel, Path.Template.LIST);
   };
-
+  
   /**
    * Shows the edit page for a specific resource instance.
    */
@@ -49,12 +48,12 @@ public class CrudController {
     Optional<DatabaseEntry> editedObjectOption;
     String keys = request.params(":ids");
     editedObjectOption = resource.getDao().selectOne((Object[]) keys.split("/"));
-
+    
     DatabaseEntry editedObject = editedObjectOption.orElseThrow(NotFoundException::new);
     EditView editView = new EditView(resource, editedObject, createTemplateObject(resource.getTableName()));
     return new ModelAndView(editView, Path.Template.EDIT);
   };
-
+  
   /**
    * Handles the submission of a specific resource instance's edit form.
    */
@@ -63,11 +62,13 @@ public class CrudController {
     Resource resource = request.attribute("resourceSchemaProvider");
     FormPostEntry postEntry = extractFormPostEntry(request, resource);
     try {
-      validatePostData(postEntry, resource);
+      InputValidator.validate(postEntry, resource);
     } catch(InvalidInputException e) {
       return new EditPost(false, e.getMessage());
     }
-
+    
+    processPostData(postEntry);
+    
     try {
       resource.getDao().update(postEntry);
     } catch(DataAccessException e) {
@@ -76,7 +77,7 @@ public class CrudController {
     }
     return new EditPost(true, null);
   };
-
+  
   /**
    * Handles the 'new' form for a specific resource.
    */
@@ -85,7 +86,7 @@ public class CrudController {
     EditView editView = new EditView(resource, DatabaseEntry.buildEmpty(), createTemplateObject(resource.getTableName()));
     return new ModelAndView(editView, Path.Template.EDIT);
   };
-
+  
   /**
    * Handles the submission of a new resource form.
    */
@@ -94,11 +95,11 @@ public class CrudController {
     Resource resource = request.attribute("resourceSchemaProvider");
     FormPostEntry postEntry = extractFormPostEntry(request, resource);
     try {
-      validatePostData(postEntry, resource);
+      InputValidator.validate(postEntry, resource);
     } catch(InvalidInputException e) {
       return new EditPost(false, e.getMessage());
     }
-
+    
     try {
       resource.getDao().insert(postEntry);
     } catch(DataAccessException e) {
@@ -107,12 +108,12 @@ public class CrudController {
     }
     return new EditPost(true, null);
   };
-
+  
   /**
    * Renders the main dashboard offered by JAdmin.
    */
   public TemplateViewRoute dashboardRoute = (request, response) -> new ModelAndView(new DashboardViewObject(createTemplateObject(null)), "index.ftl");
-
+  
   /**
    * Constructor for this class, used internally.
    *
@@ -123,7 +124,7 @@ public class CrudController {
     this.prefix = prefix;
     this.resources = resources;
   }
-
+  
   /**
    * Helper method that creates a base TemplateObject for the provided table.
    *
@@ -133,7 +134,7 @@ public class CrudController {
   private TemplateObject createTemplateObject(String table) {
     return new TemplateObject(prefix, new ArrayList<>(resources.keySet()), table);
   }
-
+  
   /**
    * Construct a new FormPostEntry from the user provided data, filtered down to only include editable fields and the object keys.
    *
@@ -143,7 +144,7 @@ public class CrudController {
    */
   private FormPostEntry extractFormPostEntry(Request request, Resource resource) {
     FormPostEntry postEntry = new FormPostEntry();
-
+    
     for(ColumnDefinition columnDefinition : resource.getColumnDefinitions()) {
       // copy the key values that are present
       if(columnDefinition.isKeyColumn()) {
@@ -162,45 +163,16 @@ public class CrudController {
     }
     return postEntry;
   }
-
-  /**
-   * Ensures all entries of the FormPostEntry pass validation.
-   *
-   * @param postEntry entry to validatePostData
-   * @param resource
-   * @throws InvalidInputException if the user input does not pass validation
-   */
-  public static void validatePostData(FormPostEntry postEntry, Resource resource) throws InvalidInputException {
-    for(ColumnDefinition columnDefinition : resource.getColumnDefinitions()) {
-      validateColumn(columnDefinition, postEntry);
-    }
-  }
   
   /**
-   * Compares the POST data against the column definition and validation.
-   * 
-   * @param columnDefinition  definition of the column
-   * @param postEntry         user provided data
-   * @throws InvalidInputException
+   * Processes the user post data using the optional post-processing method specified for the column.
+   *
+   * @param postEntry user post data that may require processing
    */
-  private static void validateColumn(ColumnDefinition columnDefinition, FormPostEntry postEntry) throws InvalidInputException {
-    if(columnDefinition.isKeyColumn()) {
-      String postValue = postEntry.getKeyValues().get(columnDefinition);
-      if(StringUtils.isBlank(postValue)) {
-        throw new InvalidInputException("Key column " + columnDefinition.getName() + " is missing");
-      }
-    } else {
-      String input = postEntry.getValues().get(columnDefinition);
-      if(!columnDefinition.isEditable()) {
-        throw new InvalidInputException("Column " + columnDefinition.getName() + " is not editable");
-      }
-      
-      // validate the actual input
-      InputValidator validator = columnDefinition.getValidator();
-      if(validator != null) {
-        String transformedInput = validator.validate(input);
-        postEntry.getValues().put(columnDefinition, transformedInput);
-      }
-    }
+  private void processPostData(FormPostEntry postEntry) {
+    postEntry.getValues().entrySet().stream().filter(entry -> entry.getKey().getInputTransformer() != null).forEach(entry -> {
+      String transformedInput = entry.getKey().getInputTransformer().apply(entry.getValue());
+      postEntry.getValues().put(entry.getKey(), transformedInput);
+    });
   }
 }

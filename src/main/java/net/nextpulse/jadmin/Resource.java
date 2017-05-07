@@ -1,7 +1,7 @@
 package net.nextpulse.jadmin;
 
 import net.nextpulse.jadmin.dao.AbstractDAO;
-import net.nextpulse.jadmin.dsl.InputValidator;
+import net.nextpulse.jadmin.dsl.InputValidationRule;
 import net.nextpulse.jadmin.elements.PageElement;
 
 import java.util.ArrayList;
@@ -95,13 +95,13 @@ public class Resource {
    * Marks the provided column as editable, configuring a validation function to run on the user input.
    *
    * @param name    name of this column
-   * @param inputValidator  validates and/or transforms the user input for this column
+   * @param inputValidationRules  validates and/or transforms the user input for this column
    */
-  public void addEditableColumn(String name, InputValidator inputValidator) {
+  public void addEditableColumn(String name, InputValidationRule... inputValidationRules) {
     findColumnDefinitionByName(name)
         .orElseThrow(() -> new IllegalArgumentException("Column " + name + " could not be found on resource " + tableName))
         .setEditable(true)
-        .setValidator(inputValidator);
+        .addValidationRules(inputValidationRules);
   }
 
   /**

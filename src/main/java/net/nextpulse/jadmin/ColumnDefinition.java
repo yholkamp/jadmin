@@ -1,6 +1,11 @@
 package net.nextpulse.jadmin;
 
-import net.nextpulse.jadmin.dsl.InputValidator;
+import net.nextpulse.jadmin.dsl.InputValidationRule;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Function;
 
 /**
  * Object describing a single column of a table.
@@ -23,8 +28,9 @@ public class ColumnDefinition {
    */
   private boolean keyColumn;
   private boolean editable;
-  private InputValidator validator;
-
+  private List<InputValidationRule> validationRules = new ArrayList<>();
+  private Function<String, String> inputTransformer;
+  
   public ColumnDefinition() {
   }
 
@@ -75,12 +81,27 @@ public class ColumnDefinition {
     return this;
   }
 
-  public InputValidator getValidator() {
-    return validator;
+  /**
+   * Adds the provided input validation rule to the list of rules.
+   * 
+   * @param inputValidationRules  rule(s) that should be active for this column
+   */
+  public void addValidationRules(InputValidationRule... inputValidationRules) {
+    validationRules.addAll(Arrays.asList(inputValidationRules));
   }
-
-  public ColumnDefinition setValidator(InputValidator validator) {
-    this.validator = validator;
-    return this;
+  
+  /**
+   * @return the configured validation rules
+   */
+  public List<InputValidationRule> getValidationRules() {
+    return validationRules;
+  }
+  
+  public Function<String, String> getInputTransformer() {
+    return inputTransformer;
+  }
+  
+  public void setInputTransformer(Function<String, String> inputTransformer) {
+    this.inputTransformer = inputTransformer;
   }
 }

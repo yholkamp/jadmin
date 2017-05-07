@@ -1,7 +1,6 @@
 package net.nextpulse.jadmin.elements;
 
 import net.nextpulse.jadmin.ColumnType;
-import net.nextpulse.jadmin.dsl.InputValidator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

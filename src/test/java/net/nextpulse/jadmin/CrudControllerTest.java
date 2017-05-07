@@ -21,7 +21,6 @@ import static org.mockito.Mockito.when;
 public class CrudControllerTest {
   private static Map<String, Resource> resourcesMap;
   private JAdmin jAdmin;
-  private ResourceSchemaProvider schemaProvider;
   private List<ColumnDefinition> columns;
   private Resource resource;
   ColumnDefinition idColumn;
@@ -32,58 +31,24 @@ public class CrudControllerTest {
   public void setUp() throws Exception {
     jAdmin = new JAdmin();
     //CrudController controller = new CrudController("/bla", resourcesMap);
-    schemaProvider = () -> columns;
 
     idColumn = new ColumnDefinition("id", ColumnType.integer, true, false);
     loginColumn = new ColumnDefinition("login", ColumnType.text, false, false);
     passwordColumn = new ColumnDefinition("password", ColumnType.text, false, true);
 
     columns = ImmutableList.of(idColumn, loginColumn, passwordColumn);
-    jAdmin.resource("test_obj", new InMemoryDAO(), schemaProvider).formConfig(x ->
+    jAdmin.resource("test_obj", new InMemoryDAO(),  () -> columns).formConfig(x ->
         x.inputGroup("User fields", inputGroupBuilder -> {
-          inputGroupBuilder.input("password", CrudControllerTest::validateAndHashPassword);
+          inputGroupBuilder.input("password", (column, input) -> {
+            if(input.length() < 6) { 
+              throw new InvalidInputException("Password too short");
+            }
+          });
         })
     );
 
     resourcesMap = jAdmin.getResources();
     resource = resourcesMap.get("test_obj");
-  }
-  
-  @Test(expected = InvalidInputException.class)
-  public void testValidatePostData_shouldRejectMissingPK() throws Exception {
-    FormPostEntry postEntry = new FormPostEntry();
-    postEntry.addValue(loginColumn, "1");
-    postEntry.addValue(passwordColumn, "foobarbaz");
-    CrudController.validatePostData(postEntry, resource);
-  }
-  
-  @Test(expected = InvalidInputException.class)
-  public void testValidatePostData_shouldRejectPKAsValue() throws Exception {
-    FormPostEntry postEntry = new FormPostEntry();
-    postEntry.addValue(loginColumn, "1");
-    postEntry.addValue(idColumn, "1");
-    postEntry.addValue(passwordColumn, "foobarbaz");
-    CrudController.validatePostData(postEntry, resource);
-  }
-
-  @Test(expected = InvalidInputException.class)
-  public void testValidatePostData_shouldRejectShortPassword() throws Exception {
-    FormPostEntry postEntry = new FormPostEntry();
-    postEntry.addKeyValue(idColumn, "1");
-    postEntry.addValue(passwordColumn, "short");
-    postEntry.addValue(loginColumn, "foobarbaz");
-    CrudController.validatePostData(postEntry, resource);
-  }
-
-  @Test
-  public void testValidatePostData_shouldTransformValidPassword() throws Exception {
-    FormPostEntry postEntry = new FormPostEntry();
-    postEntry.addKeyValue(idColumn, "1");
-    postEntry.addValue(passwordColumn, "ybatybatybat");
-    postEntry.addValue(loginColumn, "foo");
-    CrudController.validatePostData(postEntry, resource);
-    String updatedValue = postEntry.getValues().get(passwordColumn);
-    assertEquals("Should have ROT13-ed our input data", "longlonglong", updatedValue);
   }
 
   /**
