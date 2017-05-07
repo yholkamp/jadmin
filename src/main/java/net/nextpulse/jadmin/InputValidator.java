@@ -5,6 +5,8 @@ import net.nextpulse.jadmin.dsl.InvalidInputException;
 import spark.utils.StringUtils;
 
 /**
+ * Input validation class that will check the user provided data against the configured input restrictions.
+ *
  * @author yorick
  */
 public class InputValidator {
@@ -12,16 +14,22 @@ public class InputValidator {
   private InputValidator() {
   }
   
+  enum ValidationMode {
+    CREATE,
+    EDIT
+  }
+  
   /**
    * Ensures all entries of the FormPostEntry pass validation.
    *
-   * @param postEntry entry to validatePostData
-   * @param resource
+   * @param postEntry      entry to validatePostData
+   * @param resource       internal resource object
+   * @param validationMode validation mode, either edit or create
    * @throws InvalidInputException if the user input does not pass validation
    */
-  public static void validate(FormPostEntry postEntry, Resource resource) throws InvalidInputException {
+  public static void validate(FormPostEntry postEntry, Resource resource, ValidationMode validationMode) throws InvalidInputException {
     for(ColumnDefinition columnDefinition : resource.getColumnDefinitions()) {
-      validateColumn(columnDefinition, postEntry);
+      validateColumn(columnDefinition, postEntry, validationMode);
     }
   }
   
@@ -30,13 +38,17 @@ public class InputValidator {
    *
    * @param columnDefinition definition of the column
    * @param postEntry        user provided data
+   * @param validationMode   validation mode
    * @throws InvalidInputException
    */
-  private static void validateColumn(ColumnDefinition columnDefinition, FormPostEntry postEntry) throws InvalidInputException {
+  private static void validateColumn(ColumnDefinition columnDefinition, FormPostEntry postEntry, ValidationMode validationMode) throws InvalidInputException {
     if(columnDefinition.isKeyColumn()) {
-      String input = postEntry.getKeyValues().get(columnDefinition);
-      if(StringUtils.isBlank(input)) {
-        throw new InvalidInputException("Key column " + columnDefinition.getName() + " is missing");
+      // skip the key presence requirement for new entries
+      if(validationMode == ValidationMode.EDIT) {
+        String input = postEntry.getKeyValues().get(columnDefinition);
+        if(StringUtils.isBlank(input)) {
+          throw new InvalidInputException("Key column " + columnDefinition.getName() + " is missing");
+        }
       }
     } else {
       String input = postEntry.getValues().get(columnDefinition);
@@ -51,6 +63,7 @@ public class InputValidator {
   
   /**
    * Validates the user input against the rules configured for the column
+   *
    * @throws InvalidInputException if the user data does not pass input validation
    */
   private static void validateColumn(ColumnDefinition columnDefinition, String userData) throws InvalidInputException {

@@ -9,7 +9,6 @@ import net.nextpulse.jadmin.views.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import spark.*;
-import spark.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +61,7 @@ public class CrudController {
     Resource resource = request.attribute("resourceSchemaProvider");
     FormPostEntry postEntry = extractFormPostEntry(request, resource);
     try {
-      InputValidator.validate(postEntry, resource);
+      InputValidator.validate(postEntry, resource, InputValidator.ValidationMode.EDIT);
     } catch(InvalidInputException e) {
       return new EditPost(false, e.getMessage());
     }
@@ -95,7 +94,7 @@ public class CrudController {
     Resource resource = request.attribute("resourceSchemaProvider");
     FormPostEntry postEntry = extractFormPostEntry(request, resource);
     try {
-      InputValidator.validate(postEntry, resource);
+      InputValidator.validate(postEntry, resource, InputValidator.ValidationMode.CREATE);
     } catch(InvalidInputException e) {
       return new EditPost(false, e.getMessage());
     }

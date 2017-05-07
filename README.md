@@ -60,11 +60,11 @@ take a look at [Freemarker](http://freemarker.org/docs/index.html), the template
 * Include configurable authentication (currently only available by interacting with the internal Spark instance)
 * Include smart support for foreign keys, i.e. display a `<select>` for foreign key columns
 * Include CSRF tokens in each form
-* Support database constraints, i.e. validate form input in the browser
 * Add internationalization support
 * Support file-based configuration
 * Perform an overall security review of the project.
-* Allow input validation rules to be configured, validated both front-end and back-end.
+* Allow front-end input validation rules to be configured.
+* Support primary keys that are not auto-generated, using either a supplier method or user input.
 
 # Limitations
 

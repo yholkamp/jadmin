@@ -17,7 +17,6 @@ public class InputValidatorTest {
   private JAdmin jAdmin = new JAdmin();
   private Resource resource;
   
-  
   @Before
   public void setUp() throws Exception {
     idColumn = new ColumnDefinition("id", ColumnType.integer, true, false);
@@ -33,11 +32,19 @@ public class InputValidatorTest {
   }
   
   @Test(expected = InvalidInputException.class)
-  public void testValidatePostData_shouldRejectMissingPK() throws Exception {
+  public void testValidatePostData_shouldRejectMissingPK_onEdit() throws Exception {
     FormPostEntry postEntry = new FormPostEntry();
     postEntry.addValue(loginColumn, "1");
     postEntry.addValue(passwordColumn, "foobarbaz");
-    InputValidator.validate(postEntry, resource);
+    InputValidator.validate(postEntry, resource, InputValidator.ValidationMode.EDIT);
+  }
+  
+  @Test
+  public void testValidatePostData_shouldAcceptMissingPK_onCreate() throws Exception {
+    FormPostEntry postEntry = new FormPostEntry();
+    postEntry.addValue(loginColumn, "1");
+    postEntry.addValue(passwordColumn, "foobarbaz");
+    InputValidator.validate(postEntry, resource, InputValidator.ValidationMode.CREATE);
   }
   
   @Test(expected = InvalidInputException.class)
@@ -46,7 +53,7 @@ public class InputValidatorTest {
     postEntry.addValue(loginColumn, "1");
     postEntry.addValue(idColumn, "1");
     postEntry.addValue(passwordColumn, "foobarbaz");
-    InputValidator.validate(postEntry, resource);
+    InputValidator.validate(postEntry, resource, InputValidator.ValidationMode.EDIT);
   }
   
   @Test(expected = InvalidInputException.class)
@@ -55,7 +62,7 @@ public class InputValidatorTest {
     postEntry.addKeyValue(idColumn, "1");
     postEntry.addValue(passwordColumn, "short");
     postEntry.addValue(loginColumn, "foobarbaz");
-    InputValidator.validate(postEntry, resource);
+    InputValidator.validate(postEntry, resource, InputValidator.ValidationMode.EDIT);
   }
   
   @Test(expected = InvalidInputException.class)
@@ -65,7 +72,7 @@ public class InputValidatorTest {
     postEntry.addKeyValue(idColumn, "1");
     postEntry.addValue(passwordColumn, "ybatybatybat");
     postEntry.addValue(loginColumn, "foo");
-    InputValidator.validate(postEntry, resource);
+    InputValidator.validate(postEntry, resource, InputValidator.ValidationMode.EDIT);
   }
   
   @Test
@@ -74,7 +81,7 @@ public class InputValidatorTest {
     postEntry.addKeyValue(idColumn, "1");
     postEntry.addValue(passwordColumn, "ybatybatybat");
     postEntry.addValue(loginColumn, "foo");
-    InputValidator.validate(postEntry, resource);
+    InputValidator.validate(postEntry, resource, InputValidator.ValidationMode.EDIT);
   }
   
 }
