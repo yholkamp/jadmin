@@ -12,7 +12,7 @@ import java.util.Base64;
 import static spark.Spark.halt;
 
 /**
- * Example authentication filter that provides a simple user & password prompt using Basic Authentication.
+ * Example authentication filter that provides a simple user &amp; password prompt using Basic Authentication.
  */
 public class BasicAuthenticationFilter extends FilterImpl {
   private static final Logger logger = LogManager.getLogger();
@@ -52,8 +52,8 @@ public class BasicAuthenticationFilter extends FilterImpl {
   /**
    * Attempt to authenticate the request using the provided Authentication header
    *
-   * @param rawHeader
-   * @return
+   * @param rawHeader user provided header
+   * @return true iff the header contained the correct user and password
    */
   protected boolean authenticateWithHeader(String rawHeader) {
     // we require a header
