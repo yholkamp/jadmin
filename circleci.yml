@@ -1,0 +1,14 @@
+machine:
+  java:
+    version: oraclejdk8
+  services:
+    - mysql
+    - postgresql
+    
+dependencies:
+  override:
+    - mvn --fail-never dependency:go-offline || true
+
+test:
+  override:
+    - mvn -o test integration-test
