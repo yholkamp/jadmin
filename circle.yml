@@ -2,8 +2,11 @@ machine:
   java:
     version: oraclejdk8
   services:
-    - mysql
     - postgresql
+    
+checkout:
+  post:
+    - cp ./src/test/resources/database.circleci.properties ./src/test/resources/database.properties
     
 dependencies:
   override:
