@@ -8,10 +8,10 @@ checkout:
   post:
     - cp ./src/test/resources/database.circleci.properties ./src/test/resources/database.properties
     
-dependencies:
-  override:
-    - mvn --fail-never dependency:go-offline || true
+#dependencies:
+#  override:
+#    - mvn --fail-never dependency:go-offline || true
 
 test:
   override:
-    - mvn -o test integration-test
+    - mvn test integration-test
