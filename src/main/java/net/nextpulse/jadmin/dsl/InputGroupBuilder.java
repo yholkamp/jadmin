@@ -43,7 +43,7 @@ public class InputGroupBuilder {
   
   /**
    * Adds an input type field for the given column, with an optional inputValidationRule function. This function will be
-   * called when the user input is submitted, allowing the method to validatePostData or transform (i.e. hash) the user input.
+   * called when the user input is submitted, allowing for input validation.
    *
    * @param column               internal name of the column to add an input for
    * @param inputValidationRules validation rules to apply to the user input for this field
@@ -54,6 +54,39 @@ public class InputGroupBuilder {
     ColumnType columnType = getTypeForColumn(column);
     inputGroup.addInput(new FormInput(column, columnType));
     resource.addEditableColumn(column, inputValidationRules);
+    return this;
+  }
+  
+  /**
+   * Adds an input type field for the given column, with an optional inputValidationRule function. This function will be
+   * called when the user input is submitted, allowing the method to validatePostData or transform (i.e. hash) the user input.
+   *
+   * @param column           internal name of the column to add an input for
+   * @param inputTransformer input transformation method to apply to the user input before saving the data, may be used to hash the user password.
+   * @return this instance
+   */
+  public InputGroupBuilder input(String column, InputTransformer inputTransformer) {
+    // ensure the column exists
+    ColumnType columnType = getTypeForColumn(column);
+    inputGroup.addInput(new FormInput(column, columnType));
+    resource.addEditableColumn(column, inputTransformer);
+    return this;
+  }
+  
+  /**
+   * Adds an input type field for the given column, with an optional inputValidationRule function. This function will be
+   * called when the user input is submitted, allowing the method to validatePostData or transform (i.e. hash) the user input.
+   *
+   * @param column               internal name of the column to add an input for
+   * @param inputTransformer     input transformation method to apply to the user input before saving the data, may be used to hash the user password.
+   * @param inputValidationRules validation rules to apply to the user input for this field
+   * @return this instance
+   */
+  public InputGroupBuilder input(String column, InputTransformer inputTransformer, InputValidationRule... inputValidationRules) {
+    // ensure the column exists
+    ColumnType columnType = getTypeForColumn(column);
+    inputGroup.addInput(new FormInput(column, columnType));
+    resource.addEditableColumn(column, inputTransformer, inputValidationRules);
     return this;
   }
   
