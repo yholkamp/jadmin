@@ -1,6 +1,7 @@
 package net.nextpulse.jadmin;
 
 import net.nextpulse.jadmin.dao.AbstractDAO;
+import net.nextpulse.jadmin.dsl.InputTransformer;
 import net.nextpulse.jadmin.dsl.InputValidationRule;
 import net.nextpulse.jadmin.elements.PageElement;
 
@@ -8,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -90,18 +92,46 @@ public class Resource {
         .orElseThrow(() -> new IllegalArgumentException("Column " + name + " could not be found on resource " + tableName))
         .setEditable(true);
   }
-
+  
   /**
    * Marks the provided column as editable, configuring a validation function to run on the user input.
    *
    * @param name    name of this column
-   * @param inputValidationRules  validates and/or transforms the user input for this column
+   * @param inputValidationRules  validates the user input for this column
    */
   public void addEditableColumn(String name, InputValidationRule... inputValidationRules) {
     findColumnDefinitionByName(name)
         .orElseThrow(() -> new IllegalArgumentException("Column " + name + " could not be found on resource " + tableName))
         .setEditable(true)
         .addValidationRules(inputValidationRules);
+  }
+  
+  /**
+   * Marks the provided column as editable, configuring a validation function to run on the user input.
+   *
+   * @param name    name of this column
+   * @param inputTransformer  transforms the user input for this column
+   */
+  public void addEditableColumn(String name, InputTransformer inputTransformer) {
+    findColumnDefinitionByName(name)
+        .orElseThrow(() -> new IllegalArgumentException("Column " + name + " could not be found on resource " + tableName))
+        .setEditable(true)
+        .setInputTransformer(inputTransformer);
+  }
+  
+  /**
+   * Marks the provided column as editable, configuring a validation function to run on the user input.
+   *
+   * @param name    name of this column
+   * @param inputValidationRules  validates the user input for this column
+   * @param inputTransformer  transforms the user input for this column
+   */
+  public void addEditableColumn(String name,  InputTransformer inputTransformer, InputValidationRule... inputValidationRules) {
+    findColumnDefinitionByName(name)
+        .orElseThrow(() -> new IllegalArgumentException("Column " + name + " could not be found on resource " + tableName))
+        .setEditable(true)
+        .addValidationRules(inputValidationRules)
+        .setInputTransformer(inputTransformer);
   }
 
   /**

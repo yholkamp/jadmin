@@ -1,11 +1,11 @@
 package net.nextpulse.jadmin;
 
+import net.nextpulse.jadmin.dsl.InputTransformer;
 import net.nextpulse.jadmin.dsl.InputValidationRule;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 
 /**
  * Object describing a single column of a table.
@@ -29,7 +29,7 @@ public class ColumnDefinition {
   private boolean keyColumn;
   private boolean editable;
   private List<InputValidationRule> validationRules = new ArrayList<>();
-  private Function<String, String> inputTransformer;
+  private InputTransformer inputTransformer;
   
   public ColumnDefinition() {
   }
@@ -83,11 +83,12 @@ public class ColumnDefinition {
 
   /**
    * Adds the provided input validation rule to the list of rules.
-   * 
+   *
    * @param inputValidationRules  rule(s) that should be active for this column
    */
-  public void addValidationRules(InputValidationRule... inputValidationRules) {
+  public ColumnDefinition addValidationRules(InputValidationRule... inputValidationRules) {
     validationRules.addAll(Arrays.asList(inputValidationRules));
+    return this;
   }
   
   /**
@@ -97,11 +98,11 @@ public class ColumnDefinition {
     return validationRules;
   }
   
-  public Function<String, String> getInputTransformer() {
+  public InputTransformer getInputTransformer() {
     return inputTransformer;
   }
   
-  public void setInputTransformer(Function<String, String> inputTransformer) {
+  public void setInputTransformer(InputTransformer inputTransformer) {
     this.inputTransformer = inputTransformer;
   }
 }

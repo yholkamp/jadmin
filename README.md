@@ -48,8 +48,8 @@ implementation, take a look at the `InMemoryDAO` implementation.
 # Configuration and customization
 
 Customizing the templates used by JAdmin is possible as well, all templates that may be overwritten are in the 
-`src/main/resources/JAdmin` folder. To overwrite or customize a template, create an 
-`src/main/resources/JAdmin` folder in your own application and create a copy of the file you would like to customize. 
+`src/main/resources/jadmin` folder. To overwrite or customize a template, create an 
+`src/main/resources/jadmin` folder in your own application and create a copy of the file you would like to customize. 
 JAdmin will now load the copy of the file provided by your application. For details on the available template syntax,
 take a look at [Freemarker](http://freemarker.org/docs/index.html), the template engine used by JAdmin.
 
@@ -57,14 +57,13 @@ take a look at [Freemarker](http://freemarker.org/docs/index.html), the template
 # Roadmap
 
 * Improve the test coverage
-* Include configurable authentication (currently only available by interacting with the internal Spark instance)
 * Include smart support for foreign keys, i.e. display a `<select>` for foreign key columns
 * Include CSRF tokens in each form
 * Add internationalization support
 * Support file-based configuration
 * Perform an overall security review of the project.
 * Allow front-end input validation rules to be configured.
-* Support primary keys that are not auto-generated, using either a supplier method or user input.
+* Add a (before/after) hook system to customize rendered and saved values.
 
 # Limitations
 
