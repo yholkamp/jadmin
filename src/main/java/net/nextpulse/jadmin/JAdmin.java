@@ -73,6 +73,21 @@ public class JAdmin {
     this.port = port;
     init(prefix);
   }
+  /**
+   * Initializes the Spark Admin application with a custom URL prefix.
+   *
+   * @param prefix url prefix to use, i.e. '/admin'
+   * @param existingSpark existing Spark instance to attach JAdmin to
+   */
+  public void init(String prefix, Service existingSpark) {
+    logger.debug("Initializing JAdmin");
+    if(initialized) {
+      logger.error("JAdmin was already initialized");
+      throw new IllegalStateException("JAdmin was already initialized.");
+    }
+    interfaceManager.initialize(prefix, existingSpark);
+    initialized = true;
+  }
 
   /**
    * Adds a new resource with a custom DAO and schema provider class to the admin application and returns a

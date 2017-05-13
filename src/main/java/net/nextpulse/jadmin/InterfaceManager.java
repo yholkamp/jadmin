@@ -21,6 +21,11 @@ import java.util.Map;
 public class InterfaceManager {
   private static final Logger logger = LogManager.getLogger();
   private static final Gson gson = new Gson();
+  /**
+   * Flag to indicate whether JAdmin is running in stand alone mode or as part of an existing Spark app; in the latter 
+   * case we have to be careful not to overwrite any existing settings. 
+   */
+  private boolean standAlone = false;
 
   /**
    * Spark instance used to present the UI
@@ -33,34 +38,52 @@ public class InterfaceManager {
   private Map<String, Resource> resources;
   private Configuration freemarkerConfiguration = new Configuration(Configuration.VERSION_2_3_23);
   private FreeMarkerEngine freeMarkerEngine = new FreeMarkerEngine(freemarkerConfiguration);
-
-  public InterfaceManager(Map<String, Resource> resources) {
+  
+  InterfaceManager(Map<String, Resource> resources) {
     this.resources = resources;
 
     freemarkerConfiguration.setTemplateLoader(new ClassTemplateLoader(JAdmin.class, "/jadmin"));
     freemarkerConfiguration.addAutoImport("root", "template.ftl");
     freemarkerConfiguration.setBooleanFormat("enabled,disabled");
   }
-
+  
   /**
    * Initializes the internal Spark instance.
    * @param prefix    prefix to use for all URLs, i.e. "/admin"
    * @param port      port to listen for connections
    */
-  public void initialize(String prefix, int port) {
+  void initialize(String prefix, int port) {
+    if(this.prefix != null) {
+      throw new IllegalArgumentException("Cannot invoke the initialization code more than once");
+    }
+    standAlone = true;
+    Service spark = Service.ignite().port(port);
+    spark.staticFiles.location("/jadmin/public");
+    
+    initialize(prefix, spark);
+    logger.info("JAdmin started, listening for traffic on http://localhost:{}{}", port, this.prefix);
+  }
+  
+  /**
+   * Initializes the internal Spark instance.
+   * @param prefix    prefix to use for all URLs, i.e. "/admin"
+   * @param spark spark instance
+   */
+  void initialize(String prefix, Service spark) {
     if(this.prefix != null) {
       throw new IllegalArgumentException("Cannot invoke the initialization code more than once");
     }
     this.prefix = prefix;
-    spark = Service.ignite().port(port);
-    spark.staticFiles.location("/public");
-
+    this.spark = spark;
+    
     // ensure the urls are consistently without trailing slash
     configureFilters();
     configureRoutes();
     configureExceptionHandlers();
-
-    logger.info("JAdmin started, listening for traffic on http://localhost:{}{}", port, this.prefix);
+    
+    if(!standAlone) {
+      logger.info("JAdmin started, attached to an existing Spark app");
+    }
   }
 
   /**
@@ -92,10 +115,11 @@ public class InterfaceManager {
       throw new NotFoundException();
     });
 
-    // TODO: only add this route when not using an existing spark instance
-    spark.get("*", ((request, response) -> {
-      throw new NotFoundException();
-    }));
+    if(standAlone) {
+      spark.get("*", ((request, response) -> {
+        throw new NotFoundException();
+      }));
+    }
   }
 
   /**
@@ -109,10 +133,12 @@ public class InterfaceManager {
       response.body("Not found.");
     });
 
-    spark.exception(Exception.class, (e, request, response) -> {
-      logger.error("Caught an error, whoops", e);
-      response.body("<h1>Internal error</h1><pre>" + ExceptionUtils.getStackTrace(e) + "</pre>");
-    });
+    if(standAlone) {
+      spark.exception(Exception.class, (e, request, response) -> {
+        logger.error("Caught an error, whoops", e);
+        response.body("<h1>Internal error</h1><pre>" + ExceptionUtils.getStackTrace(e) + "</pre>");
+      });
+    }
   }
 
   /**
