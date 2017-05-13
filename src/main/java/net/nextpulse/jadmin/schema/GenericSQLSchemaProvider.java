@@ -92,6 +92,7 @@ public class GenericSQLSchemaProvider implements ResourceSchemaProvider {
    * @return enum value used internally for data conversion and presentation
    */
   protected ColumnType sqlTypeToColumnType(String typeName) {
+    // TODO: support a wider range of types
     switch(typeName) {
       case "int":
       case "int unsigned":
@@ -99,6 +100,8 @@ public class GenericSQLSchemaProvider implements ResourceSchemaProvider {
       case "int32":
       case "serial":
       case "integer":
+      case "bigint":
+      case "bigint unsigned":
         return ColumnType.integer;
 
       case "tinyint":

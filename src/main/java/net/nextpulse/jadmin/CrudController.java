@@ -31,6 +31,7 @@ public class CrudController {
    * Lists the instances of a specific resource.
    */
   public TemplateViewRoute listRoute = (request, response) -> {
+    logger.trace("GET {}", request.uri());
     Resource resource = request.attribute("resourceSchemaProvider");
     // TODO: implement pagination on the list page
     List<DatabaseEntry> rows = resource.getDao().selectMultiple(0, 20);
@@ -43,6 +44,7 @@ public class CrudController {
    * Shows the edit page for a specific resource instance.
    */
   public TemplateViewRoute editRoute = (request, response) -> {
+    logger.trace("GET {}", request.uri());
     Resource resource = request.attribute("resourceSchemaProvider");
     Optional<DatabaseEntry> editedObjectOption;
     String keys = request.params(":ids");
@@ -57,6 +59,7 @@ public class CrudController {
    * Handles the submission of a specific resource instance's edit form.
    */
   public Route editPostRoute = (request, response) -> {
+    logger.trace("POST {}", request.uri());
     response.type("application/json");
     Resource resource = request.attribute("resourceSchemaProvider");
     FormPostEntry postEntry = extractFormPostEntry(request, resource);
@@ -81,6 +84,7 @@ public class CrudController {
    * Handles the 'new' form for a specific resource.
    */
   public TemplateViewRoute createRoute = (request, response) -> {
+    logger.trace("GET {}", request.uri());
     Resource resource = request.attribute("resourceSchemaProvider");
     EditView editView = new EditView(resource, DatabaseEntry.buildEmpty(), createTemplateObject(resource.getTableName()));
     return new ModelAndView(editView, Path.Template.EDIT);
@@ -90,6 +94,7 @@ public class CrudController {
    * Handles the submission of a new resource form.
    */
   public Route createPostRoute = (request, response) -> {
+    logger.trace("POST {}", request.uri());
     response.type("application/json");
     Resource resource = request.attribute("resourceSchemaProvider");
     FormPostEntry postEntry = extractFormPostEntry(request, resource);
