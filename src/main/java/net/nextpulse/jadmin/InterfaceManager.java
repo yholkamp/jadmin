@@ -10,6 +10,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import spark.Service;
+import spark.staticfiles.StaticFilesConfiguration;
 import spark.template.freemarker.FreeMarkerEngine;
 
 import java.util.Map;
@@ -22,11 +23,11 @@ public class InterfaceManager {
   private static final Logger logger = LogManager.getLogger();
   private static final Gson gson = new Gson();
   /**
-   * Flag to indicate whether JAdmin is running in stand alone mode or as part of an existing Spark app; in the latter 
-   * case we have to be careful not to overwrite any existing settings. 
+   * Flag to indicate whether JAdmin is running in stand alone mode or as part of an existing Spark app; in the latter
+   * case we have to be careful not to overwrite any existing settings.
    */
   private boolean standAlone = false;
-
+  
   /**
    * Spark instance used to present the UI
    */
@@ -41,7 +42,7 @@ public class InterfaceManager {
   
   InterfaceManager(Map<String, Resource> resources) {
     this.resources = resources;
-
+    
     freemarkerConfiguration.setTemplateLoader(new ClassTemplateLoader(JAdmin.class, "/jadmin/templates"));
     freemarkerConfiguration.addAutoImport("root", "template.ftl");
     freemarkerConfiguration.setBooleanFormat("enabled,disabled");
@@ -49,25 +50,27 @@ public class InterfaceManager {
   
   /**
    * Initializes the internal Spark instance.
-   * @param prefix    prefix to use for all URLs, i.e. "/admin"
-   * @param port      port to listen for connections
+   *
+   * @param prefix prefix to use for all URLs, i.e. "/admin"
+   * @param port   port to listen for connections
    */
   void initialize(String prefix, int port) {
     if(this.prefix != null) {
       throw new IllegalArgumentException("Cannot invoke the initialization code more than once");
     }
-    standAlone = true;
-    Service spark = Service.ignite().port(port);
-    spark.staticFiles.location("/jadmin/public");
+    this.standAlone = true;
+    this.prefix = prefix;
+    this.spark = Service.ignite().port(port);
     
-    initialize(prefix, spark);
+    configureSpark();
     logger.info("JAdmin started, listening for traffic on http://localhost:{}{}", port, this.prefix);
   }
   
   /**
    * Initializes the internal Spark instance.
-   * @param prefix    prefix to use for all URLs, i.e. "/admin"
-   * @param spark spark instance
+   *
+   * @param prefix prefix to use for all URLs, i.e. "/admin"
+   * @param spark  spark instance
    */
   void initialize(String prefix, Service spark) {
     if(this.prefix != null) {
@@ -75,17 +78,33 @@ public class InterfaceManager {
     }
     this.prefix = prefix;
     this.spark = spark;
-    
-    // ensure the urls are consistently without trailing slash
-    configureFilters();
-    configureRoutes();
-    configureExceptionHandlers();
+    configureSpark();
     
     if(!standAlone) {
       logger.info("JAdmin started, attached to an existing Spark app");
     }
   }
-
+  
+  /**
+   * Configures the internal filters and routes.
+   */
+  private void configureSpark() {
+    // ensure the urls are consistently without trailing slash
+    configureFilters();
+    configureRoutes();
+    configureExceptionHandlers();
+    
+    // configure the static file location for JAdmin as before filter, as we cannot rely on the static file location 
+    // when JAdmin isn't running in standalone mode.
+    StaticFilesConfiguration staticFilesConfiguration = new StaticFilesConfiguration();
+    staticFilesConfiguration.configure("/jadmin/public");
+    spark.before((request, response) -> {
+      if(staticFilesConfiguration.consume(request.raw(), response.raw())) {
+        throw spark.halt();
+      }
+    });
+  }
+  
   /**
    * Configures the before/after filters in Spark, such as validation that the route exists, removing trailing slashes
    * from the URL for consistency and adding a gzip header to the output.
@@ -93,12 +112,12 @@ public class InterfaceManager {
   private void configureFilters() {
     spark.before(prefix + "/*", Filters.removeTrailingSlashes);
     spark.after(prefix + "/*", Filters.addGzipHeader);
-
+    
     // ensure that only valid formPages may be loaded
     spark.before(prefix + Path.Route.EDIT_ROW, Filters.validateTable(resources));
     spark.before(prefix + Path.Route.INDEX, Filters.validateTable(resources));
   }
-
+  
   /**
    * Sets up the Spark configuration for the available HTTP routes.
    */
@@ -110,18 +129,18 @@ public class InterfaceManager {
     spark.get(prefix + Path.Route.EDIT_ROW, controller.editRoute, freeMarkerEngine);
     spark.post(prefix + Path.Route.EDIT_ROW, controller.editPostRoute, gson::toJson);
     spark.get(prefix + Path.Route.ADMIN_INDEX, controller.dashboardRoute, freeMarkerEngine);
-
+    
     spark.get(prefix + Path.Route.WILDCARD, (request, response) -> {
       throw new NotFoundException();
     });
-
+    
     if(standAlone) {
       spark.get("*", ((request, response) -> {
         throw new NotFoundException();
       }));
     }
   }
-
+  
   /**
    * Configures the handlers that are invoked when an exception occurs.
    */
@@ -132,7 +151,7 @@ public class InterfaceManager {
       response.status(404);
       response.body("Not found.");
     });
-
+    
     if(standAlone) {
       spark.exception(Exception.class, (e, request, response) -> {
         logger.error("Caught an error, whoops", e);
@@ -140,24 +159,22 @@ public class InterfaceManager {
       });
     }
   }
-
+  
   /**
    * Halts the Spark server.
    */
   public void stop() {
     spark.stop();
   }
-
+  
   /**
-   *
    * @return the internal spark instance
    */
   public Service getSpark() {
     return spark;
   }
-
+  
   /**
-   *
    * @return the Freemarker configuration that's being used
    */
   public Configuration getFreemarkerConfiguration() {
