@@ -42,7 +42,7 @@ public class InterfaceManager {
   InterfaceManager(Map<String, Resource> resources) {
     this.resources = resources;
 
-    freemarkerConfiguration.setTemplateLoader(new ClassTemplateLoader(JAdmin.class, "/jadmin"));
+    freemarkerConfiguration.setTemplateLoader(new ClassTemplateLoader(JAdmin.class, "/jadmin/templates"));
     freemarkerConfiguration.addAutoImport("root", "template.ftl");
     freemarkerConfiguration.setBooleanFormat("enabled,disabled");
   }
