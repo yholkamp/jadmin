@@ -116,7 +116,7 @@ public class CrudController {
   /**
    * Renders the main dashboard offered by JAdmin.
    */
-  public TemplateViewRoute dashboardRoute = (request, response) -> new ModelAndView(new DashboardViewObject(createTemplateObject(null)), "index.ftl");
+  public TemplateViewRoute dashboardRoute = (request, response) -> new ModelAndView(new DashboardViewObject(createTemplateObject(null)), Path.Template.JADMIN_INDEX);
   
   /**
    * Constructor for this class, used internally.

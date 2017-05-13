@@ -6,7 +6,8 @@ package net.nextpulse.jadmin.helpers;
 public class Path {
 
   public static class Template {
-    public final static String LIST = "list.ftl";
+    public static final String JADMIN_INDEX = "index.ftl";
+    public static final String LIST = "list.ftl";
     public static final String EDIT = "edit.ftl";
   }
 
