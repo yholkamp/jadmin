@@ -93,6 +93,8 @@ public class GenericSQLSchemaProvider implements ResourceSchemaProvider {
    */
   protected ColumnType sqlTypeToColumnType(String typeName) {
     switch(typeName) {
+      case "int":
+      case "int unsigned":
       case "int4":
       case "int32":
       case "serial":
@@ -101,6 +103,7 @@ public class GenericSQLSchemaProvider implements ResourceSchemaProvider {
 
       case "tinyint":
       case "bool":
+      case "bit":
         return ColumnType.bool;
 
       case "datetime":
