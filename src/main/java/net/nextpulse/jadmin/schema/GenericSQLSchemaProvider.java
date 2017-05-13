@@ -57,14 +57,14 @@ public class GenericSQLSchemaProvider implements ResourceSchemaProvider {
 
       try(Connection conn = dataSource.getConnection()) {
         // find the primary key columns
-        ResultSet primaryKeyResultSet = conn.getMetaData().getPrimaryKeys(null, null, tableName.toLowerCase());
+        ResultSet primaryKeyResultSet = conn.getMetaData().getPrimaryKeys(conn.getCatalog(), conn.getSchema(), tableName.toLowerCase());
         while(primaryKeyResultSet.next()) {
           String columnName = primaryKeyResultSet.getString(COLUMN_NAME);
           primaryKeys.add(columnName);
         }
 
         // iterate over all columns and mark the primary key columns as such
-        ResultSet rs = conn.getMetaData().getColumns(null, null, tableName.toLowerCase(), "%");
+        ResultSet rs = conn.getMetaData().getColumns(conn.getCatalog(), conn.getSchema(), tableName.toLowerCase(), "%");
         while(rs.next()) {
           ColumnDefinition columnDefinition = new ColumnDefinition();
           String columnName = rs.getString(COLUMN_NAME);
@@ -73,6 +73,8 @@ public class GenericSQLSchemaProvider implements ResourceSchemaProvider {
           ColumnType columnType = sqlTypeToColumnType(typeName);
           columnDefinition.setType(columnType);
           columnDefinition.setKeyColumn(primaryKeys.contains(columnName));
+          
+          // TODO: check the IS_NULLABLE field & set constraints accordingly
           columnDefinitions.add(columnDefinition);
         }
       } catch(SQLException e) {
