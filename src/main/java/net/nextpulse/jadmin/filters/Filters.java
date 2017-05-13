@@ -28,13 +28,6 @@ public class Filters {
   };
 
   /**
-   * Enables GZIP for all responses
-   */
-  public static Filter addGzipHeader = (Request request, Response response) -> {
-    response.header("Content-Encoding", "gzip");
-  };
-
-  /**
    * Ensures that the 'table' variable in the URL exists and sets the corresponding resourceSchemaProvider in the 'resourceSchemaProvider' attribute. Throws a NotFoundException if the resourceSchemaProvider was not found.
    *
    * @param resources available resources

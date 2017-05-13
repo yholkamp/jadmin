@@ -111,7 +111,6 @@ public class InterfaceManager {
    */
   private void configureFilters() {
     spark.before(prefix + "/*", Filters.removeTrailingSlashes);
-    spark.after(prefix + "/*", Filters.addGzipHeader);
     
     // ensure that only valid formPages may be loaded
     spark.before(prefix + Path.Route.EDIT_ROW, Filters.validateTable(resources));
