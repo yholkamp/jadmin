@@ -27,7 +27,7 @@ public class JAdmin {
   /**
    * Port to listen on for inbound connections.
    */
-  private static final int JADMIN_PORT = 8282;
+  private int port = 8282;
   /**
    * MAp of resources associated with JAdmin, using the resource name as key, linking to an object with the configuration.
    */
@@ -47,7 +47,7 @@ public class JAdmin {
   public void init() {
     init("/admin");
   }
-
+  
   /**
    * Initializes the Spark Admin application with a custom URL prefix.
    *
@@ -59,8 +59,19 @@ public class JAdmin {
       logger.error("JAdmin was already initialized");
       throw new IllegalStateException("JAdmin was already initialized.");
     }
-    interfaceManager.initialize(prefix, JADMIN_PORT);
+    interfaceManager.initialize(prefix, port);
     initialized = true;
+  }
+  
+  /**
+   * Initializes the Spark Admin application with a custom URL prefix.
+   *
+   * @param prefix url prefix to use, i.e. '/admin'
+   * @param port port to use for jadmin
+   */
+  public void init(String prefix, int port) {
+    this.port = port;
+    init(prefix);
   }
 
   /**
