@@ -1,5 +1,7 @@
 # JAdmin
 
+[![Build Status](https://travis-ci.org/yholkamp/jadmin.svg?branch=master)](https://travis-ci.org/yholkamp/jadmin)
+
 JAdmin is a [Spark Java](http://sparkjava.com/) powered framework to create simple back-ends for administration tasks. Use this library as part 
 of your existing JVM application or stand alone to easily expose CRUD access to rows in your SQL tables, `.properties` 
 files and any other data. In the current set-up, JAdmin is focused on providing trusted users with access to data, 
