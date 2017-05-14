@@ -6,24 +6,10 @@
 </head>
 <body>
 
-<nav class="navbar navbar-default navbar-static-top">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#">
-                JAdmin
-            </a>
-        </div>
-    </div>
-</nav>
+    <#include "includes/navbar.ftl"/>
 <div class="container-fluid">
-    <div class="col-md-2">
-        <ul class="nav nav-pills nav-stacked">
-            <li><a href="${templateObject.prefix}">Home</a></li>
-            <#assign tables = templateObject.tables/>
-            <#list tables as table>
-                <li><a href="${templateObject.prefix}/${table}">${table}</a></li>
-            </#list>
-        </ul>
+    <div class="col-md-2 sidebar">
+       <#include "includes/sidebar.ftl">
     </div>
     <div class="col-md-10 content">
         <#nested>
