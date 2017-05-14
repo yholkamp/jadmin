@@ -7,7 +7,7 @@
   <groupId>net.nextpulse</groupId>
   <artifactId>jadmin</artifactId>
   <packaging>jar</packaging>
-  <version>0.2.1-SNAPSHOT</version>
+  <version>0.3.0</version>
   <url>https://github.com/yholkamp/jadmin</url>
   <name>JAdmin</name>
   <description>A flexible admin panel for CRUD operations on various data.</description>

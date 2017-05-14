@@ -11,8 +11,15 @@ Inspired by the Ruby [Active Admin](https://github.com/activeadmin/activeadmin) 
 
 # Usage
 
-Add the library as Maven dependency to your Java 8 (and up) application and call the fluent API to add resources you'd 
-like to expose through the admin panel:
+Add the library as Maven dependency to your Java 8 (and up) application:
+     
+     <dependency>
+         <groupId>net.nextpulse</groupId>
+         <artifactId>jadmin</artifactId>
+         <version>0.3.0</version>
+     </dependency>
+ 
+And call the API to add resources you'd like to expose through the admin panel:
 
     JAdmin jAdmin = new JAdmin();
     
