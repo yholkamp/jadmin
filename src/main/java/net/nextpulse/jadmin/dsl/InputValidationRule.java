@@ -33,6 +33,15 @@ public interface InputValidationRule {
       throw new InvalidInputException(String.format("%s is less than %d characters", columnDefinition.getName(), minLength));
     }
   };
+
+  /**
+   * Validation rule that indicates a minimum length or blank
+   */
+  Function<Integer, InputValidationRule> MINIMUM_LENGTH_OR_BLANK = (minLength) -> (columnDefinition, userInput) -> {
+    if (!StringUtils.isBlank(userInput) && userInput.length() < minLength) {
+      throw new InvalidInputException(String.format("%s is less than %d characters", columnDefinition.getName(), minLength));
+    }
+  };
   
   /**
    * Validation rule that indicates a minimum length
