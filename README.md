@@ -53,13 +53,14 @@ Customizing the templates used by JAdmin is possible as well, all templates that
 JAdmin will now load the copy of the file provided by your application. For details on the available template syntax,
 take a look at [Freemarker](http://freemarker.org/docs/index.html), the template engine used by JAdmin.
 
+To overwrite any translation strings, table or column names and more, copy the `en.properties` to the `resources/jadmin/i18n` 
+directory in your own project and edit the file to your liking. 
 
 # Roadmap
 
 * Improve the test coverage
 * Include smart support for foreign keys, i.e. display a `<select>` for foreign key columns
 * Include CSRF tokens in each form
-* Add internationalization support
 * Support file-based configuration
 * Perform an overall security review of the project.
 * Allow front-end input validation rules to be configured.

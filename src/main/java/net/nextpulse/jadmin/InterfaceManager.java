@@ -5,7 +5,10 @@ import freemarker.cache.ClassTemplateLoader;
 import freemarker.template.Configuration;
 import net.nextpulse.jadmin.exceptions.NotFoundException;
 import net.nextpulse.jadmin.filters.Filters;
+import net.nextpulse.jadmin.helpers.I18n;
+import net.nextpulse.jadmin.helpers.templatemethods.I18nTranslate;
 import net.nextpulse.jadmin.helpers.Path;
+import net.nextpulse.jadmin.helpers.templatemethods.I18nTranslateSimpleFallback;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -45,7 +48,11 @@ public class InterfaceManager {
     
     freemarkerConfiguration.setTemplateLoader(new ClassTemplateLoader(JAdmin.class, "/jadmin/templates"));
     freemarkerConfiguration.addAutoImport("root", "template.ftl");
-    freemarkerConfiguration.setBooleanFormat("enabled,disabled");
+    freemarkerConfiguration.setBooleanFormat(I18n.get("view.boolean"));
+    // register i() as translation function
+    freemarkerConfiguration.setSharedVariable("i", new I18nTranslate());
+    // and register ii() as translation function where the fallback should be user friendly 
+    freemarkerConfiguration.setSharedVariable("ii", new I18nTranslateSimpleFallback());
   }
   
   /**

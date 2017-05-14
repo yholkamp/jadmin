@@ -4,6 +4,7 @@ import freemarker.template.Configuration;
 import net.nextpulse.jadmin.dao.AbstractDAO;
 import net.nextpulse.jadmin.dao.GenericSQLDAO;
 import net.nextpulse.jadmin.dsl.ResourceBuilder;
+import net.nextpulse.jadmin.helpers.I18n;
 import net.nextpulse.jadmin.helpers.ResourceDecorator;
 import net.nextpulse.jadmin.schema.GenericSQLSchemaProvider;
 import net.nextpulse.jadmin.schema.ResourceSchemaProvider;
@@ -155,7 +156,16 @@ public class JAdmin {
   public void stop() {
     interfaceManager.stop();
   }
-
+  
+  /**
+   * Set the i18n language to use for JAdmin.
+   * 
+   * @param language  language to set, used to load the translation properties file, defauling to 'en' for 'en.properties'
+   */
+  public void setLanguage(String language) {
+    I18n.setLanguage(language);
+  }
+  
   /**
    * Getter for the internal SparkJava instance used by the admin panel, may be used to supply additional configuration.
    *

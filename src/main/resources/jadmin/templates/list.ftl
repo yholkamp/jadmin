@@ -1,12 +1,12 @@
 <@root.template jsIncludes=[]>
-<h1>${resource.tableName}</h1>
-<a href="${templateObject.prefix}/${resource.tableName}/new" class="btn btn-success">Add</a>
+<h1>${ii("resources.${resource.tableName}")}</h1>
+<a href="${templateObject.prefix}/${resource.tableName}/new" class="btn btn-success">${i("view.button.add")}</a>
 <div class="row">
     <table class="table">
         <thead>
         <tr>
             <#list headers as header>
-                <th>${header}</th>
+                <th>${ii("resources.${resource.tableName}.${header}")}</th>
             </#list>
         </tr>
         </thead>
@@ -18,7 +18,7 @@
                 </#list>
                 <td>
                     <a href="${templateObject.prefix}/${resource.tableName}/${row.properties['id']}"
-                       class="btn btn-info">Edit</a>
+                       class="btn btn-info">${i("view.button.edit")}</a>
                 </td>
             </tr>
             </#list>
