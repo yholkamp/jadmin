@@ -11,9 +11,7 @@ import net.nextpulse.jadmin.dao.GenericSQLDAO;
 import net.nextpulse.jadmin.schema.GenericSQLSchemaProvider;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import testhelpers.DatabaseTest;
-import testhelpers.IntegrationTest;
 
 import java.util.List;
 import java.util.Map;
@@ -25,7 +23,6 @@ import static org.junit.Assert.*;
 /**
  * @author yholkamp
  */
-@Category(IntegrationTest.class)
 public class GenericSQLDAOTest extends DatabaseTest {
 
   private GenericSQLDAO dao;

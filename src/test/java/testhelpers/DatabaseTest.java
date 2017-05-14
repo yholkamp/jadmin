@@ -23,7 +23,6 @@ import java.util.Properties;
  *
  * @author yholkamp
  */
-@Category(IntegrationTest.class)
 @RunWith(Parameterized.class)
 public abstract class DatabaseTest {
 

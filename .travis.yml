@@ -6,3 +6,4 @@ services:
 before_script:
   - psql -c 'create database travis_ci_test;' -U postgres
   - cp ./src/test/resources/database.travisci.properties ./src/test/resources/database.properties
+script: "mvn verify"

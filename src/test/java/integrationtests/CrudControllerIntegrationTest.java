@@ -14,13 +14,11 @@ import net.nextpulse.jadmin.views.ListView;
 import org.apache.commons.dbutils.BasicRowProcessor;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import spark.ModelAndView;
 import spark.QueryParamsMap;
 import spark.Request;
 import spark.Response;
 import testhelpers.DatabaseTest;
-import testhelpers.IntegrationTest;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -37,7 +35,6 @@ import static org.mockito.Mockito.when;
  *
  * @author yholkamp
  */
-@Category(IntegrationTest.class)
 public class CrudControllerIntegrationTest extends DatabaseTest {
 
   private Resource resource;
