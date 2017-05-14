@@ -15,13 +15,15 @@ import org.apache.commons.dbutils.BasicRowProcessor;
 import org.junit.Before;
 import org.junit.Test;
 import spark.ModelAndView;
-import spark.QueryParamsMap;
 import spark.Request;
 import spark.Response;
 import testhelpers.DatabaseTest;
+import testhelpers.TestQueryParamsMap;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Map;
 
 import static com.ninja_squad.dbsetup.Operations.*;
@@ -82,43 +84,61 @@ public class CrudControllerIntegrationTest extends DatabaseTest {
     assertEquals("location2", model.getObject().getProperties().getOrDefault("NAME", model.getObject().getProperties().get("name")));
     assertEquals(2, model.getObject().getProperties().getOrDefault("ID", model.getObject().getProperties().get("id")));
   }
-
+  
   @Test
-  public void editPost() throws Exception {
+  public void editPost_uncheckedCheckbox() throws Exception {
     Request mockRequest = createMockRequest();
     when(mockRequest.queryMap()).thenReturn(new TestQueryParamsMap(ImmutableMap.of(
         "id", new String[]{"1"},
         "name", new String[]{"newName"},
-        "is_active", new String[]{"0"},
+        "is_active", new String[]{"false"},
         "favorite_number", new String[]{"71"}
     )));
-
+    
     EditPost result = (EditPost) controller.editPostRoute.handle(mockRequest, response);
     assertTrue(result.isSuccess());
-    try(Connection conn = dataSource.getConnection()) {
-      ResultSet queryResult = conn.prepareStatement("SELECT * FROM locations WHERE id = 1").executeQuery();
-      // pull the result row
-      queryResult.next();
-      Map<String, Object> location = new BasicRowProcessor().toMap(queryResult);
-      assertEquals(1, location.get("id"));
-      assertEquals("newName", location.get("name"));
-      assertEquals(71, location.get("favorite_number"));
-      // PG will return this value as boolean, H2 as byte
-      assertTrue(location.get("is_active").equals((byte) 0) || location.get("is_active").equals(false));
-    }
+    Map<String, Object> location = retrieveLocation(1);
+    assertEquals("newName", location.get("name"));
+    assertEquals(71, location.get("favorite_number"));
+    // PG will return this value as boolean, H2 as byte
+    assertTrue(location.get("is_active").equals((byte) 0) || location.get("is_active").equals(false));
   }
-
+  
+  @Test
+  public void editPost_checkedCheckbox() throws Exception {
+    Request mockRequest = createMockRequest();
+    when(mockRequest.queryMap()).thenReturn(new TestQueryParamsMap(ImmutableMap.of(
+        "id", new String[]{"1"},
+        "name", new String[]{"newName2"},
+        "is_active", new String[]{"true", "false"},
+        "favorite_number", new String[]{"72"}
+    )));
+    
+    EditPost result = (EditPost) controller.editPostRoute.handle(mockRequest, response);
+    assertTrue(result.isSuccess());
+    Map<String, Object> location = retrieveLocation(1);
+    assertEquals("newName2", location.get("name"));
+    assertEquals(72, location.get("favorite_number"));
+    // PG will return this value as boolean, H2 as byte
+    assertTrue(location.get("is_active").equals((byte) 1) || location.get("is_active").equals(true));
+  }
+  
   private Request createMockRequest() {
     Request mockRequest = mock(Request.class);
     when(mockRequest.attribute("resourceSchemaProvider")).thenReturn(resource);
     return mockRequest;
   }
-
-}
-
-class TestQueryParamsMap extends QueryParamsMap {
-
-  public TestQueryParamsMap(Map<String, String[]> params) {
-    super(params);
+  
+  private Map<String, Object> retrieveLocation(int locationId) throws SQLException {
+    Map<String, Object> location;
+    try(Connection conn = dataSource.getConnection()) {
+      PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM locations WHERE id = ?");
+      preparedStatement.setInt(1, locationId);
+      ResultSet queryResult = preparedStatement.executeQuery();
+      queryResult.next();
+      location = new BasicRowProcessor().toMap(queryResult);
+    }
+    return location;
   }
 }
+

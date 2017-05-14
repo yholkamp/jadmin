@@ -146,7 +146,7 @@ public class CrudController {
    * @param resource resource this request was made for
    * @return a FormPostEntry representing the user input, filtered to only include editable fields
    */
-  private FormPostEntry extractFormPostEntry(Request request, Resource resource) {
+  protected static FormPostEntry extractFormPostEntry(Request request, Resource resource) {
     FormPostEntry postEntry = new FormPostEntry();
     
     for(ColumnDefinition columnDefinition : resource.getColumnDefinitions()) {
