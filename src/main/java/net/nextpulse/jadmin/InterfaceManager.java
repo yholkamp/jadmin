@@ -48,7 +48,6 @@ public class InterfaceManager {
     
     freemarkerConfiguration.setTemplateLoader(new ClassTemplateLoader(JAdmin.class, "/jadmin/templates"));
     freemarkerConfiguration.addAutoImport("root", "template.ftl");
-    freemarkerConfiguration.setBooleanFormat(I18n.get("view.boolean"));
     // register i() as translation function
     freemarkerConfiguration.setSharedVariable("i", new I18nTranslate());
     // and register ii() as translation function where the fallback should be user friendly 
@@ -96,6 +95,9 @@ public class InterfaceManager {
    * Configures the internal filters and routes.
    */
   private void configureSpark() {
+    // Set language-specific template values
+    freemarkerConfiguration.setBooleanFormat(I18n.get("view.boolean"));
+    
     // ensure the urls are consistently without trailing slash
     configureFilters();
     configureRoutes();
