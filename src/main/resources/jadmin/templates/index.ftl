@@ -1,5 +1,5 @@
 <@root.template jsIncludes=[]>
-<h1>Admin panel</h1>
+<h1>${i("view.index.header")}</h1>
 
-<p>Select the resource you would like to edit in the left sidebar.</p>
+<p>${i("view.index.content")}</p>
 </@root.template>
