@@ -10,13 +10,23 @@ import java.util.Optional;
 import java.util.Properties;
 
 /**
- * Simple I18n wrapper
+ * Simple I18n wrapper that loads the library-provided base.properties file as well as the user-configured language file.
  *
  * @author yholkamp
  */
 public class I18n {
   private static final Logger logger = LogManager.getLogger();
+  /**
+   * Location where translation files are expected to be.
+   */
+  private static final String I18N_PATH = "/jadmin/i18n";
+  /**
+   * Currently loaded configuration
+   */
   protected static Properties configuration = null;
+  /**
+   * Configured language identifier
+   */
   private static String language = "en";
   
   /**
@@ -64,14 +74,26 @@ public class I18n {
   }
   
   /**
-   * Loads the properties file for the configured language.
+   * Loads the default translation file as well as the properties file for the configured language.
    */
   private static void loadProperties() {
     configuration = new Properties();
-    try(InputStream in = I18n.class.getResourceAsStream("/jadmin/i18n/" + language + ".properties")) {
+    loadFile("base");
+    loadFile(language);
+  }
+  
+  /**
+   * Loads the provided properties file name, assuming it exists 
+   * 
+   * @param filename
+   */
+  private static void loadFile(String filename) {
+    try(InputStream in = I18n.class.getResourceAsStream(I18N_PATH + "/" + filename + ".properties")) {
       configuration.load(in);
+    } catch(NullPointerException e) {
+      logger.error("Translation file " + I18N_PATH + "/{}.properties does not exist in the class path", I18n.language);
     } catch(IOException e) {
-      logger.error("Translation file /jadmin/i18n/{}.properties could not be loaded", language, e);
+      logger.error("Translation file " + I18N_PATH + "/{}.properties could not be loaded from the class path", I18n.language, e);
     }
   }
 }
