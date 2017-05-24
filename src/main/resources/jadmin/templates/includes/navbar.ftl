@@ -2,7 +2,7 @@
   <div class="container-fluid">
     <div class="navbar-header">
       <a class="navbar-brand" href="#">
-        JAdmin
+        ${i("view.nav_title")}
       </a>
     </div>
   </div>

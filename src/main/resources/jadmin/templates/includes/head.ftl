@@ -2,7 +2,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>JAdmin</title>
+<title>${i("view.page_title")}</title>
 
 <meta name="description" content="">
 <meta name="author" content="JAdmin">
