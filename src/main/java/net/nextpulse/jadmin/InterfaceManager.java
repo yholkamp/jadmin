@@ -96,7 +96,10 @@ public class InterfaceManager {
    */
   private void configureSpark() {
     // Set language-specific template values
-    freemarkerConfiguration.setBooleanFormat(I18n.get("view.boolean"));
+    freemarkerConfiguration.setBooleanFormat(I18n.get("format.boolean"));
+    freemarkerConfiguration.setDateTimeFormat(I18n.get("format.datetime"));
+    freemarkerConfiguration.setDateFormat(I18n.get("format.date"));
+    freemarkerConfiguration.setDateFormat(I18n.get("format.time"));
     
     // ensure the urls are consistently without trailing slash
     configureFilters();
