@@ -1,4 +1,7 @@
 $(function () {
+    Array.prototype.forEach.call(document.getElementsByClassName("datepicker"), function(field) {
+        new Pikaday({ field: field, format: "YYYY-MM-DD HH:mm:ss" });
+    });
     $("form").on("submit", function (event) {
         event.preventDefault();
         var $form = $(this);

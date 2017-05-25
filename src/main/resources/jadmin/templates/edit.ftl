@@ -1,4 +1,4 @@
-<@root.template jsIncludes=["edit.js"]>
+<@root.template jsIncludes=["lib/moment.min.js", "lib/pikaday.js", "edit.js"] cssIncludes=["pikaday.css"]>
 <div class="row">
     <div class="panel panel-default">
         <div class="panel-heading">
