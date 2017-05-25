@@ -13,12 +13,16 @@ public class ListView extends AbstractViewObject {
   private final List<DatabaseEntry> rows;
   private final List<String> headers;
   private final TemplateObject templateObject;
+  private final int currentPage;
+  private final int numberOfPages;
 
-  public ListView(Resource resource, List<DatabaseEntry> rows, List<String> headers, TemplateObject templateObject) {
+  public ListView(Resource resource, List<DatabaseEntry> rows, List<String> headers, TemplateObject templateObject, int currentPage, int numberOfPages) {
     this.resource = resource;
     this.rows = rows;
     this.headers = headers;
     this.templateObject = templateObject;
+    this.currentPage = currentPage;
+    this.numberOfPages = numberOfPages;
   }
 
   public Resource getResource() {
@@ -36,5 +40,13 @@ public class ListView extends AbstractViewObject {
   @Override
   public TemplateObject getTemplateObject() {
     return templateObject;
+  }
+  
+  public int getCurrentPage() {
+    return currentPage;
+  }
+  
+  public int getNumberOfPages() {
+    return numberOfPages;
   }
 }

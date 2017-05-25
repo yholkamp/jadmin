@@ -62,5 +62,12 @@ public abstract class AbstractDAO {
    * @throws DataAccessException if an error occurred while inserting the object
    */
   public abstract void update(FormPostEntry postData) throws DataAccessException;
-
+  
+  /**
+   * Returns (possibly an estimate of) the total number of entries for this particular resource.
+   * 
+   * @return
+   * @throws DataAccessException
+   */
+  public abstract int count() throws DataAccessException;
 }

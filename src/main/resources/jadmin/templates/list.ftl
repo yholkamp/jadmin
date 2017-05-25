@@ -24,5 +24,11 @@
             </#list>
         </tbody>
     </table>
+    
+    <ul class="pagination pagination-sm">
+        <#list 1..numberOfPages as page>
+            <li <#if page == currentPage>class="active"</#if>><a href="${templateObject.prefix}/${resource.tableName}?page=${page}">${page}</a></li>
+        </#list>
+    </ul>
 </div>
 </@root.template>

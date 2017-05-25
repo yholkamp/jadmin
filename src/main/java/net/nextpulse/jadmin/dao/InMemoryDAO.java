@@ -78,7 +78,18 @@ public class InMemoryDAO extends AbstractDAO {
       throw new DataAccessException("Could not access object identified by " + key);
     }
   }
-
+  
+  /**
+   * Returns the number of stored objects.
+   * 
+   * @return  number of objects
+   * @throws DataAccessException never
+   */
+  @Override
+  public int count() throws DataAccessException {
+    return objects.size();
+  }
+  
   /**
    * Internal representation of the object key.
    */

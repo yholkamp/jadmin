@@ -126,7 +126,7 @@ public class InterfaceManager {
     
     // ensure that only valid formPages may be loaded
     spark.before(prefix + Path.Route.EDIT_ROW, Filters.validateTable(resources));
-    spark.before(prefix + Path.Route.INDEX, Filters.validateTable(resources));
+    spark.before(prefix + Path.Route.LIST_ROWS, Filters.validateTable(resources));
   }
   
   /**
@@ -134,7 +134,7 @@ public class InterfaceManager {
    */
   private void configureRoutes() {
     CrudController controller = new CrudController(prefix, resources);
-    spark.get(prefix + Path.Route.INDEX, controller.listRoute, freeMarkerEngine);
+    spark.get(prefix + Path.Route.LIST_ROWS, controller.listRoute, freeMarkerEngine);
     spark.get(prefix + Path.Route.CREATE_ROW, controller.createRoute, freeMarkerEngine);
     spark.post(prefix + Path.Route.CREATE_ROW, controller.createPostRoute, gson::toJson);
     spark.get(prefix + Path.Route.EDIT_ROW, controller.editRoute, freeMarkerEngine);

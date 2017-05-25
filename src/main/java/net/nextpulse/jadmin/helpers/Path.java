@@ -16,6 +16,6 @@ public class Path {
     public static final String CREATE_ROW = "/:table/new";
     public static final String EDIT_ROW = "/:table/:ids";
     public static final String WILDCARD = "/*";
-    public static final String INDEX = "/:table";
+    public static final String LIST_ROWS = "/:table";
   }
 }

@@ -9,6 +9,7 @@ import net.nextpulse.jadmin.views.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import spark.*;
+import spark.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,11 +33,13 @@ public class CrudController {
    */
   public TemplateViewRoute listRoute = (request, response) -> {
     logger.trace("GET {}", request.uri());
-    Resource resource = request.attribute("resourceSchemaProvider");
-    // TODO: implement pagination on the list page
-    List<DatabaseEntry> rows = resource.getDao().selectMultiple(0, 20);
+    int page = Math.max(1, extractIntFromString(request.queryParams("page"), 1));
     
-    ListView viewModel = new ListView(resource, rows, resource.getIndexColumns(), createTemplateObject(resource.getTableName()));
+    Resource resource = request.attribute("resourceSchemaProvider");
+    int numberOfPages = ((Double)Math.ceil(resource.getDao().count() * 1.0 / COUNT_PER_PAGE)).intValue();
+    List<DatabaseEntry> rows = resource.getDao().selectMultiple((page - 1) * COUNT_PER_PAGE, COUNT_PER_PAGE);
+  
+    ListView viewModel = new ListView(resource, rows, resource.getIndexColumns(), createTemplateObject(resource.getTableName()), page, numberOfPages);
     return new ModelAndView(viewModel, Path.Template.LIST);
   };
   
@@ -117,6 +120,7 @@ public class CrudController {
    * Renders the main dashboard offered by JAdmin.
    */
   public TemplateViewRoute dashboardRoute = (request, response) -> new ModelAndView(new DashboardViewObject(createTemplateObject(null)), Path.Template.JADMIN_INDEX);
+  private static final int COUNT_PER_PAGE = 20;
   
   /**
    * Constructor for this class, used internally.
@@ -178,5 +182,23 @@ public class CrudController {
       String transformedInput = entry.getKey().getInputTransformer().apply(entry.getValue());
       postEntry.getValues().put(entry.getKey(), transformedInput);
     });
+  }
+  
+  /**
+   * Extracts an int from a string, catching any exceptions and falling back to 0.
+   *
+   * @param string  string to process
+   * @param fallback value to return if no valid number was provided
+   * @return  the number found in 'string' or 'fallback' if it was null, empty or could not be parsed
+   */
+  private int extractIntFromString(String string, int fallback) {
+    if(StringUtils.isNotBlank(string)) {
+      try {
+        return Integer.valueOf(string);
+      } catch (NumberFormatException e) {
+        // no-op, the user sent us bad data
+      }
+    }
+    return fallback;
   }
 }

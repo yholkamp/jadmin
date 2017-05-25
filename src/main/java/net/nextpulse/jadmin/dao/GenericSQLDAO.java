@@ -73,10 +73,9 @@ public class GenericSQLDAO extends AbstractDAO {
   @Override
   public List<DatabaseEntry> selectMultiple(long offset, long count) throws DataAccessException {
     logger.trace("Selecting multiple {}, {} offset, {} count", tableName, offset, count);
-    // TODO: add configurable pagination
     List<DatabaseEntry> rows = new ArrayList<>();
     try(Connection conn = dataSource.getConnection()) {
-      PreparedStatement statement = conn.prepareStatement(String.format("SELECT * FROM %s LIMIT %d OFFSET %d", tableName, 20, 0));
+      PreparedStatement statement = conn.prepareStatement(String.format("SELECT * FROM %s LIMIT %d OFFSET %d", tableName, count, offset));
       ResultSet results = statement.executeQuery();
       while(results.next()) {
         Map<String, Object> row = new BasicRowProcessor().toMap(results);
@@ -149,7 +148,25 @@ public class GenericSQLDAO extends AbstractDAO {
       throw new DataAccessException(e);
     }
   }
-
+  
+  /**
+   * Returns the number of entries in the database of the resource.
+   * 
+   * @return number of entries
+   * @throws DataAccessException if an SQL exception occurred
+   */
+  @Override
+  public int count() throws DataAccessException {
+    try(Connection conn = dataSource.getConnection()) {
+      PreparedStatement statement = conn.prepareStatement(String.format("SELECT COUNT(*) FROM %s", tableName));
+      ResultSet results = statement.executeQuery();
+      results.next();
+      return results.getInt(1);
+    } catch(SQLException e) {
+      throw new DataAccessException(e);
+    }
+  }
+  
   /**
    * Creates an SQL update query for the provided postEntry.
    *
