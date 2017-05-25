@@ -10,3 +10,6 @@
 <link rel="stylesheet" href="/css/bootstrap.css">
 <link rel="stylesheet" href="/css/bootstrap-theme.css">
 <link rel="stylesheet" href="/css/style.css">
+<#list cssIncludes as include>
+<link rel="stylesheet" href="/css/${include}">
+</#list>

@@ -1,4 +1,4 @@
-<#macro template jsIncludes=[]>
+<#macro template jsIncludes=[] cssIncludes=[]>
 <!DOCTYPE html>
 <html lang="en">
 <head>
