@@ -1,4 +1,4 @@
-<@root.template jsIncludes=[]>
+<@root.template jsIncludes=["delete.js"]>
 <h1>${ii("resources.${resource.tableName}")}</h1>
 <a href="${templateObject.prefix}/${resource.tableName}/new" class="btn btn-success">${i("view.button.add")}</a>
 <div class="row">
@@ -20,6 +20,10 @@
                     <a href="${templateObject.prefix}/${resource.tableName}/${row.properties['id']}"
                        class="btn btn-info">${i("view.button.edit")}</a>
                 </td>
+                <td>
+                  <a href="${templateObject.prefix}/${resource.tableName}/${row.properties['id']}"
+                     class="btn btn-danger deletebtn">${i("view.button.delete")}</a>
+                </td>
             </tr>
             </#list>
         </tbody>
@@ -31,4 +35,8 @@
         </#list>
     </ul>
 </div>
+<script>
+    var confirmationMessage = '${i("delete.confirmation", ii("resource.${resource.tableName}"))}'
+</script>
+
 </@root.template>

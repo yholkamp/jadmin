@@ -106,6 +106,7 @@ public class GenericSQLSchemaProvider implements ResourceSchemaProvider {
 
       case "tinyint":
       case "bool":
+      case "boolean":
       case "bit":
         return ColumnType.bool;
 

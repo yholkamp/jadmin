@@ -91,6 +91,23 @@ public class InMemoryDAO extends AbstractDAO {
   }
   
   /**
+   * Deletes a single DatabaseEntry using the primary key(s) of the resourceSchemaProvider.
+   *
+   * @param keys primary key(s)
+   * @throws DataAccessException if an error occurred while deleting the object
+   */
+  @Override
+  public void delete(Object... keys) throws DataAccessException {
+    DatabaseEntryKey key = new DatabaseEntryKey(keys);
+    DatabaseEntry entry = objects.get(key);
+    if(entry != null) {
+      objects.remove(key);
+    } else {
+      throw new DataAccessException("Could not access object identified by " + key);
+    }
+  }
+
+  /**
    * Internal representation of the object key.
    */
   private class DatabaseEntryKey {

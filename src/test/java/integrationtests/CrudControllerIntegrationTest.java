@@ -122,6 +122,15 @@ public class CrudControllerIntegrationTest extends DatabaseTest {
     // PG will return this value as boolean, H2 as byte
     assertTrue(location.get("is_active").equals((byte) 1) || location.get("is_active").equals(true));
   }
+
+  @Test
+  public void deleteTest() throws Exception {
+    Request mockRequest = createMockRequest();
+    when(mockRequest.params(":ids")).thenReturn("1/location1");
+
+    EditPost result = (EditPost) controller.deleteRoute.handle(mockRequest, response);
+    assertTrue(result.isSuccess());
+  }
   
   private Request createMockRequest() {
     Request mockRequest = mock(Request.class);

@@ -62,10 +62,18 @@ public abstract class AbstractDAO {
    * @throws DataAccessException if an error occurred while inserting the object
    */
   public abstract void update(FormPostEntry postData) throws DataAccessException;
-  
+
+  /**
+   * Deletes a single DatabaseEntry using the primary key(s) of the resourceSchemaProvider.
+   *
+   * @param keys primary key(s)
+   * @throws DataAccessException if an error occurred while deleting the object or the provided keys are invalid.
+   */
+  public abstract void delete(Object... keys) throws DataAccessException;
+
   /**
    * Returns (possibly an estimate of) the total number of entries for this particular resource.
-   * 
+   *
    * @return
    * @throws DataAccessException
    */
