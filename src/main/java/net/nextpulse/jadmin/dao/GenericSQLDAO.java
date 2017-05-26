@@ -148,10 +148,10 @@ public class GenericSQLDAO extends AbstractDAO {
       throw new DataAccessException(e);
     }
   }
-  
+
   /**
    * Returns the number of entries in the database of the resource.
-   * 
+   *
    * @return number of entries
    * @throws DataAccessException if an SQL exception occurred
    */
@@ -166,7 +166,30 @@ public class GenericSQLDAO extends AbstractDAO {
       throw new DataAccessException(e);
     }
   }
-  
+
+
+  @Override
+  public void delete(Object... keys) throws DataAccessException {
+    logger.trace("Updating an existing {}", tableName);
+    try(Connection conn = dataSource.getConnection()) {
+      // construct the SQL query
+      String conditions = resourceSchemaProvider.getKeyColumns().stream()
+        .map(x -> String.format("%s = ?", x.getName()))
+        .reduce((s, s2) -> s + " AND " + s2)
+        .orElseThrow(() -> new DataAccessException("Could not generate SQL condition"));
+
+      PreparedStatement statement = conn.prepareStatement(String.format("DELETE FROM %s WHERE %s", tableName, conditions));
+      for(int i = 1; i <= resourceSchemaProvider.getKeyColumns().size(); i++) {
+        setValue(statement, i, (String) keys[i - 1], resourceSchemaProvider.getKeyColumns().get(i - 1));
+      }
+      logger.debug("Executing statement {}", statement.toString());
+      boolean results = statement.execute();
+
+    } catch(SQLException e) {
+      throw new DataAccessException(e);
+    }
+  }
+
   /**
    * Creates an SQL update query for the provided postEntry.
    *

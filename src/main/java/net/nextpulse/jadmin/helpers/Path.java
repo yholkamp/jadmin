@@ -14,6 +14,7 @@ public class Path {
   public static class Route {
     public static final String ADMIN_INDEX = "";
     public static final String CREATE_ROW = "/:table/new";
+    public static final String DELETE_ROW = "/:table/:ids";
     public static final String EDIT_ROW = "/:table/:ids";
     public static final String WILDCARD = "/*";
     public static final String LIST_ROWS = "/:table";

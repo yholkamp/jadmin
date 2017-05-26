@@ -139,6 +139,7 @@ public class InterfaceManager {
     spark.post(prefix + Path.Route.CREATE_ROW, controller.createPostRoute, gson::toJson);
     spark.get(prefix + Path.Route.EDIT_ROW, controller.editRoute, freeMarkerEngine);
     spark.post(prefix + Path.Route.EDIT_ROW, controller.editPostRoute, gson::toJson);
+    spark.delete(prefix + Path.Route.DELETE_ROW, controller.deleteRoute, gson::toJson);
     spark.get(prefix + Path.Route.ADMIN_INDEX, controller.dashboardRoute, freeMarkerEngine);
     
     spark.get(prefix + Path.Route.WILDCARD, (request, response) -> {

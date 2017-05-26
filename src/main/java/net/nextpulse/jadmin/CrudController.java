@@ -82,6 +82,21 @@ public class CrudController {
     }
     return new EditPost(true, null);
   };
+
+  public Route deleteRoute = (request, response) -> {
+    logger.trace("DELETE {}", request.uri());
+    response.type("application/json");
+
+    Resource resource = request.attribute("resourceSchemaProvider");
+    String keys = request.params(":ids");
+    try {
+      resource.getDao().delete((Object[]) keys.split("/"));
+    } catch(DataAccessException e) {
+      logger.error("DataAccessException while deleting row", e);
+      return new EditPost(false, e.getMessage());
+    }
+    return new EditPost(true, null);
+  };
   
   /**
    * Handles the 'new' form for a specific resource.
