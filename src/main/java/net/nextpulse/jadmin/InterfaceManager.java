@@ -1,6 +1,7 @@
 package net.nextpulse.jadmin;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.template.Configuration;
 import net.nextpulse.jadmin.exceptions.NotFoundException;
@@ -24,7 +25,10 @@ import java.util.Map;
  */
 public class InterfaceManager {
   private static final Logger logger = LogManager.getLogger();
-  private static final Gson gson = new Gson();
+  /**
+   * Shared Gson instance, configured to serialize null values as well
+   */
+  private static final Gson gson = new GsonBuilder().serializeNulls().create();
   /**
    * Flag to indicate whether JAdmin is running in stand alone mode or as part of an existing Spark app; in the latter
    * case we have to be careful not to overwrite any existing settings.
@@ -134,18 +138,21 @@ public class InterfaceManager {
    */
   private void configureRoutes() {
     CrudController controller = new CrudController(prefix, resources);
-    spark.get(prefix + Path.Route.LIST_ROWS, controller.listRoute, freeMarkerEngine);
-    spark.get(prefix + Path.Route.CREATE_ROW, controller.createRoute, freeMarkerEngine);
-    spark.post(prefix + Path.Route.CREATE_ROW, controller.createPostRoute, gson::toJson);
-    spark.get(prefix + Path.Route.EDIT_ROW, controller.editRoute, freeMarkerEngine);
-    spark.post(prefix + Path.Route.EDIT_ROW, controller.editPostRoute, gson::toJson);
-    spark.delete(prefix + Path.Route.DELETE_ROW, controller.deleteRoute, gson::toJson);
-    spark.get(prefix + Path.Route.ADMIN_INDEX, controller.dashboardRoute, freeMarkerEngine);
-    
-    spark.get(prefix + Path.Route.WILDCARD, (request, response) -> {
-      throw new NotFoundException();
+    spark.path(prefix, () -> {
+      spark.get(Path.Route.LIST_ROWS_JSON, controller.listJsonRoute, gson::toJson);
+      spark.get(Path.Route.LIST_ROWS, controller.listRoute, freeMarkerEngine);
+      spark.get(Path.Route.CREATE_ROW, controller.createRoute, freeMarkerEngine);
+      spark.post(Path.Route.CREATE_ROW, controller.createPostRoute, gson::toJson);
+      spark.get(Path.Route.EDIT_ROW, controller.editRoute, freeMarkerEngine);
+      spark.post(Path.Route.EDIT_ROW, controller.editPostRoute, gson::toJson);
+      spark.delete(Path.Route.DELETE_ROW, controller.deleteRoute, gson::toJson);
+      spark.get(Path.Route.ADMIN_INDEX, controller.dashboardRoute, freeMarkerEngine);
+      
+      spark.get(Path.Route.WILDCARD, (request, response) -> {
+        throw new NotFoundException();
+      });
     });
-    
+
     if(standAlone) {
       spark.get("*", ((request, response) -> {
         throw new NotFoundException();

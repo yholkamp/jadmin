@@ -4,6 +4,7 @@ import net.nextpulse.jadmin.dao.DataAccessException;
 import net.nextpulse.jadmin.dao.DatabaseEntry;
 import net.nextpulse.jadmin.dsl.InvalidInputException;
 import net.nextpulse.jadmin.exceptions.NotFoundException;
+import net.nextpulse.jadmin.helpers.DataPresentationHelper;
 import net.nextpulse.jadmin.helpers.Path;
 import net.nextpulse.jadmin.views.*;
 import org.apache.logging.log4j.LogManager;
@@ -33,14 +34,47 @@ public class CrudController {
    */
   public TemplateViewRoute listRoute = (request, response) -> {
     logger.trace("GET {}", request.uri());
-    int page = Math.max(1, extractIntFromString(request.queryParams("page"), 1));
-    
     Resource resource = request.attribute("resourceSchemaProvider");
-    int numberOfPages = ((Double)Math.ceil(resource.getDao().count() * 1.0 / COUNT_PER_PAGE)).intValue();
-    List<DatabaseEntry> rows = resource.getDao().selectMultiple((page - 1) * COUNT_PER_PAGE, COUNT_PER_PAGE);
-  
-    ListView viewModel = new ListView(resource, rows, resource.getIndexColumns(), createTemplateObject(resource.getTableName()), page, numberOfPages);
+    
+    ListView viewModel = new ListView(resource, resource.getIndexColumns(), createTemplateObject(resource.getTableName()));
     return new ModelAndView(viewModel, Path.Template.LIST);
+  };
+  
+  /**
+   * Default column to use for sorting //TODO: make this configurable per resource
+   */
+  private static final int DEFAULT_SORT_COLUMN = 0;
+  /**
+   * Default direction to use for sorting, true for ascending, false for descending //TODO: make this configurable per resource
+   */
+  private static final boolean DEFAULT_SORT_DIR = true;
+  
+  /**
+   * JSON API that returns the instances found for the provided resource, providing the data feed for the DataTables
+   * frontend.
+   */
+  public Route listJsonRoute = (request, response) -> {
+    logger.trace("GET {}", request.uri());
+    response.type("application/json");
+    Resource resource = request.attribute("resourceSchemaProvider");
+    
+    // security token
+    int draw = Optional.ofNullable(request.queryMap("draw").value()).map(Integer::valueOf).orElse(0);
+    
+    // process the data filtering parameters
+    int offset = Optional.ofNullable(request.queryMap("start").value()).map(Integer::valueOf).orElse(0);
+    int count = Optional.ofNullable(request.queryMap("length").value()).map(Integer::valueOf).orElse(20);
+    
+    QueryParamsMap sortByColumn = request.queryMap("order").get("0");
+    int sortByColumnNr = Optional.ofNullable(sortByColumn.get("column").value()).map(Integer::valueOf).orElse(DEFAULT_SORT_COLUMN);
+    boolean sortDirection = Optional.ofNullable(sortByColumn.get("dir").value()).map(x -> x.equals("asc")).orElse(DEFAULT_SORT_DIR);
+    
+    logger.trace("ListJson: offset {}, count {}, sortBy {} in {}", offset, count, sortByColumnNr, sortDirection);
+    List<DatabaseEntry> rows = resource.getDao().selectMultiple(offset, count, resource.getIndexColumns().get(sortByColumnNr), sortDirection);
+    
+    // ensure we only include the columns that should be available on the list page
+    List<Map<String, Object>> filteredRows = DataPresentationHelper.transformDatabaseResults(resource, rows);
+    return new DataTableResponse(draw, filteredRows, resource.getDao().count());
   };
   
   /**
@@ -82,11 +116,11 @@ public class CrudController {
     }
     return new EditPost(true, null);
   };
-
+  
   public Route deleteRoute = (request, response) -> {
     logger.trace("DELETE {}", request.uri());
     response.type("application/json");
-
+    
     Resource resource = request.attribute("resourceSchemaProvider");
     String keys = request.params(":ids");
     try {
@@ -202,15 +236,15 @@ public class CrudController {
   /**
    * Extracts an int from a string, catching any exceptions and falling back to 0.
    *
-   * @param string  string to process
+   * @param string   string to process
    * @param fallback value to return if no valid number was provided
-   * @return  the number found in 'string' or 'fallback' if it was null, empty or could not be parsed
+   * @return the number found in 'string' or 'fallback' if it was null, empty or could not be parsed
    */
   private int extractIntFromString(String string, int fallback) {
     if(StringUtils.isNotBlank(string)) {
       try {
         return Integer.valueOf(string);
-      } catch (NumberFormatException e) {
+      } catch(NumberFormatException e) {
         // no-op, the user sent us bad data
       }
     }

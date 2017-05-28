@@ -69,7 +69,6 @@ public class CrudControllerIntegrationTest extends DatabaseTest {
     ListView model = (ListView) result.getModel();
     assertEquals("locations", model.getResource().getTableName());
     assertEquals(ImmutableList.of("id", "name", "is_active", "favorite_number"), model.getHeaders());
-    assertEquals(2, model.getRows().size());
   }
 
   @Test
