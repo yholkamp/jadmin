@@ -6,7 +6,7 @@
     </table>
 </div>
 <script>
-    var confirmationMessage = '${i("delete.confirmation", ii("resource.${resource.tableName}"))?json_string}'
+    var confirmationMessage = "${i("delete.confirmation", ii("resource.${resource.tableName}"))?json_string}";
     var jsonUrl = "${templateObject.prefix}/${resource.tableName}/json";
     var columns = [<#list headers as header>
     {"title": "${ii("resources.${resource.tableName}.${header}")?json_string}", "data": "${header?json_string}"},

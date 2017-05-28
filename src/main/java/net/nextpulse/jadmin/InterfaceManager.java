@@ -56,6 +56,7 @@ public class InterfaceManager {
     freemarkerConfiguration.setSharedVariable("i", new I18nTranslate());
     // and register ii() as translation function where the fallback should be user friendly 
     freemarkerConfiguration.setSharedVariable("ii", new I18nTranslateSimpleFallback());
+    freemarkerConfiguration.setOutputEncoding("UTF-8");
   }
   
   /**

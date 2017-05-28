@@ -1,4 +1,4 @@
-<@root.template jsIncludes=["lib/moment.min.js", "lib/pikaday.js", "edit.js"] cssIncludes=["pikaday.css"]>
+<@root.template jsIncludes=["lib/moment.min.js", "lib/pikaday.js", "edit.js"] cssIncludes=["pikaday.css"] breadcrumb=i("view.edit_page_breadcrumb")>
 <div class="row">
     <div class="panel panel-default">
         <div class="panel-heading">
