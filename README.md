@@ -2,13 +2,14 @@
 
 [![Build Status](https://travis-ci.org/yholkamp/jadmin.svg?branch=master)](https://travis-ci.org/yholkamp/jadmin)
 
-JAdmin is a [Spark Java](http://sparkjava.com/) powered framework to create simple back-ends for administration tasks. Use this library as part 
-of your existing JVM application or stand alone to easily expose CRUD access to rows in your SQL tables, `.properties` 
-files and any other data. In the current set-up, JAdmin is focused on providing trusted users with access to data, 
-it is not yet suitable to provide access to untrusted users.
+JAdmin is a simple library to help provide a data administration UI to manage various data sources, both in your existing Java web application and stand alone. 
+It can be used to easily expose CRUD access to data originating from a wide range of sources, including rows in your SQL tables, `.properties` files or data in NoSQL databases. 
+
+In the current set-up, JAdmin is focused on providing trusted users with access to data, it is not yet suitable to provide access to untrusted users. 
+Unlike [Light Admin](http://lightadmin.org/), JAdmin does not depend on Spring Boot or JPA, providing a lightweight and customizable solution.
 
 Inspired by the Ruby [Active Admin](https://github.com/activeadmin/activeadmin) library.
-
+ 
 # Usage
 
 Add the library as Maven dependency to your Java 8 (and up) application:
