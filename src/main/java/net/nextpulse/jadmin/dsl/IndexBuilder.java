@@ -9,11 +9,11 @@ import net.nextpulse.jadmin.Resource;
  */
 public class IndexBuilder {
   private final Resource resource;
-
+  
   public IndexBuilder(Resource resource) {
     this.resource = resource;
   }
-
+  
   /**
    * Adds a column identified by id to the index page
    *
@@ -22,6 +22,17 @@ public class IndexBuilder {
    */
   public IndexBuilder column(String id) {
     resource.getIndexColumns().add(id);
+    return this;
+  }
+  
+  /**
+   * Set the number of entries to show per page.
+   * 
+   * @param count number of entries
+   * @return this instance
+   */
+  public IndexBuilder perPage(int count) {
+    resource.setPerPageCount(count);
     return this;
   }
 

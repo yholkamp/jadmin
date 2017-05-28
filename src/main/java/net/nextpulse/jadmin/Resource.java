@@ -38,7 +38,8 @@ public class Resource {
    * Data access object handling object retrieval and persistence for this Resource.
    */
   private AbstractDAO dao;
-
+  private int perPageCount;
+  
   public Resource(String tableName) {
     if(tableName == null) {
       throw new NullPointerException("tableName was null");
@@ -142,5 +143,18 @@ public class Resource {
    */
   private Optional<ColumnDefinition> findColumnDefinitionByName(String name) {
     return columnDefinitions.stream().filter(x -> x.getName().equals(name)).findFirst();
+  }
+  
+  /**
+   * Sets the number of entries to show on the resource list page
+   * 
+   * @param perPageCount  number of entries
+   */
+  public void setPerPageCount(int perPageCount) {
+    this.perPageCount = perPageCount;
+  }
+  
+  public int getPerPageCount() {
+    return perPageCount;
   }
 }
