@@ -26,5 +26,7 @@
         "processing": "${i("view.table.processing")?json_string}",
         "zeroRecords": "${i("view.table.zeroRecords")?json_string}"
     };
+    <#-- TODO: make the number of entries configurable -->
+    var count = 20;
 </script>
 </@root.template>
