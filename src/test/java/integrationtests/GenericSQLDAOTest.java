@@ -82,8 +82,9 @@ public class GenericSQLDAOTest extends DatabaseTest {
 
   @Test
   public void selectMultiple() throws Exception {
-    List<DatabaseEntry> values = dao.selectMultiple(0, 2);
+    List<DatabaseEntry> values = dao.selectMultiple(0, 2, "favorite_number", false);
     assertEquals("Should return two values", 2, values.size());
+    assertEquals("Should return the object with the largest favorite_number first", 2, values.get(0).getProperties().get("id"));
   }
 
   /**
