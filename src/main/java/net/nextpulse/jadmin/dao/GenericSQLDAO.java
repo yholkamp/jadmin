@@ -50,7 +50,8 @@ public class GenericSQLDAO extends AbstractDAO {
       
       PreparedStatement statement = conn.prepareStatement(String.format("SELECT * FROM %s WHERE %s LIMIT 1", tableName, conditions));
       for(int i = 1; i <= resourceSchemaProvider.getKeyColumns().size(); i++) {
-        setValue(statement, i, (String) keys[i - 1], resourceSchemaProvider.getKeyColumns().get(i - 1));
+        ColumnDefinition columnDefinition = resourceSchemaProvider.getKeyColumns().get(i - 1);
+        setValue(statement, i, (String) keys[i - 1], columnDefinition, columnDefinition.getName());
       }
       logger.debug("Executing statement {}", statement.toString());
       ResultSet results = statement.executeQuery();
@@ -108,10 +109,10 @@ public class GenericSQLDAO extends AbstractDAO {
       PreparedStatement statement = conn.prepareStatement(query);
       int index = 1;
       for(String columnName : postEntry.getKeyValues().keySet()) {
-        setValue(statement, index++, postEntry.getKeyValues().get(columnName), getColumnDefinitions().get(columnName));
+        setValue(statement, index++, postEntry.getKeyValues().get(columnName), getColumnDefinitions().get(columnName), columnName);
       }
       for(String columnName : postEntry.getValues().keySet()) {
-        setValue(statement, index++, postEntry.getValues().get(columnName), getColumnDefinitions().get(columnName));
+        setValue(statement, index++, postEntry.getValues().get(columnName), getColumnDefinitions().get(columnName), columnName);
       }
       
       logger.debug("Prepared statement SQL: {}", query);
@@ -140,11 +141,11 @@ public class GenericSQLDAO extends AbstractDAO {
       int index = 1;
       // first bind the SET field = ? portion
       for(String columnName : postEntry.getValues().keySet()) {
-        setValue(statement, index++, postEntry.getValues().get(columnName), getColumnDefinitions().get(columnName));
+        setValue(statement, index++, postEntry.getValues().get(columnName), getColumnDefinitions().get(columnName), columnName);
       }
       // and next the WHERE field = ? part
       for(String columnName : postEntry.getKeyValues().keySet()) {
-        setValue(statement, index++, postEntry.getKeyValues().get(columnName), getColumnDefinitions().get(columnName));
+        setValue(statement, index++, postEntry.getKeyValues().get(columnName), getColumnDefinitions().get(columnName), columnName);
       }
       logger.debug("Query: {}", statement.toString());
       int updatedRows = statement.executeUpdate();
@@ -187,7 +188,8 @@ public class GenericSQLDAO extends AbstractDAO {
       
       PreparedStatement statement = conn.prepareStatement(String.format("DELETE FROM %s WHERE %s", tableName, conditions));
       for(int i = 1; i <= resourceSchemaProvider.getKeyColumns().size(); i++) {
-        setValue(statement, i, (String) keys[i - 1], resourceSchemaProvider.getKeyColumns().get(i - 1));
+        ColumnDefinition columnDefinition = resourceSchemaProvider.getKeyColumns().get(i - 1);
+        setValue(statement, i, (String) keys[i - 1], columnDefinition, columnDefinition.getName());
       }
       logger.debug("Executing statement {}", statement.toString());
       boolean results = statement.execute();
@@ -237,9 +239,13 @@ public class GenericSQLDAO extends AbstractDAO {
    * @param index            index of the parameter to configure
    * @param value            user-provided value
    * @param columnDefinition column definition, used to obtain type information
+   * @param columnName       name of the column being set
    * @throws DataAccessException exception that may be thrown by {@link PreparedStatement#setObject(int, Object)} and others
    */
-  protected void setValue(PreparedStatement statement, int index, String value, ColumnDefinition columnDefinition) throws DataAccessException {
+  protected void setValue(PreparedStatement statement, int index, String value, ColumnDefinition columnDefinition, String columnName) throws DataAccessException {
+    if(columnDefinition == null) {
+      throw new DataAccessException("Found no column definition for column " + columnName + ", value " + value);
+    }
     try {
       if(StringUtils.isEmpty(value)) {
         // TODO: use setNull here
