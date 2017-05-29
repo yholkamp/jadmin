@@ -10,13 +10,13 @@ import java.util.function.Consumer;
  * @author yholkamp
  */
 public class ResourceBuilder {
-
+  
   private final Resource resource;
-
+  
   public ResourceBuilder(Resource resource) {
     this.resource = resource;
   }
-
+  
   /**
    * Configures the form/edit page generated for the last created resourceSchemaProvider.
    *
@@ -30,7 +30,7 @@ public class ResourceBuilder {
     builderConsumer.accept(builder);
     return this;
   }
-
+  
   /**
    * Configures the index page generated for the last created resourceSchemaProvider.
    *
@@ -43,5 +43,27 @@ public class ResourceBuilder {
     builderConsumer.accept(builder);
     return this;
   }
-
+  
+  /**
+   * Sets a validation function to execute before the per-column validation.
+   *
+   * @param function function to execute before the per-column validation, may throw an exception if the input is
+   *                 invalid and may update the user provided values.
+   */
+  public ResourceBuilder beforeValidation(ValidationFunction function) {
+    resource.setBeforeValidation(function);
+    return this;
+  }
+  
+  /**
+   * Sets a validation function to execute after the per-column validation.
+   *
+   * @param function function to execute before the per-column validation, may throw an exception if the input is
+   *                 invalid and may update the user provided values.
+   */
+  public ResourceBuilder afterValidation(ValidationFunction function) {
+    resource.setAfterValidation(function);
+    return this;
+  }
 }
+

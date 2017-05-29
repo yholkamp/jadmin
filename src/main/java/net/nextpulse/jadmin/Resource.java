@@ -3,13 +3,13 @@ package net.nextpulse.jadmin;
 import net.nextpulse.jadmin.dao.AbstractDAO;
 import net.nextpulse.jadmin.dsl.InputTransformer;
 import net.nextpulse.jadmin.dsl.InputValidationRule;
+import net.nextpulse.jadmin.dsl.ValidationFunction;
 import net.nextpulse.jadmin.elements.PageElement;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -38,7 +38,9 @@ public class Resource {
    * Data access object handling object retrieval and persistence for this Resource.
    */
   private AbstractDAO dao;
-  private int perPageCount;
+  private int perPageCount = 20;
+  private ValidationFunction afterValidation;
+  private ValidationFunction beforeValidation;
   
   public Resource(String tableName) {
     if(tableName == null) {
@@ -46,43 +48,43 @@ public class Resource {
     }
     this.tableName = tableName;
   }
-
+  
   public Set<String> getEditableColumns() {
     return columnDefinitions.stream().filter(ColumnDefinition::isEditable).map(ColumnDefinition::getName).collect(Collectors.toSet());
   }
-
+  
   public String getTableName() {
     return tableName;
   }
-
+  
   public List<String> getIndexColumns() {
     return indexColumns;
   }
-
+  
   public List<PageElement> getFormPage() {
     return formPage;
   }
-
+  
   public List<String> getPrimaryKeys() {
     return columnDefinitions.stream().filter(ColumnDefinition::isKeyColumn).map(ColumnDefinition::getName).collect(Collectors.toList());
   }
-
+  
   public List<ColumnDefinition> getColumnDefinitions() {
     return columnDefinitions;
   }
-
+  
   public void setColumnDefinitions(List<ColumnDefinition> columnDefinitions) {
     this.columnDefinitions = columnDefinitions;
   }
-
+  
   public AbstractDAO getDao() {
     return dao;
   }
-
+  
   public void setDao(AbstractDAO dao) {
     this.dao = dao;
   }
-
+  
   /**
    * Marks the provided column as editable.
    *
@@ -97,8 +99,8 @@ public class Resource {
   /**
    * Marks the provided column as editable, configuring a validation function to run on the user input.
    *
-   * @param name    name of this column
-   * @param inputValidationRules  validates the user input for this column
+   * @param name                 name of this column
+   * @param inputValidationRules validates the user input for this column
    */
   public void addEditableColumn(String name, InputValidationRule... inputValidationRules) {
     findColumnDefinitionByName(name)
@@ -110,8 +112,8 @@ public class Resource {
   /**
    * Marks the provided column as editable, configuring a validation function to run on the user input.
    *
-   * @param name    name of this column
-   * @param inputTransformer  transforms the user input for this column
+   * @param name             name of this column
+   * @param inputTransformer transforms the user input for this column
    */
   public void addEditableColumn(String name, InputTransformer inputTransformer) {
     findColumnDefinitionByName(name)
@@ -123,18 +125,18 @@ public class Resource {
   /**
    * Marks the provided column as editable, configuring a validation function to run on the user input.
    *
-   * @param name    name of this column
-   * @param inputValidationRules  validates the user input for this column
-   * @param inputTransformer  transforms the user input for this column
+   * @param name                 name of this column
+   * @param inputValidationRules validates the user input for this column
+   * @param inputTransformer     transforms the user input for this column
    */
-  public void addEditableColumn(String name,  InputTransformer inputTransformer, InputValidationRule... inputValidationRules) {
+  public void addEditableColumn(String name, InputTransformer inputTransformer, InputValidationRule... inputValidationRules) {
     findColumnDefinitionByName(name)
         .orElseThrow(() -> new IllegalArgumentException("Column " + name + " could not be found on resource " + tableName))
         .setEditable(true)
         .addValidationRules(inputValidationRules)
         .setInputTransformer(inputTransformer);
   }
-
+  
   /**
    * Locates the column definition identified by 'name'
    *
@@ -147,8 +149,8 @@ public class Resource {
   
   /**
    * Sets the number of entries to show on the resource list page
-   * 
-   * @param perPageCount  number of entries
+   *
+   * @param perPageCount number of entries
    */
   public void setPerPageCount(int perPageCount) {
     this.perPageCount = perPageCount;
@@ -156,5 +158,38 @@ public class Resource {
   
   public int getPerPageCount() {
     return perPageCount;
+  }
+  
+  
+  /**
+   * Sets a validation function to execute before the per-column validation.
+   *
+   * @param beforeValidation function to execute before the per-column validation
+   */
+  public void setBeforeValidation(ValidationFunction beforeValidation) {
+    this.beforeValidation = beforeValidation;
+  }
+  
+  /**
+   * @return the configured validation function to execute before column validation
+   */
+  public ValidationFunction getBeforeValidation() {
+    return beforeValidation;
+  }
+  
+  /**
+   * Sets a validation function to execute after the per-column validation.
+   *
+   * @param afterValidation function to execute after the per-column validation
+   */
+  public void setAfterValidation(ValidationFunction afterValidation) {
+    this.afterValidation = afterValidation;
+  }
+  
+  /**
+   * @return the configured validation function to execute after column validation
+   */
+  public ValidationFunction getAfterValidation() {
+    return afterValidation;
   }
 }

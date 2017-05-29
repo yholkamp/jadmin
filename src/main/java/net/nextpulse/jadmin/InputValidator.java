@@ -14,11 +14,6 @@ public class InputValidator {
   private InputValidator() {
   }
   
-  enum ValidationMode {
-    CREATE,
-    EDIT
-  }
-  
   /**
    * Ensures all entries of the FormPostEntry pass validation.
    *
@@ -28,8 +23,14 @@ public class InputValidator {
    * @throws InvalidInputException if the user input does not pass validation
    */
   public static void validate(FormPostEntry postEntry, Resource resource, ValidationMode validationMode) throws InvalidInputException {
+    if(resource.getBeforeValidation() != null) {
+      resource.getBeforeValidation().apply(validationMode, postEntry);
+    }
     for(ColumnDefinition columnDefinition : resource.getColumnDefinitions()) {
       validateColumn(columnDefinition, postEntry, validationMode);
+    }
+    if(resource.getAfterValidation() != null) {
+      resource.getAfterValidation().apply(validationMode, postEntry);
     }
   }
   

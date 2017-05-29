@@ -101,7 +101,7 @@ public class CrudController {
     Resource resource = request.attribute("resourceSchemaProvider");
     FormPostEntry postEntry = extractFormPostEntry(request, resource);
     try {
-      InputValidator.validate(postEntry, resource, InputValidator.ValidationMode.EDIT);
+      InputValidator.validate(postEntry, resource, ValidationMode.EDIT);
     } catch(InvalidInputException e) {
       return new EditPost(false, e.getMessage());
     }
@@ -151,7 +151,7 @@ public class CrudController {
     Resource resource = request.attribute("resourceSchemaProvider");
     FormPostEntry postEntry = extractFormPostEntry(request, resource);
     try {
-      InputValidator.validate(postEntry, resource, InputValidator.ValidationMode.CREATE);
+      InputValidator.validate(postEntry, resource, ValidationMode.CREATE);
     } catch(InvalidInputException e) {
       return new EditPost(false, e.getMessage());
     }

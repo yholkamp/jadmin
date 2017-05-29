@@ -74,7 +74,6 @@ directory in your own project and edit the file to your liking.
 * Support file-based configuration
 * Perform an overall security review of the project.
 * Allow front-end input validation rules to be configured.
-* Add a (before/after) hook system to customize rendered and saved values.
 
 # Limitations
 
