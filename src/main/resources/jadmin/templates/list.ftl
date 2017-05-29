@@ -1,7 +1,7 @@
 <@root.template jsIncludes=["lib/jquery-3.1.0.min.js", "lib/datatables.min.js", "list.js"] cssIncludes=["datatables.min.css"]>
-<h1>${ii("resources.${resource.tableName}")}</h1>
-<a href="${templateObject.prefix}/${resource.tableName}/new" class="btn btn-success">${i("view.button.add")}</a>
 <div class="row">
+    <h1>${ii("resources.${resource.tableName}")}</h1>
+    <a href="${templateObject.prefix}/${resource.tableName}/new" class="btn btn-success">${i("view.button.add")}</a>
     <table class="table" id="listResource">
     </table>
 </div>
