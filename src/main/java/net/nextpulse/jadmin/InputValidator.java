@@ -46,13 +46,13 @@ public class InputValidator {
     if(columnDefinition.isKeyColumn()) {
       // skip the key presence requirement for new entries
       if(validationMode == ValidationMode.EDIT) {
-        String input = postEntry.getKeyValues().get(columnDefinition);
+        String input = postEntry.getKeyValues().get(columnDefinition.getName());
         if(StringUtils.isBlank(input)) {
           throw new InvalidInputException("Key column " + columnDefinition.getName() + " is missing");
         }
       }
     } else {
-      String input = postEntry.getValues().get(columnDefinition);
+      String input = postEntry.getValues().get(columnDefinition.getName());
       if(!columnDefinition.isEditable()) {
         throw new InvalidInputException("Column " + columnDefinition.getName() + " is not editable");
       }

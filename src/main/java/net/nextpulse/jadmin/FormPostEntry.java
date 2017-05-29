@@ -13,11 +13,11 @@ public class FormPostEntry {
   /**
    * Key value(s) for this post entry, i.e. the object id, non-editable values.
    */
-  private LinkedHashMap<ColumnDefinition, String> keyValues = new LinkedHashMap<>();
+  private LinkedHashMap<String, String> keyValues = new LinkedHashMap<>();
   /**
    * Editable values of a resource, i.e. an editable name field.
    */
-  private LinkedHashMap<ColumnDefinition, String> values = new LinkedHashMap<>();
+  private LinkedHashMap<String, String> values = new LinkedHashMap<>();
   
   public FormPostEntry() {
   }
@@ -25,29 +25,29 @@ public class FormPostEntry {
   /**
    * @return map of unescaped post values
    */
-  public LinkedHashMap<ColumnDefinition, String> getValues() {
+  public LinkedHashMap<String, String> getValues() {
     return values;
   }
   
-  public void addValue(ColumnDefinition def, String value) {
-    values.put(def, value);
+  public void addValue(String columnName, String value) {
+    values.put(columnName, value);
   }
   
   /**
    * @return map of unescaped values that make up the identifier of this row
    */
-  public LinkedHashMap<ColumnDefinition, String> getKeyValues() {
+  public LinkedHashMap<String, String> getKeyValues() {
     return keyValues;
   }
   
   /**
    * Adds a new user supplied value for the specified column.
    *
-   * @param def   column definition
-   * @param value user provided value
+   * @param columnName column name
+   * @param value      user provided value
    */
-  public void addKeyValue(ColumnDefinition def, String value) {
-    keyValues.put(def, value);
+  public void addKeyValue(String columnName, String value) {
+    keyValues.put(columnName, value);
   }
   
   /**
@@ -57,8 +57,8 @@ public class FormPostEntry {
    */
   public Map<String, String> toPropertiesMap() {
     LinkedHashMap<String, String> output = new LinkedHashMap<>();
-    keyValues.forEach((def, value) -> output.put(def.getName(), value));
-    values.forEach((def, value) -> output.put(def.getName(), value));
+    output.putAll(keyValues);
+    output.putAll(values);
     return output;
   }
 }

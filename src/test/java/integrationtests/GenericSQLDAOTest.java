@@ -52,10 +52,10 @@ public class GenericSQLDAOTest extends DatabaseTest {
   @Test
   public void insert() throws Exception {
     FormPostEntry postEntry = new FormPostEntry();
-    postEntry.addKeyValue(idColumn, "3");
-    postEntry.addValue(nameColumn, "New Name");
-    postEntry.addValue(activeColumn, "true");
-    postEntry.addValue(favoriteNumber, "42");
+    postEntry.addKeyValue("id", "3");
+    postEntry.addValue("name", "New Name");
+    postEntry.addValue("is_active", "true");
+    postEntry.addValue("favorite_number", "42");
 
     dao.insert(postEntry);
 

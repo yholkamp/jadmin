@@ -73,7 +73,7 @@ public class FormInput implements PageElement {
       case integer:
         return "number";
       case string:
-        if(name.toLowerCase().startsWith("password")) {
+        if(name.toLowerCase().contains("password")) {
           return "password";
         } else {
           return "text";

@@ -1,10 +1,15 @@
 package net.nextpulse.jadmin.dao;
 
+import net.nextpulse.jadmin.ColumnDefinition;
 import net.nextpulse.jadmin.FormPostEntry;
 import net.nextpulse.jadmin.schema.ResourceSchemaProvider;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Abstract parent class for a DAO class backing a specific Resource. The DAO class handles the retrieval
@@ -18,6 +23,7 @@ public abstract class AbstractDAO {
    * Resource managed by this DAO instance.
    */
   protected ResourceSchemaProvider resourceSchemaProvider;
+  private Map<String, ColumnDefinition> columnDefinitionMap;
   
   /**
    * Initializer invoked before any other methods are called by the application.
@@ -80,4 +86,19 @@ public abstract class AbstractDAO {
    * @throws DataAccessException
    */
   public abstract int count() throws DataAccessException;
+  
+  /**
+   * @return mapping of string to column definition
+   * @throws DataAccessException if the column definitions could not be retrieved
+   */
+  public Map<String, ColumnDefinition> getColumnDefinitions() throws DataAccessException {
+    if(columnDefinitionMap == null && resourceSchemaProvider == null) {
+      return Collections.emptyMap();
+    } else if(columnDefinitionMap == null) {
+      columnDefinitionMap = resourceSchemaProvider.getColumnDefinitions().stream()
+          .collect(Collectors.toMap(ColumnDefinition::getName, Function.identity()));
+    }
+    
+    return columnDefinitionMap;
+  }
 }

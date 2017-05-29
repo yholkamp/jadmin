@@ -32,15 +32,15 @@ public class InMemoryDAOTest {
     valueColumn = new ColumnDefinition("value_column", ColumnType.bool);
     
     formEntry = new FormPostEntry();
-    formEntry.addKeyValue(keyColumn1, "key1value");
-    formEntry.addKeyValue(keyColumn2, "key2value");
-    formEntry.addValue(valueColumn, "value123");
+    formEntry.addKeyValue("key1_column", "key1value");
+    formEntry.addKeyValue("key2_column", "key2value");
+    formEntry.addValue("value_column", "value123");
     dao.insert(formEntry);
     
     formEntry2 = new FormPostEntry();
-    formEntry2.addKeyValue(keyColumn1, "key1 another value");
-    formEntry2.addKeyValue(keyColumn2, "key2 another value");
-    formEntry2.addValue(valueColumn, "another value");
+    formEntry2.addKeyValue("key1_column", "key1 another value");
+    formEntry2.addKeyValue("key2_column", "key2 another value");
+    formEntry2.addValue("value_column", "another value");
     dao.insert(formEntry2);
   }
   
@@ -64,9 +64,9 @@ public class InMemoryDAOTest {
     InMemoryDAO dao = new InMemoryDAO();
     
     FormPostEntry entry = new FormPostEntry();
-    entry.addKeyValue(keyColumn1, "key1value");
-    entry.addKeyValue(keyColumn2, "key2value");
-    entry.addValue(valueColumn, "value123");
+    entry.addKeyValue("key1_column", "key1value");
+    entry.addKeyValue("key2_column", "key2value");
+    entry.addValue("value_column", "value123");
     dao.insert(entry);
     
     assertEquals("Should have added an object", 1, dao.selectMultiple(0, 10, "key1_column", true).size());
@@ -75,9 +75,9 @@ public class InMemoryDAOTest {
   @Test
   public void update() throws Exception {
     FormPostEntry entry = new FormPostEntry();
-    entry.addKeyValue(keyColumn1, "key1value");
-    entry.addKeyValue(keyColumn2, "key2value");
-    entry.addValue(valueColumn, "new value");
+    entry.addKeyValue("key1_column", "key1value");
+    entry.addKeyValue("key2_column", "key2value");
+    entry.addValue("value_column", "new value");
     
     dao.update(entry);
     

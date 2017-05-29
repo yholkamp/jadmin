@@ -34,34 +34,34 @@ public class InputValidatorTest {
   @Test(expected = InvalidInputException.class)
   public void testValidatePostData_shouldRejectMissingPK_onEdit() throws Exception {
     FormPostEntry postEntry = new FormPostEntry();
-    postEntry.addValue(loginColumn, "1");
-    postEntry.addValue(passwordColumn, "foobarbaz");
+    postEntry.addValue("login", "1");
+    postEntry.addValue("password", "foobarbaz");
     InputValidator.validate(postEntry, resource, ValidationMode.EDIT);
   }
   
   @Test
   public void testValidatePostData_shouldAcceptMissingPK_onCreate() throws Exception {
     FormPostEntry postEntry = new FormPostEntry();
-    postEntry.addValue(loginColumn, "1");
-    postEntry.addValue(passwordColumn, "foobarbaz");
+    postEntry.addValue("login", "1");
+    postEntry.addValue("password", "foobarbaz");
     InputValidator.validate(postEntry, resource, ValidationMode.CREATE);
   }
   
   @Test(expected = InvalidInputException.class)
   public void testValidatePostData_shouldRejectPKAsValue() throws Exception {
     FormPostEntry postEntry = new FormPostEntry();
-    postEntry.addValue(loginColumn, "1");
-    postEntry.addValue(idColumn, "1");
-    postEntry.addValue(passwordColumn, "foobarbaz");
+    postEntry.addValue("login", "1");
+    postEntry.addValue("id", "1");
+    postEntry.addValue("password", "foobarbaz");
     InputValidator.validate(postEntry, resource, ValidationMode.EDIT);
   }
   
   @Test(expected = InvalidInputException.class)
   public void testValidatePostData_shouldRejectShortPassword() throws Exception {
     FormPostEntry postEntry = new FormPostEntry();
-    postEntry.addKeyValue(idColumn, "1");
-    postEntry.addValue(passwordColumn, "short");
-    postEntry.addValue(loginColumn, "foobarbaz");
+    postEntry.addKeyValue("id", "1");
+    postEntry.addValue("password", "short");
+    postEntry.addValue("login", "foobarbaz");
     InputValidator.validate(postEntry, resource, ValidationMode.EDIT);
   }
   
@@ -69,18 +69,18 @@ public class InputValidatorTest {
   public void testValidatePostData_shouldRejectUneditableColumnEdits() throws Exception {
     passwordColumn.setEditable(false);
     FormPostEntry postEntry = new FormPostEntry();
-    postEntry.addKeyValue(idColumn, "1");
-    postEntry.addValue(passwordColumn, "ybatybatybat");
-    postEntry.addValue(loginColumn, "foo");
+    postEntry.addKeyValue("id", "1");
+    postEntry.addValue("password", "ybatybatybat");
+    postEntry.addValue("login", "foo");
     InputValidator.validate(postEntry, resource, ValidationMode.EDIT);
   }
   
   @Test
   public void testValidatePostData_shouldAcceptAValidEntry() throws Exception {
     FormPostEntry postEntry = new FormPostEntry();
-    postEntry.addKeyValue(idColumn, "1");
-    postEntry.addValue(passwordColumn, "ybatybatybat");
-    postEntry.addValue(loginColumn, "foo");
+    postEntry.addKeyValue("id", "1");
+    postEntry.addValue("password", "ybatybatybat");
+    postEntry.addValue("login", "foo");
     InputValidator.validate(postEntry, resource, ValidationMode.EDIT);
   }
   

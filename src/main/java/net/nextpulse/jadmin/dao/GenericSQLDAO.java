@@ -13,8 +13,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * DAO implementation for resources backed by a SQL database.
@@ -106,11 +107,11 @@ public class GenericSQLDAO extends AbstractDAO {
       
       PreparedStatement statement = conn.prepareStatement(query);
       int index = 1;
-      for(ColumnDefinition columnDefinition : postEntry.getKeyValues().keySet()) {
-        setValue(statement, index++, postEntry.getKeyValues().get(columnDefinition), columnDefinition);
+      for(String columnName : postEntry.getKeyValues().keySet()) {
+        setValue(statement, index++, postEntry.getKeyValues().get(columnName), getColumnDefinitions().get(columnName));
       }
-      for(ColumnDefinition columnDefinition : postEntry.getValues().keySet()) {
-        setValue(statement, index++, postEntry.getValues().get(columnDefinition), columnDefinition);
+      for(String columnName : postEntry.getValues().keySet()) {
+        setValue(statement, index++, postEntry.getValues().get(columnName), getColumnDefinitions().get(columnName));
       }
       
       logger.debug("Prepared statement SQL: {}", query);
@@ -138,12 +139,12 @@ public class GenericSQLDAO extends AbstractDAO {
       
       int index = 1;
       // first bind the SET field = ? portion
-      for(ColumnDefinition columnDefinition : postEntry.getValues().keySet()) {
-        setValue(statement, index++, postEntry.getValues().get(columnDefinition), columnDefinition);
+      for(String columnName : postEntry.getValues().keySet()) {
+        setValue(statement, index++, postEntry.getValues().get(columnName), getColumnDefinitions().get(columnName));
       }
       // and next the WHERE field = ? part
-      for(ColumnDefinition columnDefinition : postEntry.getKeyValues().keySet()) {
-        setValue(statement, index++, postEntry.getKeyValues().get(columnDefinition), columnDefinition);
+      for(String columnName : postEntry.getKeyValues().keySet()) {
+        setValue(statement, index++, postEntry.getKeyValues().get(columnName), getColumnDefinitions().get(columnName));
       }
       logger.debug("Query: {}", statement.toString());
       int updatedRows = statement.executeUpdate();
@@ -203,11 +204,11 @@ public class GenericSQLDAO extends AbstractDAO {
    * @return update query with unbound parameters
    */
   protected String createUpdateQuery(FormPostEntry postEntry) {
-    String wherePortion = postEntry.getKeyValues().keySet().stream().map(ColumnDefinition::getName)
+    String wherePortion = postEntry.getKeyValues().keySet().stream()
         .map(x -> x + " = ?")
         .reduce((s, s2) -> s + " AND " + s2).orElse("");
     
-    String setPortion = postEntry.getValues().keySet().stream().map(ColumnDefinition::getName)
+    String setPortion = postEntry.getValues().keySet().stream()
         .map(x -> x + " = ?")
         .reduce((s, s2) -> s + "," + s2).orElse("");
     return String.format("UPDATE %s SET %s WHERE %s", tableName, setPortion, wherePortion);
@@ -221,8 +222,8 @@ public class GenericSQLDAO extends AbstractDAO {
    */
   protected String createInsertStatement(FormPostEntry postEntry) {
     // obtain a list of all resource columns present in the post data
-    List<String> columnSet = new ArrayList<>(postEntry.getKeyValues().keySet().stream().map(ColumnDefinition::getName).collect(Collectors.toList()));
-    columnSet.addAll(postEntry.getValues().keySet().stream().map(ColumnDefinition::getName).collect(Collectors.toList()));
+    List<String> columnSet = new ArrayList<>(postEntry.getKeyValues().keySet());
+    columnSet.addAll(postEntry.getValues().keySet());
     
     String parameters = Joiner.on(",").join(Collections.nCopies(columnSet.size(), "?"));
     String parameterString = Joiner.on(",").join(columnSet);
@@ -254,7 +255,13 @@ public class GenericSQLDAO extends AbstractDAO {
             break;
           case datetime:
             // TODO: handle input-to-date conversion
-            statement.setObject(index, String.valueOf(value));
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            try {
+              Date date = format.parse(value);
+              statement.setDate(index, new java.sql.Date(date.getTime()));
+            } catch(ParseException e) {
+              logger.error("Could not parse the provided datetime string: {}", value, e);
+            }
             break;
           case string:
           case text:

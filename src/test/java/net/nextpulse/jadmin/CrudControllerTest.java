@@ -30,8 +30,8 @@ public class CrudControllerTest {
     testResource.getColumnDefinitions().add(stringColumn);
     
     FormPostEntry postEntry = CrudController.extractFormPostEntry(mockRequest, testResource);
-    assertEquals("1", postEntry.getValues().get(booleanColumn));
-    assertEquals("newName", postEntry.getValues().get(stringColumn));
+    assertEquals("1", postEntry.getValues().get("boolean"));
+    assertEquals("newName", postEntry.getValues().get("string"));
   }
   
   private Request createMockRequest(Resource resource) {

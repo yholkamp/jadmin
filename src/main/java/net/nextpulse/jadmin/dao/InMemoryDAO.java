@@ -1,6 +1,5 @@
 package net.nextpulse.jadmin.dao;
 
-import com.google.common.collect.ComparisonChain;
 import net.nextpulse.jadmin.FormPostEntry;
 
 import java.util.*;
@@ -15,6 +14,29 @@ import java.util.stream.Collectors;
 public class InMemoryDAO extends AbstractDAO {
   
   private LinkedHashMap<DatabaseEntryKey, DatabaseEntry> objects = new LinkedHashMap<>();
+  
+  /**
+   * Generic compare function for two objects of unknown types. Returns a negative integer, zero, or a positive integer
+   * as the first object is less than, equal to, or greater than the second object.
+   *
+   * @param o1 first object to compare
+   * @param o2 second object to compare
+   * @return a negative integer, zero, or a positive integer as o1 is less than, equal to, or greater than the o2 object.
+   */
+  protected static int genericCompare(Object o1, Object o2) {
+    if(o1 == o2) {
+      return 0;
+    } else if(o1 == null) {
+      return -1;
+    } else if(o2 == null) {
+      return 1;
+    } else if(o1 instanceof Comparable && o2 instanceof Comparable && o1.getClass().equals(o2.getClass())) {
+      return ((Comparable) o1).compareTo(o2);
+    } else {
+      // default to simply sorting based on the object's class name as a fall back
+      return o1.getClass().getName().compareTo(o2.getClass().getName());
+    }
+  }
   
   /**
    * Retrieves a single DatabaseEntry using the primary key(s) of the resourceSchemaProvider.
@@ -50,29 +72,6 @@ public class InMemoryDAO extends AbstractDAO {
   }
   
   /**
-   * Generic compare function for two objects of unknown types. Returns a negative integer, zero, or a positive integer 
-   * as the first object is less than, equal to, or greater than the second object. 
-   * 
-   * @param o1  first object to compare
-   * @param o2  second object to compare
-   * @return a negative integer, zero, or a positive integer as o1 is less than, equal to, or greater than the o2 object.
-   */
-  protected static int genericCompare(Object o1, Object o2) {
-    if(o1 == o2) {
-      return 0;
-    } else if(o1 == null) {
-      return -1;
-    } else if(o2 == null) {
-      return 1;
-    } else if(o1 instanceof Comparable && o2 instanceof Comparable && o1.getClass().equals(o2.getClass())) {
-      return ((Comparable)o1).compareTo(o2);
-    } else {
-      // default to simply sorting based on the object's class name as a fall back
-      return o1.getClass().getName().compareTo(o2.getClass().getName());
-    }
-  }
-  
-  /**
    * Inserts a single resourceSchemaProvider instance in to the database, using the unfiltered client submitted data.
    *
    * @param postData unfiltered user submitted data, must be used with caution
@@ -81,8 +80,8 @@ public class InMemoryDAO extends AbstractDAO {
   @Override
   public void insert(FormPostEntry postData) throws DataAccessException {
     DatabaseEntry entry = new DatabaseEntry();
-    postData.getKeyValues().forEach((def, value) -> entry.getProperties().put(def.getName(), value));
-    postData.getValues().forEach((def, value) -> entry.getProperties().put(def.getName(), value));
+    postData.getKeyValues().forEach((column, value) -> entry.getProperties().put(column, value));
+    postData.getValues().forEach((column, value) -> entry.getProperties().put(column, value));
     DatabaseEntryKey key = new DatabaseEntryKey(postData.getKeyValues().values());
     objects.put(key, entry);
   }
@@ -99,8 +98,8 @@ public class InMemoryDAO extends AbstractDAO {
     DatabaseEntry entry = objects.get(key);
     if(entry != null) {
       entry.getProperties().clear();
-      postData.getKeyValues().forEach((def, value) -> entry.getProperties().put(def.getName(), value));
-      postData.getValues().forEach((def, value) -> entry.getProperties().put(def.getName(), value));
+      postData.getKeyValues().forEach((column, value) -> entry.getProperties().put(column, value));
+      postData.getValues().forEach((column, value) -> entry.getProperties().put(column, value));
     } else {
       throw new DataAccessException("Could not access object identified by " + key);
     }

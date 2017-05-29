@@ -2,6 +2,7 @@ package net.nextpulse.jadmin;
 
 import net.nextpulse.jadmin.dao.DataAccessException;
 import net.nextpulse.jadmin.dao.DatabaseEntry;
+import net.nextpulse.jadmin.dsl.InputTransformer;
 import net.nextpulse.jadmin.dsl.InvalidInputException;
 import net.nextpulse.jadmin.exceptions.NotFoundException;
 import net.nextpulse.jadmin.helpers.DataPresentationHelper;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * The main class of the JAdmin library when it comes to handling the different HTTP endpoints that are supported.
@@ -106,7 +108,7 @@ public class CrudController {
       return new EditPost(false, e.getMessage());
     }
     
-    processPostData(postEntry);
+    processPostData(postEntry, resource);
     
     try {
       resource.getDao().update(postEntry);
@@ -207,14 +209,14 @@ public class CrudController {
       if(columnDefinition.isKeyColumn()) {
         QueryParamsMap columnQueryMap = request.queryMap().get(columnDefinition.getName());
         if(columnQueryMap.hasValue()) {
-          postEntry.addKeyValue(columnDefinition, columnQueryMap.value());
+          postEntry.addKeyValue(columnDefinition.getName(), columnQueryMap.value());
         }
       }
       // copy any editable fields that are present
       if(columnDefinition.isEditable()) {
         QueryParamsMap columnQueryMap = request.queryMap().get(columnDefinition.getName());
         if(columnQueryMap.hasValue()) {
-          postEntry.addValue(columnDefinition, columnQueryMap.value());
+          postEntry.addValue(columnDefinition.getName(), columnQueryMap.value());
         }
       }
     }
@@ -225,11 +227,20 @@ public class CrudController {
    * Processes the user post data using the optional post-processing method specified for the column.
    *
    * @param postEntry user post data that may require processing
+   * @param resource
    */
-  private void processPostData(FormPostEntry postEntry) {
-    postEntry.getValues().entrySet().stream().filter(entry -> entry.getKey().getInputTransformer() != null).forEach(entry -> {
-      String transformedInput = entry.getKey().getInputTransformer().apply(entry.getValue());
-      postEntry.getValues().put(entry.getKey(), transformedInput);
+  private void processPostData(FormPostEntry postEntry, Resource resource) {
+    // create a map of column name to transformation function
+    Map<String, InputTransformer> definitionMap = resource.getColumnDefinitions().stream()
+        .filter(x -> x.getInputTransformer() != null)
+        .collect(Collectors.toMap(ColumnDefinition::getName, ColumnDefinition::getInputTransformer));
+    
+    // apply the functions
+    postEntry.getValues().forEach((key, value) -> {
+      if(definitionMap.containsKey(key)) {
+        String transformedInput = definitionMap.get(key).apply(value);
+        postEntry.getValues().put(key, transformedInput);
+      }
     });
   }
   
