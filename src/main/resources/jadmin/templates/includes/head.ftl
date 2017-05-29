@@ -7,9 +7,9 @@
 <meta name="description" content="">
 <meta name="author" content="JAdmin">
 
-<link rel="stylesheet" href="/css/bootstrap.css">
-<link rel="stylesheet" href="/css/bootstrap-theme.css">
-<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="${prefix}/css/bootstrap.css">
+<link rel="stylesheet" href="${prefix}/css/bootstrap-theme.css">
+<link rel="stylesheet" href="${prefix}/css/style.css">
 <#list cssIncludes as include>
-<link rel="stylesheet" href="/css/${include}">
+<link rel="stylesheet" href="${prefix}/css/${include}">
 </#list>

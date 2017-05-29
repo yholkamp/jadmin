@@ -1,21 +1,16 @@
 package net.nextpulse.jadmin.helpers.templatemethods;
 
 import freemarker.template.SimpleScalar;
-import freemarker.template.TemplateMethodModelEx;
-import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
-import freemarker.template.utility.DeepUnwrap;
-import net.nextpulse.jadmin.helpers.I18n;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
 /**
- * Freemarker method that facilitates translating template strings, falling back on the last chunk of the translation 
- * key when no value was found. Used to display resource column names, which would otherwise return a less 
+ * Freemarker method that facilitates translating template strings, falling back on the last chunk of the translation
+ * key when no value was found. Used to display resource column names, which would otherwise return a less
  * readable string, such as resources.locations.name.
  *
  * @author yholkamp

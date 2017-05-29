@@ -4,17 +4,17 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.template.Configuration;
+import freemarker.template.SimpleScalar;
 import net.nextpulse.jadmin.exceptions.NotFoundException;
 import net.nextpulse.jadmin.filters.Filters;
 import net.nextpulse.jadmin.helpers.I18n;
-import net.nextpulse.jadmin.helpers.templatemethods.I18nTranslate;
 import net.nextpulse.jadmin.helpers.Path;
+import net.nextpulse.jadmin.helpers.templatemethods.I18nTranslate;
 import net.nextpulse.jadmin.helpers.templatemethods.I18nTranslateSimpleFallback;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import spark.Service;
-import spark.staticfiles.StaticFilesConfiguration;
 import spark.template.freemarker.FreeMarkerEngine;
 
 import java.util.Map;
@@ -105,21 +105,12 @@ public class InterfaceManager {
     freemarkerConfiguration.setDateTimeFormat(I18n.get("format.datetime"));
     freemarkerConfiguration.setDateFormat(I18n.get("format.date"));
     freemarkerConfiguration.setDateFormat(I18n.get("format.time"));
+    freemarkerConfiguration.setSharedVariable("prefix", new SimpleScalar(prefix));
     
     // ensure the urls are consistently without trailing slash
     configureFilters();
     configureRoutes();
     configureExceptionHandlers();
-    
-    // configure the static file location for JAdmin as before filter, as we cannot rely on the static file location 
-    // when JAdmin isn't running in standalone mode.
-    StaticFilesConfiguration staticFilesConfiguration = new StaticFilesConfiguration();
-    staticFilesConfiguration.configure("/jadmin/public");
-    spark.before((request, response) -> {
-      if(staticFilesConfiguration.consume(request.raw(), response.raw())) {
-        throw spark.halt();
-      }
-    });
   }
   
   /**
@@ -127,6 +118,14 @@ public class InterfaceManager {
    * from the URL for consistency and adding a gzip header to the output.
    */
   private void configureFilters() {
+    // configure the static file location for JAdmin as before filter, intercepting any calls to static files.
+    final StaticFileServer fileServer = new StaticFileServer(prefix);
+    spark.before((request, response) -> {
+      if(fileServer.consume(request.raw(), response.raw())) {
+        throw spark.halt();
+      }
+    });
+    
     spark.before(prefix + "/*", Filters.removeTrailingSlashes);
     
     // ensure that only valid formPages may be loaded
@@ -153,7 +152,7 @@ public class InterfaceManager {
         throw new NotFoundException();
       });
     });
-
+    
     if(standAlone) {
       spark.get("*", ((request, response) -> {
         throw new NotFoundException();
@@ -167,7 +166,7 @@ public class InterfaceManager {
   private void configureExceptionHandlers() {
     // either show the debug screen or handle exceptions
     spark.exception(NotFoundException.class, (e, request, response) -> {
-      logger.error(request.uri() + " does not exist");
+      //logger.error(request.uri() + " does not exist");
       response.status(404);
       response.body("Not found.");
     });
