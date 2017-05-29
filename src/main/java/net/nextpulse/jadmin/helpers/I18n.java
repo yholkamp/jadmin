@@ -19,7 +19,8 @@ public class I18n {
   /**
    * Location where translation files are expected to be.
    */
-  private static final String I18N_PATH = "/jadmin/i18n";
+  private static final String I18N_OVERRIDE_PATH = "/jadmin/i18n";
+  private static final String DEFAULT_I18N_PATH = "/net/nextpulse/jadmin/i18n";
   /**
    * Currently loaded configuration
    */
@@ -78,22 +79,24 @@ public class I18n {
    */
   private static void loadProperties() {
     configuration = new Properties();
-    loadFile("base");
-    loadFile(language);
+    loadFile(DEFAULT_I18N_PATH, "base");
+    loadFile(DEFAULT_I18N_PATH, language);
+    loadFile(I18N_OVERRIDE_PATH, language);
   }
   
   /**
    * Loads the provided properties file name, assuming it exists 
-   * 
+   *
+   * @param path
    * @param filename
    */
-  private static void loadFile(String filename) {
-    try(InputStream in = I18n.class.getResourceAsStream(I18N_PATH + "/" + filename + ".properties")) {
+  private static void loadFile(String path, String filename) {
+    try(InputStream in = I18n.class.getResourceAsStream(path + "/" + filename + ".properties")) {
       configuration.load(in);
     } catch(NullPointerException e) {
-      logger.error("Translation file " + I18N_PATH + "/{}.properties does not exist in the class path", I18n.language);
+      logger.error("Translation file " + path + "/{}.properties does not exist in the class path", I18n.language);
     } catch(IOException e) {
-      logger.error("Translation file " + I18N_PATH + "/{}.properties could not be loaded from the class path", I18n.language, e);
+      logger.error("Translation file " + path + "/{}.properties could not be loaded from the class path", I18n.language, e);
     }
   }
 }

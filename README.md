@@ -17,7 +17,7 @@ Add the library as Maven dependency to your Java 8 (and up) application:
      <dependency>
          <groupId>net.nextpulse</groupId>
          <artifactId>jadmin</artifactId>
-         <version>0.3.2</version>
+         <version>0.5.0</version>
      </dependency>
  
 And call the API to add resources you'd like to expose through the admin panel:
@@ -57,14 +57,12 @@ implementation, take a look at the `InMemoryDAO` implementation.
 
 # Configuration and customization
 
-Customizing the templates used by JAdmin is possible as well, all templates that may be overwritten are in the 
-`src/main/resources/jadmin` folder. To overwrite or customize a template, create an 
-`src/main/resources/jadmin` folder in your own application and create a copy of the file you would like to customize. 
-JAdmin will now load the copy of the file provided by your application. For details on the available template syntax,
-take a look at [Freemarker](http://freemarker.org/docs/index.html), the template engine used by JAdmin.
+Customizing the templates and translation files used by JAdmin is done by placing customized versions of the files in the 
+`src/main/resources/jadmin/templates` and `src/main/resources/jadmin/i18n` folder of your own project. 
+When a template (or translation file) is loaded, JAdmin will first look in these directories before falling back on 
+the `/net/nextpulse/jadmin` directory.
 
-To overwrite any translation strings, table or column names and more, copy the `en.properties` to the `resources/jadmin/i18n` 
-directory in your own project and edit the file to your liking. 
+For details on the available template syntax, take a look at [Freemarker](http://freemarker.org/docs/index.html), the template engine used by JAdmin.
 
 # Roadmap
 

@@ -50,10 +50,16 @@ public class InterfaceManager {
   InterfaceManager(Map<String, Resource> resources) {
     this.resources = resources;
     
+    // attempt to load templates from the /jadmin/templates directory, which would contain user overrides
     freemarkerConfiguration.setTemplateLoader(new ClassTemplateLoader(JAdmin.class, "/jadmin/templates"));
+    freemarkerConfiguration.setTemplateLoader(new ClassTemplateLoader(JAdmin.class, "/net/nextpulse/jadmin/templates"));
+    
+    // include our template as default import
     freemarkerConfiguration.addAutoImport("root", "template.ftl");
+    
     // register i() as translation function
     freemarkerConfiguration.setSharedVariable("i", new I18nTranslate());
+    
     // and register ii() as translation function where the fallback should be user friendly 
     freemarkerConfiguration.setSharedVariable("ii", new I18nTranslateSimpleFallback());
     freemarkerConfiguration.setOutputEncoding("UTF-8");
