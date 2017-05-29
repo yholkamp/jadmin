@@ -9,11 +9,14 @@
     var confirmationMessage = "${i("delete.confirmation", ii("resource.${resource.tableName}"))?json_string}";
     var jsonUrl = "${templateObject.prefix}/${resource.tableName}/json";
     var columns = [<#list headers as header>
-    {"title": "${ii("resources.${resource.tableName}.${header}")?json_string}", "data": "${header?json_string}"},
-    </#list>
-        {"title":"", "defaultContent": "${
-        '<a href="#" class="btn btn-info btn-sm edit-btn">${i("view.button.edit")}</a>&nbsp;<a href="#" class="btn btn-danger btn-sm delete-btn">${i("view.button.delete")}</a>'?json_string
-        }"}
+    {
+        "title": "${ii("resources.${resource.tableName}.${header}")?json_string}", 
+        "data": "${header?json_string}"
+    },</#list>
+        {
+            "title":"",
+            "defaultContent": "${'<a href="#" class="btn btn-info btn-sm edit-btn">${i("view.button.edit")}</a>&nbsp;<a href="#" class="btn btn-danger btn-sm delete-btn">${i("view.button.delete")}</a>'?json_string}"
+        }
     ];
     var dataTableLanguage = {
         "infoFiltered": "",
