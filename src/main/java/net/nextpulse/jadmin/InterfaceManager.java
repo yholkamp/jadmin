@@ -3,6 +3,8 @@ package net.nextpulse.jadmin;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import freemarker.cache.ClassTemplateLoader;
+import freemarker.cache.MultiTemplateLoader;
+import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.SimpleScalar;
 import net.nextpulse.jadmin.exceptions.NotFoundException;
@@ -51,8 +53,10 @@ public class InterfaceManager {
     this.resources = resources;
     
     // attempt to load templates from the /jadmin/templates directory, which would contain user overrides
-    freemarkerConfiguration.setTemplateLoader(new ClassTemplateLoader(JAdmin.class, "/jadmin/templates"));
-    freemarkerConfiguration.setTemplateLoader(new ClassTemplateLoader(JAdmin.class, "/net/nextpulse/jadmin/templates"));
+    ClassTemplateLoader overrideLoader = new ClassTemplateLoader(JAdmin.class, "/jadmin/templates");
+    ClassTemplateLoader defaultLoader = new ClassTemplateLoader(JAdmin.class, "/net/nextpulse/jadmin/templates");
+    MultiTemplateLoader mtl = new MultiTemplateLoader(new TemplateLoader[]{overrideLoader, defaultLoader});
+    freemarkerConfiguration.setTemplateLoader(mtl);
     
     // include our template as default import
     freemarkerConfiguration.addAutoImport("root", "template.ftl");
