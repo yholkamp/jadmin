@@ -32,6 +32,7 @@ public class StaticFileServerTest {
   public void testStaticPathMatching() throws Exception {
     assertTrue(fileServer.matchesStaticPath("/barbar/css/style.css"));
     assertFalse(fileServer.matchesStaticPath("/barbar/css2/style.css"));
+    assertTrue(fileServer.matchesStaticPath("/barbar/favicon.ico"));
     assertFalse(fileServer.matchesStaticPath("/barbar/../../css/style.css"));
   }
   

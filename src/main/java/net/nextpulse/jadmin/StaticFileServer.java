@@ -23,7 +23,7 @@ public class StaticFileServer {
   private static final String RESOURCE_OVERRIDE_PATH = "/jadmin/public/";
   private static final String DEFAULT_RESOURCE_PATH = "/net/nextpulse/jadmin/public/";
   private static final String CONTENT_TYPE = "Content-Type";
-  private static final String STATIC_FILE_PATH_REGEX = "\\A%s(?:/css/|/fonts/|/js/|/favicon\\.ico).+\\z";
+  private static final String STATIC_FILE_PATH_REGEX = "\\A%s(?:/css/.+|/fonts/.+|/js/.+|/favicon\\.ico)\\z";
   private final Pattern allowedPrefixes;
   private final String prefix;
   

@@ -7,6 +7,8 @@
 <meta name="description" content="">
 <meta name="author" content="JAdmin">
 
+<link rel="icon" type="image/x-icon" href="${prefix}/favicon.ico">
+
 <link rel="stylesheet" href="${prefix}/css/bootstrap.css">
 <link rel="stylesheet" href="${prefix}/css/bootstrap-theme.css">
 <link rel="stylesheet" href="${prefix}/css/style.css">
