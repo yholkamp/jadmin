@@ -73,7 +73,7 @@ public class CrudController {
     
     logger.trace("ListJson: offset {}, count {}, sortBy {} in {}", offset, count, sortByColumnNr, sortDirection);
     List<DatabaseEntry> rows = resource.getDao().selectMultiple(offset, count, resource.getIndexColumns().get(sortByColumnNr), sortDirection);
-    
+    logger.trace("Received {} entries from the dao", rows.size());
     // ensure we only include the columns that should be available on the list page
     List<Map<String, Object>> filteredRows = DataPresentationHelper.transformDatabaseResults(resource, rows);
     return new DataTableResponse(draw, filteredRows, resource.getDao().count());

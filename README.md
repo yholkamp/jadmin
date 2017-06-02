@@ -12,14 +12,33 @@ Inspired by the Ruby [Active Admin](https://github.com/activeadmin/activeadmin) 
  
 # Usage
 
-Add the library as Maven dependency to your Java 8 (and up) application:
+[![Javadocs](http://www.javadoc.io/badge/net.nextpulse/jadmin.svg)](http://www.javadoc.io/doc/net.nextpulse/jadmin) 
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.nextpulse/jadmin/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.nextpulse/jadmin/)
+
+Add the library to your Java 8+/Scala/Kotlin application:
      
+For Maven users:
+
      <dependency>
          <groupId>net.nextpulse</groupId>
          <artifactId>jadmin</artifactId>
-         <version>0.5.0</version>
+         <version>(version)</version>
      </dependency>
- 
+
+For sbt users:
+     
+     libraryDependencies += "net.nextpulse" % "jadmin" % "(version)"
+
+For gradle users:
+     
+     repositories {
+         mavenCentral()
+     }
+     
+     dependencies {
+         compile 'net.nextpulse:jadmin:(version)'
+     }
+
 And call the API to add resources you'd like to expose through the admin panel:
 
     JAdmin jAdmin = new JAdmin();
