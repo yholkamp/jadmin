@@ -1,5 +1,6 @@
 package net.nextpulse.jadmin;
 
+import net.nextpulse.jadmin.dsl.ColumnValueTransformer;
 import net.nextpulse.jadmin.dsl.InputTransformer;
 import net.nextpulse.jadmin.dsl.InputValidationRule;
 
@@ -30,7 +31,8 @@ public class ColumnDefinition {
   private boolean editable;
   private List<InputValidationRule> validationRules = new ArrayList<>();
   private InputTransformer inputTransformer;
-  
+  private ColumnValueTransformer columnValueTransformer;
+
   public ColumnDefinition() {
   }
 
@@ -102,7 +104,17 @@ public class ColumnDefinition {
     return inputTransformer;
   }
   
-  public void setInputTransformer(InputTransformer inputTransformer) {
+  public ColumnDefinition setInputTransformer(InputTransformer inputTransformer) {
     this.inputTransformer = inputTransformer;
+    return this;
+  }
+
+  public ColumnValueTransformer getColumnValueTransformer() {
+    return columnValueTransformer;
+  }
+
+  public ColumnDefinition setColumnValueTransformer(ColumnValueTransformer columnValueTransformer) {
+    this.columnValueTransformer = columnValueTransformer;
+    return this;
   }
 }

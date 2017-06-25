@@ -1,5 +1,6 @@
 package net.nextpulse.jadmin.helpers;
 
+import net.nextpulse.jadmin.ColumnDefinition;
 import net.nextpulse.jadmin.Resource;
 import net.nextpulse.jadmin.dao.DatabaseEntry;
 import org.apache.logging.log4j.LogManager;
@@ -10,6 +11,7 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -35,14 +37,23 @@ public class DataPresentationHelper {
    */
   public static List<Map<String, Object>> transformDatabaseResults(Resource resource, List<DatabaseEntry> rows) {
     return rows.stream().map(x -> {
-          // copy only the columns available on the list page
-          HashMap<String, Object> filteredCopy = new HashMap<>();
-          resource.getIndexColumns().forEach(z -> filteredCopy.put(z, x.getProperties().get(z)));
-          
+      // copy only the columns available on the list page
+      HashMap<String, Object> filteredCopy = new HashMap<>();
+      resource.getIndexColumns().forEach(z -> {
+        Optional<ColumnDefinition> columnDefinition = resource.findColumnDefinitionByName(z);
+        columnDefinition.map(def -> {
+          if(def.getColumnValueTransformer() != null) {
+            return filteredCopy.put(z, def.getColumnValueTransformer().apply(x.getProperties().get(z)));
+          } else {
+            return filteredCopy.put(z, x.getProperties().get(z));
+          }
+        });
+      });
+
           // add a row identifier
-          filteredCopy.put("DT_RowId", extractUrlEncodedPK(resource.getPrimaryKeys(), x.getProperties()));
-          return filteredCopy;
-        }
+        filteredCopy.put("DT_RowId", extractUrlEncodedPK(resource.getPrimaryKeys(), x.getProperties()));
+        return filteredCopy;
+      }
     ).collect(Collectors.toList());
   }
   
