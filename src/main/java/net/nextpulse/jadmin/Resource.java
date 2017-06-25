@@ -1,9 +1,7 @@
 package net.nextpulse.jadmin;
 
 import net.nextpulse.jadmin.dao.AbstractDAO;
-import net.nextpulse.jadmin.dsl.InputTransformer;
-import net.nextpulse.jadmin.dsl.InputValidationRule;
-import net.nextpulse.jadmin.dsl.ValidationFunction;
+import net.nextpulse.jadmin.dsl.*;
 import net.nextpulse.jadmin.elements.PageElement;
 
 import java.util.ArrayList;
@@ -136,6 +134,28 @@ public class Resource {
         .addValidationRules(inputValidationRules)
         .setInputTransformer(inputTransformer);
   }
+
+  /**
+   * Adds the provided column to the table on the index page and adds a transformation function for displaying the value
+   * @param columnId                name of this column
+   */
+  public void addColumn(String columnId) {
+    getIndexColumns().add(columnId);
+  }
+
+  /**
+   * Adds the provided column to the table on the index page and adds a transformation function for displaying the value
+   *
+   * @param columnId                 name of this column
+   * @param columnValueTransformer   transforms the way the existing column value is displayed
+   */
+  public void addColumn(String columnId, ColumnValueTransformer columnValueTransformer) {
+    System.out.println("Adding column and transformer method");
+    getIndexColumns().add(columnId);
+    findColumnDefinitionByName(columnId)
+      .orElseThrow(() -> new IllegalArgumentException("Column " + columnId + " could not be found on resource " + tableName))
+      .setColumnValueTransformer(columnValueTransformer);
+  }
   
   /**
    * Locates the column definition identified by 'name'
@@ -143,7 +163,7 @@ public class Resource {
    * @param name internal name of the column to retrieve the column definition for
    * @return either the ColumnDefinition or an empty Optional
    */
-  private Optional<ColumnDefinition> findColumnDefinitionByName(String name) {
+  public Optional<ColumnDefinition> findColumnDefinitionByName(String name) {
     return columnDefinitions.stream().filter(x -> x.getName().equals(name)).findFirst();
   }
   

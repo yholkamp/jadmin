@@ -21,7 +21,21 @@ public class IndexBuilder {
    * @return this instance
    */
   public IndexBuilder column(String id) {
-    resource.getIndexColumns().add(id);
+    resource.addColumn(id);
+    return this;
+  }
+
+  /**
+   * Adds a column identified by id to the index page, with an optional inputValidationRule function. This function will be
+   * called when the user input is submitted, allowing the method to validatePostData or transform (i.e. hash) the user input.
+   *
+   * @param id                         internal column name to add
+   * @param columnValueTransformer     column value transformation method to apply to the value in the table on the index page for this column.
+   * @return this instance
+   */
+  public IndexBuilder column(String id, ColumnValueTransformer columnValueTransformer) {
+    // ensure the column exists
+    resource.addColumn(id, columnValueTransformer);
     return this;
   }
   
