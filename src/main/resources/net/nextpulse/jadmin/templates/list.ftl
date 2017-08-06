@@ -22,13 +22,16 @@
         "infoFiltered": "",
         "info": "${i("view.table.info")?json_string}",
         "infoEmpty": "${i("view.table.info_empty")?json_string}",
-        "paginate.first": "${i("view.table.info_empty")?json_string}",
-        "paginate.last": "${i("view.table.paginate.last")?json_string}",
-        "paginate.next": "${i("view.table.paginate.next")?json_string}",
-        "paginate.previous": "${i("view.table.paginate.previous")?json_string}",
         "processing": "${i("view.table.processing")?json_string}",
-        "zeroRecords": "${i("view.table.zeroRecords")?json_string}"
+        "zeroRecords": "${i("view.table.zeroRecords")?json_string}",
+        "paginate":{
+            "next": "${i("view.table.paginate.next")?json_string}",
+            "previous": "${i("view.table.paginate.previous")?json_string}",
+            "last": "${i("view.table.paginate.last")?json_string}",
+            "first": "${i("view.table.paginate.first")?json_string}"
+        }
     };
+
     var count = ${resource.perPageCount};
 </script>
 </@root.template>
