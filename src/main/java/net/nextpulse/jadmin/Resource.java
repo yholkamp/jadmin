@@ -150,7 +150,6 @@ public class Resource {
    * @param columnValueTransformer   transforms the way the existing column value is displayed
    */
   public void addColumn(String columnId, ColumnValueTransformer columnValueTransformer) {
-    System.out.println("Adding column and transformer method");
     getIndexColumns().add(columnId);
     findColumnDefinitionByName(columnId)
       .orElseThrow(() -> new IllegalArgumentException("Column " + columnId + " could not be found on resource " + tableName))
