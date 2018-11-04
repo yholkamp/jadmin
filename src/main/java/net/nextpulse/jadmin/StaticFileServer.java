@@ -68,7 +68,7 @@ public class StaticFileServer {
     if(resource.exists()) {
       response.setHeader(CONTENT_TYPE, MimeType.fromResource(resource));
       
-      try(OutputStream wrappedOutputStream = GzipUtils.checkAndWrap(request, response, false)) {
+      try(OutputStream wrappedOutputStream = GzipUtils.checkAndWrap(request, response, true)) {
         IOUtils.copy(resource.getInputStream(), wrappedOutputStream);
         wrappedOutputStream.flush();
         logger.trace("Served {} from disk", simplifiedPath);
