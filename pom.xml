@@ -28,8 +28,9 @@
   </licenses>
 
   <scm>
-    <url>https://github.com/yholkamp/jadmin</url>
-    <developerConnection>scm:git:ssh:/git@github.com/yholkamp/jadmin</developerConnection>
+    <connection>scm:git:git@github.com:yholkamp/jadmin.git</connection>
+    <developerConnection>scm:git:git@github.com:yholkamp/jadmin.git</developerConnection>
+    <url>scm:git:git@github.com:yholkamp/jadmin.git</url>
   </scm>
 
   <properties>
@@ -91,6 +92,16 @@
       <id>release</id>
       <build>
         <plugins>
+          <plugin>
+            <artifactId>maven-release-plugin</artifactId>
+            <version>2.5.3</version>
+            <configuration>
+              <autoVersionSubmodules>true</autoVersionSubmodules>
+              <localCheckout>true</localCheckout>
+              <tagNameFormat>@{project.version}</tagNameFormat>
+              <releaseProfiles>release</releaseProfiles>
+            </configuration>
+          </plugin>
           <plugin>
             <!-- Set up the configuration to publish to the Sonatype repository -->
             <groupId>org.sonatype.plugins</groupId>
