@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>net.nextpulse</groupId>
   <artifactId>jadmin</artifactId>
   <packaging>jar</packaging>
-  <version>0.5.3-SNAPSHOT</version>
+  <version>0.5.3</version>
   <url>https://github.com/yholkamp/jadmin</url>
   <name>JAdmin</name>
   <description>A flexible admin panel for CRUD operations on various data.</description>
@@ -31,6 +29,7 @@
     <connection>scm:git:git@github.com:yholkamp/jadmin.git</connection>
     <developerConnection>scm:git:git@github.com:yholkamp/jadmin.git</developerConnection>
     <url>scm:git:git@github.com:yholkamp/jadmin.git</url>
+    <tag>0.5.3</tag>
   </scm>
 
   <properties>
