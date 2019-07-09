@@ -7,7 +7,7 @@
   <groupId>net.nextpulse</groupId>
   <artifactId>jadmin</artifactId>
   <packaging>jar</packaging>
-  <version>0.5.2</version>
+  <version>0.5.3-SNAPSHOT</version>
   <url>https://github.com/yholkamp/jadmin</url>
   <name>JAdmin</name>
   <description>A flexible admin panel for CRUD operations on various data.</description>
@@ -37,7 +37,7 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <log4j.version>2.11.1</log4j.version>
+    <log4j.version>2.12.0</log4j.version>
   </properties>
 
   <distributionManagement>
@@ -173,13 +173,13 @@
     <dependency>
       <groupId>com.sparkjava</groupId>
       <artifactId>spark-core</artifactId>
-      <version>2.8.0</version>
+      <version>2.9.1</version>
     </dependency>
     <!-- Explicit dependency on jetty-server to avoid conflicts with Selenium -->
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-server</artifactId>
-      <version>9.4.12.v20180830</version>
+      <version>9.4.19.v20190610</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -208,12 +208,12 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>27.0-jre</version>
+      <version>28.0-jre</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
-      <version>3.8.1</version>
+      <version>3.9</version>
     </dependency>
     <dependency>
       <groupId>commons-dbutils</groupId>
@@ -257,7 +257,7 @@
     <dependency>
       <groupId>net.sourceforge.htmlunit</groupId>
       <artifactId>htmlunit</artifactId>
-      <version>2.33</version>
+      <version>2.35.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -269,7 +269,7 @@
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>htmlunit-driver</artifactId>
-      <version>2.33.0</version>
+      <version>2.35.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -283,7 +283,7 @@
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
-      <version>1.4.197</version>
+      <version>1.4.199</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -295,7 +295,7 @@
     <dependency>
       <groupId>org.xerial</groupId>
       <artifactId>sqlite-jdbc</artifactId>
-      <version>3.25.2</version>
+      <version>3.28.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
