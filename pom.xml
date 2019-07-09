@@ -5,7 +5,7 @@
   <groupId>net.nextpulse</groupId>
   <artifactId>jadmin</artifactId>
   <packaging>jar</packaging>
-  <version>0.5.3</version>
+  <version>0.5.4-SNAPSHOT</version>
   <url>https://github.com/yholkamp/jadmin</url>
   <name>JAdmin</name>
   <description>A flexible admin panel for CRUD operations on various data.</description>
@@ -29,7 +29,7 @@
     <connection>scm:git:git@github.com:yholkamp/jadmin.git</connection>
     <developerConnection>scm:git:git@github.com:yholkamp/jadmin.git</developerConnection>
     <url>scm:git:git@github.com:yholkamp/jadmin.git</url>
-    <tag>0.5.3</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <properties>
