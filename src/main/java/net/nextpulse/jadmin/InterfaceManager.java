@@ -125,7 +125,7 @@ public class InterfaceManager {
   
   /**
    * Configures the before/after filters in Spark, such as validation that the route exists, removing trailing slashes
-   * from the URL for consistency and adding a gzip header to the output.
+   * from the URL for consistency.
    */
   private void configureFilters() {
     // configure the static file location for JAdmin as before filter, intercepting any calls to static files.
